@@ -1,0 +1,53 @@
+:root {
+  --selected-background-color: #bae0ff;
+  --hover-color: #4096ff;
+  --primary-color: #1677ff;
+  --accent-color: #0958d9;
+  --warning-color: #f5222d;
+  --warning-hover-color: #ff4d4f;
+  --success-color: #52c41a;
+  --black-color: #141414;
+  --white-color: #ffffff;
+  --gray-color: #d9d9d9;
+
+  /* gap  */
+  --gap-xs: 5px;
+  --gap-s: 10px;
+  --gap-m: 15px;
+  --gap-l: 20px;
+  --gap-xl: 25px;
+
+  /* border */
+  --primary-border-s: solid 1px --primary-color;
+  --primary-border-m: solid 2px --primary-color;
+  --primary-border-l: solid 3px --primary-color;
+  --rounded-border: 5px;
+  --circle-border: 50%;
+
+  /* margin */
+
+  /* padding */
+  --padding-xxs: 2px;
+  --padding-xs: 5px;
+  --padding-s: 10px;
+  --padding-m: 15px;
+  --padding-l: 20px;
+  --padding-xl: 30px;
+  --padding-xxl: 50px;
+
+  /* transition */
+  --quick-transition: 0.3s;
+
+  /* font size */
+  --font-size-xs: 14px;
+  --font-size-s: 17px;
+  --font-size-m: 22px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  color: var(--black-color);
+  font-family: "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans",
+    "Droid Sans", "Helvetica Neue", sans-serif;
+}
