@@ -1,5 +1,10 @@
 import "./login.css";
+import { LoginForm } from "src/layouts/login-form";
 
 export const Login = () => {
-  return <h1>Hello World !</h1>;
+  return (
+    <>
+      <LoginForm />
+    </>
+  );
 };
