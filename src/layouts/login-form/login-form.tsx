@@ -1,11 +1,12 @@
 import "./login-form.css";
 import { AntdButton } from "src/components/antd-button";
-import { Form, Input } from "antd";
+import { Form, Input, Checkbox } from "antd";
 import type { FormProps } from "antd";
 
 type LoginFieldType = {
   username?: string;
   password?: string;
+  remember?: boolean;
 };
 
 const onFinish: FormProps<LoginFieldType>["onFinish"] = (values) => {
@@ -24,6 +25,7 @@ export const LoginForm = () => {
       name='login'
       onFinish={onFinish}
       onFinishFailed={onFinishFailed}
+      className='login-form'
       autoComplete='off'
     >
       <Form.Item<LoginFieldType>
@@ -39,7 +41,15 @@ export const LoginForm = () => {
         <Input.Password placeholder='Password' />
       </Form.Item>
       <Form.Item>
-        <AntdButton type='primary' htmlType='submit'>
+        <Form.Item name='remember' noStyle>
+          <Checkbox className='remember'>Remember me</Checkbox>
+        </Form.Item>
+        <a className='forgot-password' href=''>
+          Forgot Password
+        </a>
+      </Form.Item>
+      <Form.Item>
+        <AntdButton className='login-button' type='primary' htmlType='submit'>
           Login
         </AntdButton>
       </Form.Item>

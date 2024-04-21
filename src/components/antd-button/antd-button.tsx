@@ -4,6 +4,7 @@ import React, { PropsWithChildren } from "react";
 
 type AntdButtonProp = {
   type?: "primary" | "dashed" | "text" | "link";
+  className: string;
   clickFunc?: () => void;
   themeConfig?: ThemeConfig;
   children: React.ReactNode;
@@ -15,12 +16,14 @@ export const AntdButton = ({
   clickFunc,
   children,
   themeConfig,
+  className,
   htmlType,
 }: PropsWithChildren<AntdButtonProp>) => {
   return (
     <ConfigProvider theme={themeConfig ? themeConfig : undefined}>
       <Button
         type={type}
+        className={className}
         {...(clickFunc ? { onClick: clickFunc } : undefined)}
         {...(htmlType ? { htmlType: htmlType } : undefined)}
       >
