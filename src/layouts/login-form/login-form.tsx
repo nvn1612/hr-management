@@ -3,7 +3,7 @@ import { AntdButton } from "src/components/antd-button";
 import { Form, Input, Checkbox, message } from "antd";
 import type { FormProps } from "antd";
 import { loginService } from "src/share/services/accountServices";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export type LoginFieldType = {
   username?: string;
@@ -12,18 +12,16 @@ export type LoginFieldType = {
 };
 
 export const LoginForm = () => {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const [messageApi, contextHolder] = message.useMessage();
 
   const onFinish: FormProps<LoginFieldType>["onFinish"] = async (values) => {
     const responseData = await loginService(values);
     if (responseData.flag) {
-      // navigate("/dashboard");
+      navigate("/dashboard");
       messageApi.success("success");
-      console.log(responseData);
     } else {
       messageApi.error("error");
-      console.log(responseData, values);
     }
   };
 
