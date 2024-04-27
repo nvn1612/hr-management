@@ -1,9 +1,11 @@
 import "./login-form.css";
 import { AntdButton } from "src/components/antd-button";
+import { ScreenBlocker } from "src/components/screen-blocker";
 import { Form, Input, Checkbox, message } from "antd";
 import type { FormProps } from "antd";
 import { loginService } from "src/share/services/accountServices";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 export type LoginFieldType = {
   username?: string;
@@ -14,8 +16,10 @@ export type LoginFieldType = {
 export const LoginForm = () => {
   const navigate = useNavigate();
   const [messageApi, contextHolder] = message.useMessage();
+  const [loadingState, setLoadingState] = useState<boolean>(false);
 
   const onFinish: FormProps<LoginFieldType>["onFinish"] = async (values) => {
+    setLoadingState(true);
     const responseData = await loginService(values);
     if (responseData.flag) {
       navigate("/dashboard");
@@ -23,11 +27,13 @@ export const LoginForm = () => {
     } else {
       messageApi.error("error");
     }
+    setLoadingState(false);
   };
 
   return (
     <>
       {contextHolder}
+      {loadingState && <ScreenBlocker />}
       <Form
         name='login'
         onFinish={onFinish}
