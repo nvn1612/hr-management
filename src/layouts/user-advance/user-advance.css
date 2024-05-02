@@ -1,0 +1,14 @@
+@import url(src/index.css);
+
+.user-advance-tab {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--gap-m);
+  .role-selector {
+    width: 200px;
+  }
+  button {
+    width: 90px;
+  }
+}

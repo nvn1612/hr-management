@@ -1,0 +1,16 @@
+@import url("src/index.css");
+
+.user-info-container {
+  display: flex;
+  justify-content: center;
+  gap: var(--gap-l);
+  padding: var(--padding-l);
+  border-radius: var(--rounded-border);
+  .first-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: var(--gap-m);
+  }
+}
