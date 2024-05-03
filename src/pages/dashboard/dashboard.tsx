@@ -1,5 +1,9 @@
-import "./dashboard.css";
 
+
+import {Dashboardsidebar} from "src/layouts/dashboard-sidebar/dashboard-sidebar";
 export const Dashboard = () => {
-  return <h1>Dashboard Page</h1>;
+  return(
+    <Dashboardsidebar/>
+
+  )
 };
