@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./dashboard-sidebar.css";
-import { Link,} from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Avatar } from "antd";
 import {
   TeamOutlined,
@@ -15,7 +15,7 @@ const { Header, Sider, Content } = Layout;
 
 const Dashboardsidebar: React.FC = () => {
   const [collapsed, setCollapsed] = useState<boolean>(false);
-  const [selectInfo, setSelectInfo] = useState<boolean>(true);
+  const [selectItem, setSelectItem] = useState<string>("0");
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -46,8 +46,8 @@ const Dashboardsidebar: React.FC = () => {
   return (
     <Layout>
       <Sider
-        style={{ position: "absolute", zIndex: 10, height: "100dvh" }}
-        className="sider"
+        style={{ position: "absolute", zIndex: 1.5, height: "100dvh" }}
+        className='sider'
         trigger={null}
         collapsible
         collapsed={!collapsed}
@@ -56,20 +56,20 @@ const Dashboardsidebar: React.FC = () => {
       >
         <div
           className={`side-avatar-containter ${collapsed && "extend-avatar"} ${
-            selectInfo && "select-info"
+            selectItem === "0" && "select-info"
           }`}
-          onClick={() => setSelectInfo(true)}
+          onClick={() => setSelectItem("0")}
         >
-          <Avatar className="avatar-role" size={30} icon={<UserOutlined />} />
-          {collapsed && <div className="avatar-text">User Role</div>}
+          <Avatar className='avatar-role' size={30} icon={<UserOutlined />} />
+          {collapsed && <div className='avatar-text'>User Role</div>}
         </div>
-        <div className="demo-logo-vertical" />
-        <Menu theme="dark" mode="inline" {... selectInfo && {selectedKeys : ["0"]}}>
-          {menuItems.map((item) => (
+        <div className='demo-logo-vertical' />
+        <Menu theme='dark' mode='inline' selectedKeys={[selectItem]}>
+          {menuItems.map((item, index) => (
             <Menu.Item
               key={item.key}
               icon={item.icon}
-              onClick={() => setSelectInfo(false)}
+              onClick={() => setSelectItem((index + 1).toString())}
             >
               <Link to={`/dashboard/${item.key}`}>{item.label}</Link>
             </Menu.Item>
@@ -79,7 +79,7 @@ const Dashboardsidebar: React.FC = () => {
       <Layout>
         <Header style={{ padding: 0, background: colorBgContainer }}></Header>
         <Content
-          className="content"
+          className='content'
           style={{
             margin: "24px 16px",
             padding: 24,
@@ -87,8 +87,7 @@ const Dashboardsidebar: React.FC = () => {
             background: colorBgContainer,
             borderRadius: borderRadiusLG,
           }}
-        >
-        </Content>
+        ></Content>
       </Layout>
     </Layout>
   );

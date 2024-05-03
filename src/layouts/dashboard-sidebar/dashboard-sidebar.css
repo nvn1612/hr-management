@@ -1,48 +1,46 @@
-@import 'src/index.css';
+@import "src/index.css";
 
 .content {
-    width : calc(100vw - 80px);
-    position: absolute;
-    right: 0;
+  width: calc(100vw - 80px);
+  position: absolute;
+  right: 0;
 }
 .side-avatar-containter {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 90%;
-    padding-top: 4px;
-    padding-bottom: 4px;
-    margin : 4px;
-    cursor: pointer;
-    .avatar-role
-    {
-        background-color: #001529;
-        border: 0.5px solid rgb(255, 255, 255, 0.65); ;
-        color: rgb(255, 255, 255, 0.65);
-        margin-left: -6px; 
-        animation-duration: 0.3;
-    }
-    .avatar-text {
-        color: rgb(255, 255, 255, 0.65);
-        font-size: 14px;
-        margin-left: 4px;
-        width: 121px;
-        font-weight: 500;
-        &:hover{
-            color: inherit;
-        }
-    }
+  display: flex;
+  height: 40px;
+  justify-content: center;
+  align-items: center;
+  width: 90%;
+  margin: 4px;
+  cursor: pointer;
+  .avatar-role {
+    background-color: #001529;
+    border: 0.5px solid rgb(255, 255, 255, 0.65);
+    color: rgb(255, 255, 255, 0.65);
+    animation-duration: 0.3;
+  }
+  .avatar-text {
+    color: rgb(255, 255, 255, 0.65);
+    font-size: 14px;
+    margin-left: 4px;
+    width: 121px;
+    font-weight: 500;
     &:hover {
-        color: white;
+      color: inherit;
     }
+  }
+  &:hover {
+    color: white;
+  }
 }
 .extend-avatar {
-    width: 96%;
-    justify-content: start;
-    padding-left: 25px ;
-    padding-right: 16px;
+  width: 96%;
+  justify-content: start;
+  padding-left: 24px;
+  padding-right: 16px;
+  opacity: 0.9;
 }
-.select-info{
-    background: #1677ff;
-    border-radius: 8px;
+.select-info {
+  background: #1677ff;
+  border-radius: 8px;
 }
