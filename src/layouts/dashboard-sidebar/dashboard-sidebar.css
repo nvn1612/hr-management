@@ -1,42 +1,44 @@
 @import "src/index.css";
 
-.content {
-  width: calc(100vw - 80px);
-  position: absolute;
-  right: 0;
-}
-.side-avatar-containter {
-  display: flex;
-  height: 40px;
-  justify-content: center;
-  align-items: center;
-  width: 90%;
-  margin: 4px;
-  cursor: pointer;
-  .avatar-role {
-    background-color: #001529;
-    border: 0.5px solid rgb(255, 255, 255, 0.65);
-    color: rgb(255, 255, 255, 0.65);
-    animation-duration: 0.3;
-  }
-  .avatar-text {
-    color: rgb(255, 255, 255, 0.65);
-    font-size: 14px;
-    margin-left: 4px;
-    width: 121px;
-    font-weight: 500;
+.sidebar-container {
+  .side-avatar-containter {
+    display: flex;
+    height: 40px;
+    justify-content: center;
+    align-items: center;
+    width: 90%;
+    margin: 4px;
+    cursor: pointer;
+    .avatar-role {
+      background-color: #001529;
+      border: 0.5px solid rgb(255, 255, 255, 0.65);
+      color: rgb(255, 255, 255, 0.65);
+      animation-duration: 0.3s;
+      width: 30px;
+    }
+    .avatar-text {
+      color: rgb(255, 255, 255, 0.65);
+      font-size: 14px;
+      margin-left: 4px;
+      width: 130px;
+      font-weight: 500;
+      &:hover {
+        color: inherit;
+      }
+    }
     &:hover {
-      color: inherit;
+      color: white;
     }
   }
-  &:hover {
-    color: white;
-  }
 }
-.extend-avatar {
-  width: 96%;
+.extended-sidebar-container {
+  opacity: 0.92;
+  z-index: 2;
+}
+.extended-avatar {
+  width: 96% !important;
   justify-content: start;
-  padding-left: 24px;
+  padding-left: 15px;
   padding-right: 16px;
   opacity: 0.9;
 }

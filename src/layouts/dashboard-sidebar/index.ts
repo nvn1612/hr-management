@@ -1,1 +1,1 @@
-export {Dashboardsidebar} from "./dashboard-sidebar";
+export { Dashboardsidebar } from "./dashboard-sidebar";
