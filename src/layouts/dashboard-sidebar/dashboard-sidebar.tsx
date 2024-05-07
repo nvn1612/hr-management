@@ -58,15 +58,19 @@ const Dashboardsidebar: React.FC = () => {
         onMouseEnter={() => setCollapsed(true)}
         onMouseLeave={() => setCollapsed(false)}
       >
-        <div
-          className={`side-avatar-containter ${
-            collapsed && "extended-avatar"
-          } ${selectItem === "0" && "select-info"}`}
-          onClick={() => setSelectItem("0")}
-        >
-          <Avatar className='avatar-role' size={30} icon={<UserOutlined />} />
-          {collapsed && <div className='avatar-text'>User Role</div>}
-        </div>
+        <Link to={"/dashboard/user-info"}>
+          <div
+            className={`side-avatar-containter ${
+              collapsed && "extended-avatar"
+            } ${selectItem === "0" && "select-info"}`}
+            onClick={() => {
+              setSelectItem("0");
+            }}
+          >
+            <Avatar className='avatar-role' size={30} icon={<UserOutlined />} />
+            {collapsed && <div className='avatar-text'>User Role</div>}
+          </div>
+        </Link>
         <Menu theme='dark' mode='inline' selectedKeys={[selectItem]}>
           {menuItems.map((item, index) => (
             <Menu.Item
