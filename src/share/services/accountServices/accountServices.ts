@@ -1,8 +1,11 @@
 import axios from "axios";
-import type { LoginFieldType } from "src/layouts/login-form";
-import type { loginResponse } from "./models";
 import { loginApi } from "src/share/apis";
 import Cookies from "js-cookie";
+import { hrManagementApi } from "src/share/services/baseApi";
+
+import type { LoginFieldType } from "src/layouts/login-form";
+import type { loginResponse } from "./models";
+import { User } from "src/share/models";
 
 export const loginService = async (attemptLogin: LoginFieldType) => {
   try {
@@ -27,3 +30,18 @@ export const loginService = async (attemptLogin: LoginFieldType) => {
     throw new Error();
   }
 };
+
+const accountServices = hrManagementApi.injectEndpoints({
+  endpoints: (build) => ({
+    getUsers: build.query<User[], void>({
+      query: () => {
+        return {
+          url: "accounts",
+          method: "GET",
+        };
+      },
+    }),
+  }),
+});
+
+export const { useGetUsersQuery } = accountServices;

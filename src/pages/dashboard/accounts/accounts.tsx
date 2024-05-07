@@ -4,10 +4,13 @@ import { Tabs, Modal } from "antd";
 import { UserCard } from "src/components/user-card";
 import { UserInfoForm } from "src/layouts/user-info-form";
 import { UserAdvance } from "src/layouts/user-advance/";
+import { useGetUsersQuery } from "src/share/services/accountServices";
+
 import type { TabsProps } from "antd";
 
 export const Accounts = () => {
   const [openUserTab, setOpenUserTab] = useState<boolean>(false);
+  const { data } = useGetUsersQuery();
 
   const tabsProps: TabsProps["items"] = [
     {
@@ -32,13 +35,20 @@ export const Accounts = () => {
   ];
   return (
     <>
-      <UserCard
-        onClick={() => {
-          setOpenUserTab(true);
-        }}
-        username='devil666'
-        role='staff'
-      />
+      <div className='user-card-container'>
+        {data?.map((user) => {
+          return (
+            <UserCard
+              onClick={() => {
+                setOpenUserTab(true);
+                console.log(user);
+              }}
+              username={user.username}
+              role={user.role}
+            />
+          );
+        })}
+      </div>
       <Modal
         title=' Account Details'
         className='account-detail-modal'
