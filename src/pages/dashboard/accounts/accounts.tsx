@@ -2,9 +2,8 @@ import "./accounts.css";
 import { useState } from "react";
 import { Tabs, Modal } from "antd";
 import { UserCard } from "src/components/user-card";
-import { UserInfoForm } from "src/layouts/user-info-form";
-import { UserAdvance } from "src/layouts/user-advance/";
-import { useGetUsersQuery } from "src/share/services/accountServices";
+import { UserInfoForm, UserAdvance } from "src/layouts";
+import { useGetUsersQuery } from "src/share/services";
 
 import type { TabsProps } from "antd";
 

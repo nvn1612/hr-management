@@ -1,7 +1,7 @@
 import "./user-info.css";
 import { Avatar } from "antd";
 import { UserOutlined } from "@ant-design/icons";
-import { UserInfoForm } from "../../../layouts/user-info-form";
+import { UserInfoForm } from "src/layouts/";
 
 export const UserInfo = () => {
   return (
