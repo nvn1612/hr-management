@@ -1,5 +1,18 @@
 import "./dashboard.css";
-
+import { Layout } from "antd";
+import { Outlet } from "react-router-dom";
+import { Dashboardsidebar } from "src/layouts/dashboard-sidebar";
 export const Dashboard = () => {
-  return <h1>Dashboard Page</h1>;
+  const { Content } = Layout;
+
+  return (
+    <Layout>
+      <Dashboardsidebar />
+      <Layout>
+        <Content className='content'>
+          <Outlet />
+        </Content>
+      </Layout>
+    </Layout>
+  );
 };
