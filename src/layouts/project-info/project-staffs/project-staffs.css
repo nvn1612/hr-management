@@ -1,0 +1,7 @@
+.add-user-tag {
+  border-style: dashed;
+  height: 22;
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+  cursor: pointer;
+}

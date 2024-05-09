@@ -1,0 +1,11 @@
+@import url("src/index.css");
+
+.project-detail-modal {
+  width: 800px !important;
+  .project-tabs {
+    width: 100%;
+    background: var(--white-color);
+    padding: var(--padding-m);
+    border-radius: var(--rounded-border);
+  }
+}

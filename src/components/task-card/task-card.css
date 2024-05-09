@@ -1,0 +1,9 @@
+@import url(src/index.css);
+
+.task-card {
+  cursor: pointer;
+  .task-card-details {
+    display: flex;
+    gap: var(--gap-m);
+  }
+}
