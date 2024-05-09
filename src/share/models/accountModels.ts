@@ -7,11 +7,12 @@ export const OUserRole = {
 export type UserRole = (typeof OUserRole)[keyof typeof OUserRole];
 
 export interface User {
-  role: UserRole;
   username: string;
+  name: string;
+  status: boolean;
+  birthDay: Date;
+  role: UserRole;
   email: string;
   department: string;
-  fullname: string;
-  monthSalary: number;
   phone: string;
 }

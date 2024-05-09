@@ -1,15 +1,17 @@
 import "./accounts.css";
 import { useState } from "react";
-import { Tabs, Modal } from "antd";
+import { Tabs, Modal, Spin } from "antd";
 import { UserCard } from "src/components/user-card";
 import { UserInfoForm, UserAdvance } from "src/layouts";
 import { useGetUsersQuery } from "src/share/services";
 
 import type { TabsProps } from "antd";
+import type { User } from "src/share/models";
 
 export const Accounts = () => {
   const [openUserTab, setOpenUserTab] = useState<boolean>(false);
-  const { data } = useGetUsersQuery();
+  const [selectedAcc, setSelectedAcc] = useState<User | null>(null);
+  const { data, isLoading } = useGetUsersQuery();
 
   const tabsProps: TabsProps["items"] = [
     {
@@ -17,12 +19,7 @@ export const Accounts = () => {
       label: "General",
       children: (
         <UserInfoForm
-          initValues={{
-            username: "devil666",
-            fullname: "Nguyen Van A",
-            address: "a to b to c in 1 in 2 in 3",
-            email: "nonamemail123@gmail.com",
-          }}
+          {...(selectedAcc !== null ? { initValues: selectedAcc } : {})}
         />
       ),
     },
@@ -34,20 +31,27 @@ export const Accounts = () => {
   ];
   return (
     <>
-      <div className='user-card-container'>
-        {data?.map((user) => {
-          return (
-            <UserCard
-              onClick={() => {
-                setOpenUserTab(true);
-                console.log(user);
-              }}
-              username={user.username}
-              role={user.role}
-            />
-          );
-        })}
-      </div>
+      <Spin
+        spinning={isLoading}
+        tip='Loading Accounts'
+        className='account-card-loading'
+        size='large'
+      >
+        <div className='user-card-container'>
+          {data?.map((user) => {
+            return (
+              <UserCard
+                onClick={() => {
+                  setOpenUserTab(true);
+                  setSelectedAcc(user);
+                }}
+                username={user.username}
+                role={user.role}
+              />
+            );
+          })}
+        </div>
+      </Spin>
       <Modal
         title=' Account Details'
         className='account-detail-modal'
