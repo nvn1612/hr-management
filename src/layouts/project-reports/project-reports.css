@@ -1,0 +1,18 @@
+@import url(src/index.css);
+
+.project-reports-container {
+  display: flex;
+  justify-content: start;
+  width: 100%;
+  padding: var(--padding-l);
+  max-height: 50dvh;
+  overflow-y: auto;
+  .report-timeline {
+    width: 100%;
+    .project-report-detail {
+      .project-reporter {
+        color: var(--gray-color);
+      }
+    }
+  }
+}
