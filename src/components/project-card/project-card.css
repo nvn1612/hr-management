@@ -1,0 +1,7 @@
+.project-card {
+  width: 500px;
+  .project-card-content {
+    display: flex;
+    flex-direction: column;
+  }
+}

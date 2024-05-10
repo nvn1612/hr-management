@@ -1,8 +1,9 @@
 import "./projects.css";
 import { useState } from "react";
+import { Tabs, Modal } from "antd";
 import { ProjectInfo } from "src/layouts/project-info";
 import { ProjectReports } from "src/layouts/project-reports";
-import { Tabs, Modal, Button } from "antd";
+import { ProjectCard } from "src/components/project-card";
 
 import type { TabsProps } from "antd";
 
@@ -24,7 +25,7 @@ export const Projects = () => {
 
   return (
     <>
-      <Button onClick={() => setOpenProjectTab(true)}>Open Project Tabs</Button>
+      <ProjectCard onClick={() => setOpenProjectTab(true)} />
       <Modal
         title='Project Details'
         className='project-detail-modal'
