@@ -3,6 +3,7 @@ import { Dashboard, Login } from "src/pages";
 import { UserInfo } from "src/pages/dashboard/user-info";
 import { Accounts } from "src/pages/dashboard/accounts";
 import { Departments } from "src/pages/dashboard/departments";
+import { Projects } from "src/pages/dashboard/projects";
 import App from "src/App";
 
 export const router = createBrowserRouter([
@@ -23,6 +24,10 @@ export const router = createBrowserRouter([
       {
         path: "departments",
         element: <Departments />,
+      },
+      {
+        path: "projects",
+        element: <Projects />,
       },
     ],
   },
