@@ -1,0 +1,38 @@
+.department-manager
+{
+    display: flex;
+    padding: 10px;
+    justify-content: space-between;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin: 10px 30px;
+    span{
+        color: red;
+    }
+}
+.department-manager .anticon {
+    color: black; 
+}
+.department-manager > :not(:first-child) {
+    border-left: 1px solid #ccc;
+    padding-left: 10px;
+}
+.department-staff{
+    margin-top: 20px;
+    display: flex;
+    padding: 10px;
+    justify-content: space-between;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin: 10px 30px;
+    span{
+        color: red;
+    }
+}
+.department-staff .anticon {
+    color: black; 
+}
+.department-staff > :not(:first-child) {
+    border-left: 1px solid #ccc;
+    padding-left: 10px;
+}
