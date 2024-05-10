@@ -1,5 +1,10 @@
 @import url("src/index.css");
 
+.account-card-loading {
+  width: 100%;
+  min-height: 300px;
+}
+
 .account-detail-modal {
   width: 800px !important;
   .account-tab {
