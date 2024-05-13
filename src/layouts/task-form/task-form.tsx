@@ -32,10 +32,10 @@ export const TaskForm = ({ taskFields, assignedStaffs }: TaskFormProps) => {
   const [showAddUser, setShowAddUser] = useState<boolean>(false);
   const [form] = Form.useForm();
 
-  const reports = [
-    { fileLink: "Link to report 1" },
-    { fileLink: "Link to report 2" },
-    { fileLink: "Link to report 3" },
+  const documents = [
+    { fileLink: "Link to document 1" },
+    { fileLink: "Link to document 2" },
+    { fileLink: "Link to document 3" },
   ];
   const activites = [
     { description: "Activity 1" },
@@ -102,17 +102,17 @@ export const TaskForm = ({ taskFields, assignedStaffs }: TaskFormProps) => {
             </Tag>
           )}
         </Form.Item>
-        <Form.Item label='Reports'>
+        <Form.Item label='Documents'>
           <List
-            dataSource={reports}
-            renderItem={(report) => (
+            dataSource={documents}
+            renderItem={(document) => (
               <List.Item>
-                <List.Item.Meta description={report.fileLink} />
+                <List.Item.Meta description={document.fileLink} />
               </List.Item>
             )}
           />
           <Upload>
-            <Button icon={<UploadOutlined />}>Upload new report</Button>
+            <Button icon={<UploadOutlined />}>Upload new Document</Button>
           </Upload>
         </Form.Item>
         <Form.Item label='Activities'>
