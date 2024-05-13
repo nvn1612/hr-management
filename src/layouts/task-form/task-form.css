@@ -1,0 +1,11 @@
+@import url(src/index.css);
+
+.task-form-container {
+  min-width: 95%;
+  max-height: 60dvh;
+  overflow-y: auto;
+  padding: var(--padding-m);
+  .task-form {
+    width: 100%;
+  }
+}
