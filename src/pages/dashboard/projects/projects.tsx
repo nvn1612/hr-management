@@ -1,6 +1,6 @@
 import "./projects.css";
 import { useState } from "react";
-import { Tabs, Modal } from "antd";
+import { Tabs, Modal, Popconfirm, Button } from "antd";
 import { ProjectInfo } from "src/layouts/project-info";
 import { ProjectReports } from "src/layouts/project-reports";
 import { ProjectCard } from "src/components/project-card";
@@ -33,9 +33,18 @@ export const Projects = () => {
         onCancel={() => {
           setOpenProjectTab(false);
         }}
-        onOk={() => {
-          setOpenProjectTab(false);
-        }}
+        footer={[
+          <Popconfirm
+            title='Delete Project'
+            description='Are you sure to delete this Project?'
+            okText='Yes'
+            cancelText='No'
+          >
+            <Button type='primary' danger>
+              Delete Project
+            </Button>
+          </Popconfirm>,
+        ]}
       >
         <Tabs items={tabsProps} className='project-tabs' />
       </Modal>

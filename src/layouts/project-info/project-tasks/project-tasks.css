@@ -14,3 +14,6 @@
     gap: var(--gap-s);
   }
 }
+.task-modal {
+  width: 650px !important;
+}

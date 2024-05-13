@@ -3,7 +3,7 @@
 .project-info-container {
   display: flex;
   flex-direction: column;
-  gap: var(--gap-l);
+  gap: var(--gap-xl);
   width: 95%;
   max-height: 50dvh;
   padding: var(--padding-l);
