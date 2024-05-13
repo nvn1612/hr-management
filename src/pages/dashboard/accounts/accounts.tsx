@@ -1,34 +1,18 @@
 import "./accounts.css";
 import { useState } from "react";
-import { Tabs, Modal, Spin } from "antd";
+import { Spin, List, Button, Select, Typography } from "antd";
 import { UserCard } from "src/components/user-card";
-import { UserInfoForm, UserAdvance } from "src/layouts";
+import { AccountModal } from "src/layouts";
 import { useGetUsersQuery } from "src/share/services";
+import { filterRoleOptions } from "src/share/utils";
 
-import type { TabsProps } from "antd";
 import type { User } from "src/share/models";
 
 export const Accounts = () => {
-  const [openUserTab, setOpenUserTab] = useState<boolean>(false);
+  const [openAccTab, setOpenAccTab] = useState<boolean>(false);
   const [selectedAcc, setSelectedAcc] = useState<User | null>(null);
   const { data, isLoading } = useGetUsersQuery();
-
-  const tabsProps: TabsProps["items"] = [
-    {
-      key: "1",
-      label: "General",
-      children: (
-        <UserInfoForm
-          {...(selectedAcc !== null ? { initValues: selectedAcc } : {})}
-        />
-      ),
-    },
-    {
-      key: "2",
-      label: "Advanced",
-      children: <UserAdvance userRole='staff' />,
-    },
-  ];
+  const { Text } = Typography;
   return (
     <>
       <Spin
@@ -37,34 +21,60 @@ export const Accounts = () => {
         className='account-card-loading'
         size='large'
       >
+        <Button
+          type='primary'
+          onClick={() => {
+            setSelectedAcc(null);
+            setOpenAccTab(true);
+          }}
+        >
+          Create New User
+        </Button>
+        <div className='filter-row'>
+          <div className='filter-item'>
+            <Text className='role-filter-title'>Role: </Text>
+            <Select
+              className='acc-role-filter'
+              options={filterRoleOptions}
+              defaultValue={"all"}
+            />
+          </div>
+        </div>
         <div className='user-card-container'>
-          {data?.map((user) => {
-            return (
-              <UserCard
-                onClick={() => {
-                  setOpenUserTab(true);
-                  setSelectedAcc(user);
-                }}
-                username={user.username}
-                role={user.role}
-              />
-            );
-          })}
+          <List
+            grid={{
+              gutter: 16,
+              xs: 1,
+              sm: 1,
+              md: 1,
+              lg: 2,
+              xl: 2,
+              xxl: 3,
+            }}
+            pagination={{ position: "bottom", align: "center", pageSize: 10 }}
+            dataSource={data}
+            renderItem={(user) => {
+              return (
+                <List.Item>
+                  <UserCard
+                    onClick={() => {
+                      setOpenAccTab(true);
+                      setSelectedAcc(user);
+                    }}
+                    username={user.username}
+                    role={user.role}
+                  />
+                </List.Item>
+              );
+            }}
+          />
         </div>
       </Spin>
-      <Modal
-        title=' Account Details'
-        className='account-detail-modal'
-        open={openUserTab}
-        onCancel={() => {
-          setOpenUserTab(false);
-        }}
-        onOk={() => {
-          setOpenUserTab(false);
-        }}
-      >
-        <Tabs defaultActiveKey='1' items={tabsProps} className='account-tab' />
-      </Modal>
+      <AccountModal
+        selectedAcc={selectedAcc}
+        openAccountTab={openAccTab}
+        setOpenAccountTab={setOpenAccTab}
+      />
     </>
   );
 };

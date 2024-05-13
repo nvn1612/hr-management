@@ -1,8 +1,9 @@
-import { Form, Input, Button, Select, DatePicker, Checkbox } from "antd";
 import "./user-info-form.css";
+import { Form, Input, Button, DatePicker, Checkbox, Select } from "antd";
 import dayjs from "dayjs";
-import { OUserRole } from "src/share/models";
 import { useEffect } from "react";
+import { OUserRole } from "src/share/models";
+import { userRoleOptions } from "src/share/utils";
 
 import type { UserRole, User } from "src/share/models";
 
@@ -22,13 +23,26 @@ interface UserFormProp {
 
 export const UserInfoForm = ({ initValues }: UserFormProp) => {
   const onFinish = () => {};
+  const newUserObj: UserInfoType = {
+    birthDay: "",
+    email: "",
+    name: "",
+    phone: "",
+    status: true,
+    role: OUserRole.Staff,
+    username: "",
+  };
   const [form] = Form.useForm();
 
   useEffect(() => {
-    form.setFieldsValue({
-      ...initValues,
-      birthDay: dayjs(initValues?.birthDay, "YYYY/MM/DD"),
-    });
+    form.setFieldsValue(
+      initValues
+        ? {
+            ...initValues,
+            birthDay: dayjs(initValues?.birthDay, "YYYY/MM/DD"),
+          }
+        : { ...newUserObj }
+    );
   });
 
   return (
@@ -40,11 +54,9 @@ export const UserInfoForm = ({ initValues }: UserFormProp) => {
       wrapperCol={{ span: 16 }}
       className='user-form'
     >
-      {initValues!.username && (
-        <Form.Item<UserInfoType> label='username' name='username'>
-          <Input />
-        </Form.Item>
-      )}
+      <Form.Item<UserInfoType> label='username' name='username'>
+        <Input />
+      </Form.Item>
       <Form.Item<UserInfoType> label='Name' name='name'>
         <Input />
       </Form.Item>
@@ -57,24 +69,18 @@ export const UserInfoForm = ({ initValues }: UserFormProp) => {
       <Form.Item<UserInfoType> label='Birth Day' name='birthDay'>
         <DatePicker />
       </Form.Item>
-      <Form.Item<UserInfoType> label='Status' name='status'>
-        <Checkbox defaultChecked={initValues!.status}>Active</Checkbox>
-      </Form.Item>
-      {initValues?.role && (
-        <Form.Item<UserInfoType>
-          initialValue={initValues?.role}
-          label='Role'
-          name='role'
-        >
-          <Select
-            options={[
-              { label: "Admin", value: OUserRole.Admin },
-              { label: "Manager", value: OUserRole.Manager },
-              { label: "Staff", value: OUserRole.Staff },
-            ]}
-          />
+      {!initValues && (
+        <Form.Item<UserInfoType> label='Role' name='role'>
+          <Select options={userRoleOptions} />
         </Form.Item>
       )}
+      <Form.Item<UserInfoType>
+        label='Status'
+        name='status'
+        valuePropName='checked'
+      >
+        <Checkbox>Active</Checkbox>
+      </Form.Item>
       <Form.Item wrapperCol={{ offset: 4 }}>
         <Button type='primary'>Save Changes</Button>
       </Form.Item>
