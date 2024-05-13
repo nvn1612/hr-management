@@ -1,7 +1,7 @@
 import "./project-tasks.css";
 import { useState } from "react";
 import { TaskCard } from "src/components/task-card";
-import { Radio, Modal, Button } from "antd";
+import { Radio, Modal, Button, Popconfirm } from "antd";
 import { TaskForm } from "src/layouts/task-form";
 import { useGetUsersQuery } from "src/share/services";
 
@@ -39,7 +39,18 @@ export const ProjectTasks = () => {
         open={showTaskForm}
         onCancel={() => setShowTaskForm(false)}
         onOk={() => setShowTaskForm(false)}
-        footer={[]}
+        footer={[
+          <Popconfirm
+            title='Delete Project'
+            description='Are you sure to delete this task ?'
+            okText='Yes'
+            cancelText='No'
+          >
+            <Button type='primary' danger>
+              Delete task
+            </Button>
+          </Popconfirm>,
+        ]}
         className='task-modal'
       >
         <TaskForm
