@@ -10,7 +10,7 @@ import {
   message,
 } from "antd";
 import dayjs from "dayjs";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { userRoleOptions } from "src/share/utils";
 import { useAddUserMutation } from "src/share/services/accountServices/";
 
@@ -38,6 +38,7 @@ export const UserInfoForm = ({
   setOpenAcountTab,
 }: UserFormProp) => {
   const [messageApi, contextHolder] = message.useMessage();
+  const [editableForm, setEditableForm] = useState<boolean>(false);
   const [addUser, { isLoading, isSuccess, isError }] = useAddUserMutation();
 
   const onFinish: FormProps<UserInfoType>["onFinish"] = async (values) => {
@@ -81,6 +82,12 @@ export const UserInfoForm = ({
   return (
     <>
       {contextHolder}
+      <Checkbox
+        checked={editableForm}
+        onChange={() => setEditableForm(!editableForm)}
+      >
+        Edit Infomation
+      </Checkbox>
       <Spin
         spinning={isLoading}
         tip={initValues ? "Adding New Account" : "Progressing"}
@@ -89,6 +96,7 @@ export const UserInfoForm = ({
       >
         <Form
           form={form}
+          disabled={!editableForm}
           name='user-info'
           onFinish={onFinish}
           labelCol={{ span: 4 }}
