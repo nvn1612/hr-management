@@ -38,8 +38,10 @@ export const UserInfoForm = ({
   setOpenAcountTab,
 }: UserFormProp) => {
   const [messageApi, contextHolder] = message.useMessage();
-  const [editableForm, setEditableForm] = useState<boolean>(false);
-  const [addUser, { isLoading, isSuccess, isError }] = useAddUserMutation();
+  const [editableForm, setEditableForm] = useState<boolean>(
+    initValues ? false : true
+  );
+  const [addUser, { isLoading }] = useAddUserMutation();
 
   const onFinish: FormProps<UserInfoType>["onFinish"] = async (values) => {
     if (!initValues) {
@@ -49,13 +51,15 @@ export const UserInfoForm = ({
         username: values.username ? values.username : "",
         role: values.role!,
       };
-      await addUser(sentValues).unwrap();
-      if (isSuccess && setOpenAcountTab) {
-        setOpenAcountTab(false);
-        messageApi.success("Successful add new user");
-      } else if (isError) {
-        messageApi.error("There wass an error");
-      }
+      await addUser(sentValues)
+        .unwrap()
+        .then(() => {
+          setOpenAcountTab!(false);
+          messageApi.success("Successful add new user");
+        })
+        .catch(() => {
+          messageApi.error("There wass an error");
+        });
     }
   };
   const newUserObj: UserInfoType = {
@@ -82,12 +86,14 @@ export const UserInfoForm = ({
   return (
     <>
       {contextHolder}
-      <Checkbox
-        checked={editableForm}
-        onChange={() => setEditableForm(!editableForm)}
-      >
-        Edit Infomation
-      </Checkbox>
+      {initValues && (
+        <Checkbox
+          checked={editableForm}
+          onChange={() => setEditableForm(!editableForm)}
+        >
+          Edit Infomation
+        </Checkbox>
+      )}
       <Spin
         spinning={isLoading}
         tip={initValues ? "Adding New Account" : "Progressing"}
