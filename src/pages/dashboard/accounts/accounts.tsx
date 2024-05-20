@@ -1,18 +1,37 @@
 import "./accounts.css";
 import { useState } from "react";
-import { Spin, List, Button, Select, Typography } from "antd";
+import { Spin, List, Typography } from "antd";
 import { UserCard } from "src/components/user-card";
 import { AccountModal } from "src/layouts";
+import { MngPageHeader } from "src/layouts/mng-page-header";
 import { useGetUsersQuery } from "src/share/services";
 import { filterRoleOptions } from "src/share/utils";
 
-import type { User } from "src/share/models";
+import type { User, MngFilterItem } from "src/share/models";
 
 export const Accounts = () => {
   const [openAccTab, setOpenAccTab] = useState<boolean>(false);
   const [selectedAcc, setSelectedAcc] = useState<User | null>(null);
   const { data, isLoading } = useGetUsersQuery();
   const { Text } = Typography;
+
+  const filters: MngFilterItem[] = [
+    {
+      label: "Role",
+      selector: {
+        defaultValue: "all",
+        options: filterRoleOptions,
+      },
+    },
+    {
+      label: "Department",
+      selector: {
+        defaultValue: "all",
+        options: [{ label: <Text>All</Text>, value: "all" }],
+      },
+    },
+  ];
+
   return (
     <>
       <Spin
@@ -21,25 +40,16 @@ export const Accounts = () => {
         className='account-card-loading'
         size='large'
       >
-        <Button
-          type='primary'
-          onClick={() => {
+        <MngPageHeader
+          title='Accounts'
+          itemCount={data ? data.length : 0}
+          addBtnContent='Create User'
+          addBtnOnClick={() => {
             setSelectedAcc(null);
             setOpenAccTab(true);
           }}
-        >
-          Create New User
-        </Button>
-        <div className='filter-row'>
-          <div className='filter-item'>
-            <Text className='role-filter-title'>Role: </Text>
-            <Select
-              className='acc-role-filter'
-              options={filterRoleOptions}
-              defaultValue={"all"}
-            />
-          </div>
-        </div>
+          filters={filters}
+        />
         <div className='user-card-container'>
           <List
             grid={{
