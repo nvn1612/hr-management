@@ -1,13 +1,24 @@
 import "./user-info-form.css";
-import { Form, Input, Button, DatePicker, Checkbox, Select } from "antd";
+import {
+  Form,
+  Input,
+  Button,
+  DatePicker,
+  Checkbox,
+  Select,
+  Spin,
+  message,
+} from "antd";
 import dayjs from "dayjs";
-import { useEffect } from "react";
-import { OUserRole } from "src/share/models";
+import { useEffect, useState } from "react";
 import { userRoleOptions } from "src/share/utils";
+import { useAddUserMutation } from "src/share/services/accountServices/";
 
 import type { UserRole, User } from "src/share/models";
+import type { FormProps } from "antd";
 
 export interface UserInfoType {
+  id?: number;
   username?: string;
   name: string;
   email: string;
@@ -19,17 +30,44 @@ export interface UserInfoType {
 
 interface UserFormProp {
   initValues?: UserInfoType | User;
+  setOpenAcountTab?: (isOpen: boolean) => void;
 }
 
-export const UserInfoForm = ({ initValues }: UserFormProp) => {
-  const onFinish = () => {};
+export const UserInfoForm = ({
+  initValues,
+  setOpenAcountTab,
+}: UserFormProp) => {
+  const [messageApi, contextHolder] = message.useMessage();
+  const [editableForm, setEditableForm] = useState<boolean>(
+    initValues ? false : true
+  );
+  const [addUser, { isLoading }] = useAddUserMutation();
+
+  const onFinish: FormProps<UserInfoType>["onFinish"] = async (values) => {
+    if (!initValues) {
+      const sentValues: User = {
+        ...values,
+        department: "",
+        username: values.username ? values.username : "",
+        role: values.role!,
+      };
+      await addUser(sentValues)
+        .unwrap()
+        .then(() => {
+          setOpenAcountTab!(false);
+          messageApi.success("Successful add new user");
+        })
+        .catch(() => {
+          messageApi.error("There wass an error");
+        });
+    }
+  };
   const newUserObj: UserInfoType = {
     birthDay: "",
     email: "",
     name: "",
     phone: "",
     status: true,
-    role: OUserRole.Staff,
     username: "",
   };
   const [form] = Form.useForm();
@@ -46,44 +84,63 @@ export const UserInfoForm = ({ initValues }: UserFormProp) => {
   });
 
   return (
-    <Form
-      form={form}
-      name='user-info'
-      onFinish={onFinish}
-      labelCol={{ span: 4 }}
-      wrapperCol={{ span: 16 }}
-      className='user-form'
-    >
-      <Form.Item<UserInfoType> label='username' name='username'>
-        <Input />
-      </Form.Item>
-      <Form.Item<UserInfoType> label='Name' name='name'>
-        <Input />
-      </Form.Item>
-      <Form.Item<UserInfoType> label='Email' name='email'>
-        <Input />
-      </Form.Item>
-      <Form.Item<UserInfoType> label='Phone' name='phone'>
-        <Input />
-      </Form.Item>
-      <Form.Item<UserInfoType> label='Birth Day' name='birthDay'>
-        <DatePicker />
-      </Form.Item>
-      {!initValues && (
-        <Form.Item<UserInfoType> label='Role' name='role'>
-          <Select options={userRoleOptions} />
-        </Form.Item>
+    <>
+      {contextHolder}
+      {initValues && (
+        <Checkbox
+          checked={editableForm}
+          onChange={() => setEditableForm(!editableForm)}
+        >
+          Edit Infomation
+        </Checkbox>
       )}
-      <Form.Item<UserInfoType>
-        label='Status'
-        name='status'
-        valuePropName='checked'
+      <Spin
+        spinning={isLoading}
+        tip={initValues ? "Adding New Account" : "Progressing"}
+        className='account-card-loading'
+        size='large'
       >
-        <Checkbox>Active</Checkbox>
-      </Form.Item>
-      <Form.Item wrapperCol={{ offset: 4 }}>
-        <Button type='primary'>Save Changes</Button>
-      </Form.Item>
-    </Form>
+        <Form
+          form={form}
+          disabled={!editableForm}
+          name='user-info'
+          onFinish={onFinish}
+          labelCol={{ span: 4 }}
+          wrapperCol={{ span: 16 }}
+          className='user-form'
+        >
+          <Form.Item<UserInfoType> label='username' name='username'>
+            <Input />
+          </Form.Item>
+          <Form.Item<UserInfoType> label='Name' name='name'>
+            <Input />
+          </Form.Item>
+          <Form.Item<UserInfoType> label='Email' name='email'>
+            <Input />
+          </Form.Item>
+          <Form.Item<UserInfoType> label='Phone' name='phone'>
+            <Input />
+          </Form.Item>
+          <Form.Item<UserInfoType> label='Birth Day' name='birthDay'>
+            <DatePicker />
+          </Form.Item>
+          {!initValues && (
+            <Form.Item<UserInfoType> label='Role' name='role'>
+              <Select options={userRoleOptions} />
+            </Form.Item>
+          )}
+          <Form.Item<UserInfoType>
+            label='Status'
+            name='status'
+            valuePropName='checked'
+          >
+            <Checkbox>Active</Checkbox>
+          </Form.Item>
+          <Form.Item wrapperCol={{ offset: 4 }}>
+            <Button type='primary'>Save Changes</Button>
+          </Form.Item>
+        </Form>
+      </Spin>
+    </>
   );
 };

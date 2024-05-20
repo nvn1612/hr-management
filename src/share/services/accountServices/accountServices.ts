@@ -40,8 +40,19 @@ const accountServices = hrManagementApi.injectEndpoints({
           method: "GET",
         };
       },
+      providesTags: ["User"],
+    }),
+    addUser: build.mutation<User, Partial<User>>({
+      query(body) {
+        return {
+          url: "accounts",
+          meothod: "POST",
+          body,
+        };
+      },
+      invalidatesTags: ["User"],
     }),
   }),
 });
 
-export const { useGetUsersQuery } = accountServices;
+export const { useGetUsersQuery, useAddUserMutation } = accountServices;
