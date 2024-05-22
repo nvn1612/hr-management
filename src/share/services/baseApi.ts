@@ -8,3 +8,9 @@ export const hrManagementApi = createApi({
   tagTypes: ["User"],
   endpoints: () => ({}),
 });
+export const hrManagementApii = createApi({
+  reducerPath: "hrManagementApii",
+  baseQuery: fetchBaseQuery({ baseUrl: "https://mock-hr.free.beeceptor.com/" }),
+  tagTypes: ["Departments"],
+  endpoints: () => ({}),
+});
