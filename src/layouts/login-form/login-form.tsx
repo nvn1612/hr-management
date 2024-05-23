@@ -1,9 +1,11 @@
 import "./login-form.css";
-import { AntdButton } from "src/components/antd-button";
 import { Form, Input, Checkbox, message } from "antd";
-import type { FormProps } from "antd";
+import { AntdButton } from "src/components/antd-button";
 import { useLoginMutation } from "src/share/services/accountServices";
 import { useNavigate } from "react-router-dom";
+import { localStorageUtil } from "src/share/utils";
+
+import type { FormProps } from "antd";
 
 export type LoginFieldType = {
   username?: string;
@@ -25,11 +27,12 @@ export const LoginForm = () => {
       email: values.username,
       password: values.password,
     } as LoginReqBody)
+      .unwrap()
       .then((resp) => {
-        if (!resp.error) {
-          navigate("/dashboard");
-          messageApi.success("success");
-        }
+        localStorageUtil.set("accessToken", resp.data.tokens.accessToken);
+        localStorageUtil.set("refreshToken", resp.data.tokens.refreshToken);
+        navigate("/dashboard");
+        messageApi.success("success");
       })
       .catch((e) => {
         messageApi.error(e);
