@@ -12,62 +12,69 @@ import {
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { userRoleOptions } from "src/share/utils";
-import { useAddUserMutation } from "src/share/services/accountServices/";
+import { useUpdateUserDetailMutation } from "src/share/services/accountServices";
 
 import type { UserRole, User } from "src/share/models";
 import type { FormProps } from "antd";
 
+// types
 export interface UserInfoType {
-  id?: number;
+  user_id?: string;
   username?: string;
   name: string;
   email: string;
-  status: boolean;
   phone: string;
-  birthDay: string;
+  birthday: string;
   role?: UserRole;
 }
 
 interface UserFormProp {
   initValues?: UserInfoType | User;
   setOpenAcountTab?: (isOpen: boolean) => void;
+  action: "create" | "detail" | "update";
 }
+//
 
 export const UserInfoForm = ({
   initValues,
   setOpenAcountTab,
+  action,
 }: UserFormProp) => {
   const [messageApi, contextHolder] = message.useMessage();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [editableForm, setEditableForm] = useState<boolean>(
     initValues ? false : true
   );
-  const [addUser, { isLoading }] = useAddUserMutation();
+  const [updateUserDetail] = useUpdateUserDetailMutation();
 
   const onFinish: FormProps<UserInfoType>["onFinish"] = async (values) => {
-    if (!initValues) {
-      const sentValues: User = {
-        ...values,
-        department: "",
-        username: values.username ? values.username : "",
-        role: values.role!,
-      };
-      await addUser(sentValues)
-        .unwrap()
-        .then(() => {
-          setOpenAcountTab!(false);
-          messageApi.success("Successful add new user");
-        })
-        .catch(() => {
-          messageApi.error("There wass an error");
-        });
+    let sentValues: User;
+    setIsLoading(true);
+    switch (action) {
+      case "detail":
+        sentValues = {
+          ...values,
+          username: values.username ? values.username : "",
+        };
+        await updateUserDetail(sentValues)
+          .unwrap()
+          .then(() => {
+            setOpenAcountTab && setOpenAcountTab(false);
+            messageApi.success("Successful update");
+            setIsLoading(false);
+          })
+          .catch(() => {
+            messageApi.error("Something went wrong");
+            setIsLoading(false);
+          });
     }
   };
+
   const newUserObj: UserInfoType = {
-    birthDay: "",
+    birthday: "",
     email: "",
     name: "",
     phone: "",
-    status: true,
     username: "",
   };
   const [form] = Form.useForm();
@@ -77,7 +84,7 @@ export const UserInfoForm = ({
       initValues
         ? {
             ...initValues,
-            birthDay: dayjs(initValues?.birthDay, "YYYY/MM/DD"),
+            birthDay: dayjs(initValues?.birthday, "YYYY/MM/DD"),
           }
         : { ...newUserObj }
     );
@@ -86,20 +93,20 @@ export const UserInfoForm = ({
   return (
     <>
       {contextHolder}
-      {initValues && (
-        <Checkbox
-          checked={editableForm}
-          onChange={() => setEditableForm(!editableForm)}
-        >
-          Edit Infomation
-        </Checkbox>
-      )}
       <Spin
         spinning={isLoading}
-        tip={initValues ? "Adding New Account" : "Progressing"}
+        tip='Progressing'
         className='account-card-loading'
         size='large'
       >
+        {(action === "detail" || action === "update") && (
+          <Checkbox
+            checked={editableForm}
+            onChange={() => setEditableForm(!editableForm)}
+          >
+            Edit Infomation
+          </Checkbox>
+        )}
         <Form
           form={form}
           disabled={!editableForm}
@@ -121,7 +128,7 @@ export const UserInfoForm = ({
           <Form.Item<UserInfoType> label='Phone' name='phone'>
             <Input />
           </Form.Item>
-          <Form.Item<UserInfoType> label='Birth Day' name='birthDay'>
+          <Form.Item<UserInfoType> label='Birth Day' name='birthday'>
             <DatePicker />
           </Form.Item>
           {!initValues && (
@@ -129,15 +136,10 @@ export const UserInfoForm = ({
               <Select options={userRoleOptions} />
             </Form.Item>
           )}
-          <Form.Item<UserInfoType>
-            label='Status'
-            name='status'
-            valuePropName='checked'
-          >
-            <Checkbox>Active</Checkbox>
-          </Form.Item>
           <Form.Item wrapperCol={{ offset: 4 }}>
-            <Button type='primary'>Save Changes</Button>
+            <Button type='primary' htmlType='submit'>
+              Save Changes
+            </Button>
           </Form.Item>
         </Form>
       </Spin>

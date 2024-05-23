@@ -2,7 +2,11 @@ import "./user-info.css";
 import { Avatar } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { UserInfoForm } from "src/layouts/";
+import { useGetUserDetailQuery } from "src/share/services";
+
 export const UserInfo = () => {
+  const { data } = useGetUserDetailQuery();
+
   return (
     <div className='user-info-container'>
       <div className='first-section'>
@@ -11,14 +15,16 @@ export const UserInfo = () => {
         <h3>Staff</h3>
       </div>
       <UserInfoForm
-        initValues={{
-          username: "Devil666",
-          name: "Nguyen Van A",
-          email: "nonamemail123@gmail.com",
-          phone: "0123456789",
-          status: true,
-          birthDay: "1999/01/01",
-        }}
+        {...(data && {
+          initValues: {
+            username: data.data.username,
+            name: data.data.name,
+            email: data.data.email,
+            phone: data.data.phone,
+            birthday: data.data.birthday,
+          },
+        })}
+        action='detail'
       />
     </div>
   );
