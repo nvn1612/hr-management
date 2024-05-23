@@ -3,14 +3,8 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const hrManagementApi = createApi({
   reducerPath: "hrManagementApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://mock-hr.free.beeceptor.com/api",
+    baseUrl: "http://localhost:3050/",
   }),
   tagTypes: ["User"],
-  endpoints: () => ({}),
-});
-export const hrManagementApii = createApi({
-  reducerPath: "hrManagementApii",
-  baseQuery: fetchBaseQuery({ baseUrl: "https://mock-hr.free.beeceptor.com/" }),
-  tagTypes: ["Departments"],
   endpoints: () => ({}),
 });

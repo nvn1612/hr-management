@@ -17,3 +17,8 @@ export interface User {
   department: string;
   phone: string;
 }
+
+export interface LoginResp {
+  accessToken: string;
+  refreshToken: string;
+}
