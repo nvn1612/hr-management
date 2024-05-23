@@ -1,5 +1,5 @@
 export const localStorageUtil = {
-  get: (itemKey: string): unknown => {
+  get: (itemKey: string): string | undefined => {
     const jsonString: string | null = localStorage.getItem(itemKey);
     if (typeof jsonString === "string") {
       return JSON.parse(jsonString);

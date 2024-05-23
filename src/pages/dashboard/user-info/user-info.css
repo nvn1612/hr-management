@@ -2,6 +2,7 @@
 
 .user-info-container {
   display: flex;
+  background: var(--white-color);
   justify-content: center;
   gap: var(--gap-l);
   padding: var(--padding-l);

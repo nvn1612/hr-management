@@ -1,8 +1,10 @@
 import { hrManagementApi } from "src/share/services/baseApi";
 import { User, Response, LoginResp } from "src/share/models";
+import { localStorageUtil } from "src/share/utils";
 
 import type { LoginReqBody } from "src/layouts/login-form";
-import type {} from "src/pages/login";
+
+const accessToken = localStorageUtil.get("accessToken");
 
 const accountServices = hrManagementApi.injectEndpoints({
   endpoints: (build) => ({
@@ -19,6 +21,31 @@ const accountServices = hrManagementApi.injectEndpoints({
           body,
         };
       },
+    }),
+    getUserDetail: build.query<Response<User>, void>({
+      query: () => {
+        return {
+          url: "users/detail",
+          method: "GET",
+          headers: {
+            authorization: accessToken,
+          },
+        };
+      },
+      providesTags: ["userDetail"],
+    }),
+    updateUserDetail: build.mutation<Response<User>, Partial<User>>({
+      query(body) {
+        return {
+          url: "users/update",
+          method: "PUT",
+          headers: {
+            authorization: accessToken,
+          },
+          body,
+        };
+      },
+      invalidatesTags: ["userDetail"],
     }),
     getUsers: build.query<User[], void>({
       query: () => {
@@ -42,5 +69,10 @@ const accountServices = hrManagementApi.injectEndpoints({
   }),
 });
 
-export const { useGetUsersQuery, useAddUserMutation, useLoginMutation } =
-  accountServices;
+export const {
+  useGetUsersQuery,
+  useAddUserMutation,
+  useLoginMutation,
+  useGetUserDetailQuery,
+  useUpdateUserDetailMutation,
+} = accountServices;
