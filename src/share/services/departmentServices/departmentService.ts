@@ -1,8 +1,8 @@
-import { hrManagementApii } from "src/share/services";
+import { hrManagementApi } from "src/share/services";
 
 import type { Department } from "src/share/models";
 
-export const DepartmentServices = hrManagementApii.injectEndpoints({
+export const DepartmentServices = hrManagementApi.injectEndpoints({
   endpoints: (build) => ({
     getDepartments: build.query<Department[], void>({
       query: () => {
