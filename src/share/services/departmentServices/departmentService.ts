@@ -1,14 +1,20 @@
 import { hrManagementApi } from "src/share/services";
+import {localStorageUtil} from 'src/share/utils'
 
-import type { Department } from "src/share/models";
+import type { allDpmResp, Response } from "src/share/models";
+
+const accessToken = localStorageUtil.get('accessToken')
 
 export const DepartmentServices = hrManagementApi.injectEndpoints({
   endpoints: (build) => ({
-    getDepartments: build.query<Department[], void>({
+    getDepartments: build.query<Response<allDpmResp>, void>({
       query: () => {
         return {
-          url: "departments",
+          url: "departments/admin/getAll",
           method: "GET",
+          headers : {
+            authorization: accessToken
+          }
         };
       },
     }),
