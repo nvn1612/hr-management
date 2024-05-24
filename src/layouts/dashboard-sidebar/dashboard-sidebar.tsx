@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./dashboard-sidebar.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Avatar } from "antd";
 import {
   TeamOutlined,
@@ -9,6 +9,7 @@ import {
   UserOutlined,
   LogoutOutlined,
 } from "@ant-design/icons";
+import { localStorageUtil } from "src/share/utils";
 
 import { Layout, Menu } from "antd";
 const { Sider } = Layout;
@@ -42,6 +43,13 @@ const menuItems = [
 const Dashboardsidebar: React.FC = () => {
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const [selectItem, setSelectItem] = useState<string>("0");
+  const navigate = useNavigate();
+
+  const logout = (): void => {
+    localStorageUtil.delete("accessToken");
+    localStorageUtil.delete("refreshToken");
+    navigate("/login");
+  };
 
   return (
     <Layout
@@ -76,7 +84,12 @@ const Dashboardsidebar: React.FC = () => {
             <Menu.Item
               key={item.key}
               icon={item.icon}
-              onClick={() => setSelectItem((index + 1).toString())}
+              onClick={() => {
+                setSelectItem((index + 1).toString());
+                if (!item.url) {
+                  logout();
+                }
+              }}
             >
               {item.url ? (
                 <Link to={`/dashboard/${item.url}`}>{item.label}</Link>
