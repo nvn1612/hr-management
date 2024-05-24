@@ -9,6 +9,7 @@ import {
   UserOutlined,
   LogoutOutlined,
 } from "@ant-design/icons";
+import { useLogout } from "src/share/hooks";
 
 import { Layout, Menu } from "antd";
 const { Sider } = Layout;
@@ -76,7 +77,12 @@ const Dashboardsidebar: React.FC = () => {
             <Menu.Item
               key={item.key}
               icon={item.icon}
-              onClick={() => setSelectItem((index + 1).toString())}
+              onClick={() => {
+                setSelectItem((index + 1).toString());
+                if (!item.url) {
+                  useLogout();
+                }
+              }}
             >
               {item.url ? (
                 <Link to={`/dashboard/${item.url}`}>{item.label}</Link>
