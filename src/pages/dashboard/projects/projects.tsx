@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Tabs, Modal, Popconfirm, Button } from "antd";
 import { ProjectInfo } from "src/layouts/project-info";
 import { ProjectReports } from "src/layouts/project-reports";
+import { ProjectWorkspace } from "src/layouts/project-workspace";
 import { ProjectCard } from "src/components/project-card";
 
 import type { TabsProps } from "antd";
@@ -13,12 +14,17 @@ export const Projects = () => {
   const tabsProps: TabsProps["items"] = [
     {
       key: "1",
-      label: "Project Information",
+      label: "General",
       children: <ProjectInfo />,
     },
     {
       key: "2",
-      label: "Project Reports",
+      label: "Workspace",
+      children: <ProjectWorkspace />,
+    },
+    {
+      key: "3",
+      label: "Reports",
       children: <ProjectReports />,
     },
   ];
