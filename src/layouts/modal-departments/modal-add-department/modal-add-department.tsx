@@ -1,16 +1,31 @@
-import React,{useState} from "react";
-import { Modal, Input, Select, Form } from "antd";
+import React, { useState } from "react";
+import { Modal, Input, Select, Form, Button } from "antd";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import { ModalAddStaffsDepartment } from "../modal-add-staffs-department";
+import { useAddDepartmentMutation } from "src/share/services";
 import "./modal-add-department.css";
+
+import type { FormProps } from "antd";
+
 type ModalAddDepartmentProps = {
   visible: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
 };
+
+export interface AddDepartmentForm {
+  name: string;
+  description: string;
+}
+
 export const ModalAddDepartment = ({
   visible,
   setVisible,
 }: ModalAddDepartmentProps) => {
+  const [addDepartment] = useAddDepartmentMutation();
+  const onFinish: FormProps<AddDepartmentForm>["onFinish"] = async (values) => {
+    await addDepartment(values).unwrap().then().catch();
+  };
+
   const formItemLayout = {
     labelCol: {
       xs: { span: 24 },
@@ -22,9 +37,10 @@ export const ModalAddDepartment = ({
     },
   };
   const [showModalAddStaffs, setShowModalAddStaffs] = useState(false);
+
   const showlModal = () => {
-    setShowModalAddStaffs(true); 
-  }
+    setShowModalAddStaffs(true);
+  };
   return (
     <>
       <Modal
@@ -36,42 +52,57 @@ export const ModalAddDepartment = ({
         className="modal-add-department"
         width={600}
       >
-        <Form {...formItemLayout} variant="filled" style={{ maxWidth: 600 }}>
-          <Form.Item
+        <Form
+          {...formItemLayout}
+          onFinish={onFinish}
+          variant="filled"
+          style={{ maxWidth: 600 }}
+        >
+          <Form.Item<AddDepartmentForm>
             label="Name Department"
-            name="Name Department"
+            name="name"
             rules={[{ required: true, message: "Please input!" }]}
           >
             <Input />
           </Form.Item>
 
-          <Form.Item
+          <Form.Item<AddDepartmentForm>
             label="Description"
-            name="Description"
+            name="description"
             rules={[{ required: true, message: "Please input!" }]}
           >
             <Input.TextArea />
           </Form.Item>
 
-          <Form.Item
+          {/* <Form.Item
             label="Manager"
             name="Manafger"
             rules={[{ required: true, message: "Please input!" }]}
           >
             <Select />
-          </Form.Item>
+          </Form.Item> */}
 
-          <Form.Item
+          {/* <Form.Item
             name="Staffs"
             rules={[{ required: true, message: "Please input!" }]}
           >
             <div className="label-icon-container">
               <span>Staffs</span>
-              <PlusCircleOutlined className="icon-staffs" onClick={showlModal}/>
+              <PlusCircleOutlined
+                className="icon-staffs"
+                onClick={showlModal}
+              />
             </div>
+          </Form.Item> */}
+          <Form.Item>
+            <Button type="primary" htmlType="submit">Add Department</Button>
           </Form.Item>
         </Form>
-        <ModalAddStaffsDepartment visible={showModalAddStaffs} setVisible={setShowModalAddStaffs}/>
+
+        <ModalAddStaffsDepartment
+          visible={showModalAddStaffs}
+          setVisible={setShowModalAddStaffs}
+        />
       </Modal>
     </>
   );
