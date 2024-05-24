@@ -5,13 +5,14 @@ import { ModalDepartments } from "src/layouts/modal-departments";
 import { CardDepartmentss } from "src/components/card-departments";
 import { ModalAddDepartment } from "../modal-departments/modal-add-department";
 import { MngPageHeader } from "../mng-page-header";
+import { useGetDepartmentsQuery } from "src/share/services";
 import "./card-departments-list.css";
 
-type DepartmentData= {
-  title: string;
-  manager: string;
-  staffCount: number;
-};
+// type DepartmentData= {
+//   title: string;
+//   manager: string;
+//   staffCount: number;
+// };
 
 export const CardDepartments = () => {
   const [visible, setVisible] = useState(false);
@@ -19,46 +20,44 @@ export const CardDepartments = () => {
   const showAddDepartment = () => {
     setVisibleAddDepartment(true);
   };
-  const departments: DepartmentData[] = [
-    {
-      title: "APPLICATION DEVELOPER DEPARTMENT",
-      manager: "Van Diep Tran",
-      staffCount: 20,
-    },
-    {
-      title: "INFORMATION SECURITY DEPARTMENT",
-      manager: "Tung Hoang",
-      staffCount: 7,
-    },
-    {
-      title: "INFORMATION SECURITY DEPARTMENT",
-      manager: "Tung Hoang",
-      staffCount: 7,
-    },
-    {
-      title: "INFORMATION SECURITY DEPARTMENT",
-      manager: "Tung Hoang",
-      staffCount: 7,
-    },
-  ];
-
+  // const departments: DepartmentData[] = [
+  //   {
+  //     title: "APPLICATION DEVELOPER DEPARTMENT",
+  //     manager: "Van Diep Tran",
+  //     staffCount: 20,
+  //   },
+  //   {
+  //     title: "INFORMATION SECURITY DEPARTMENT",
+  //     manager: "Tung Hoang",
+  //     staffCount: 7,
+  //   },
+  //   {
+  //     title: "INFORMATION SECURITY DEPARTMENT",
+  //     manager: "Tung Hoang",
+  //     staffCount: 7,
+  //   },
+  //   {
+  //     title: "INFORMATION SECURITY DEPARTMENT",
+  //     manager: "Tung Hoang",
+  //     staffCount: 7,
+  //   },
+  // ];
+  const {data} =useGetDepartmentsQuery();
   return (
     <Row gutter={16} className="departments">
       <MngPageHeader
         title="Departments"
         addBtnContent='Create Department'
-        itemCount={departments ? departments.length : 0}
         filters={[]}
       />
 
         
 
-      {departments.map((department) => (
+      {data?.data.departments.map((department) => (
         <Col span={8}>
           <CardDepartmentss
-            title={department.title}
-            manager={department.manager}
-            staffCount={department.staffCount}
+            title={department.name}
+            manager={department.manager_id}
             onClick={() => setVisible(true)}
           />
         </Col>

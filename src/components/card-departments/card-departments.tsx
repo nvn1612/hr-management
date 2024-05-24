@@ -9,16 +9,14 @@ import {
 import "./card-departments.css";
 
 type CardDepartmentssProps = {
-  title: string;
-  manager: string;
-  staffCount: number;
-  onClick: () => void;
+  title?: string;
+  manager?: string;
+  onClick?: () => void;
 };
 
 export const CardDepartmentss: React.FC<CardDepartmentssProps> = ({
   title,
   manager,
-  staffCount,
   onClick,
 }) => {
   const handleDeleteClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -52,7 +50,7 @@ export const CardDepartmentss: React.FC<CardDepartmentssProps> = ({
           </div>
           <div className="staff-departments-info">
             <TeamOutlined />
-            <p>{staffCount}</p>
+            {/* <p>{staffCount}</p> */}
           </div>
         </div>
       </Card>

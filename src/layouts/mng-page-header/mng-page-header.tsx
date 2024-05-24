@@ -7,11 +7,11 @@ import type { MngFilterItem } from "src/share/models";
 const { Title, Text } = Typography;
 
 interface MngPageHeaderProps {
-  title: string;
+  title?: string;
   itemCount?: number;
-  addBtnContent: string;
-  addBtnOnClick: () => void;
-  filters: MngFilterItem[];
+  addBtnContent?: string;
+  addBtnOnClick?: () => void;
+  filters?: MngFilterItem[];
 }
 
 export const MngPageHeader = ({
@@ -34,7 +34,7 @@ export const MngPageHeader = ({
         </Button>
       </div>
       <div className='page-header-row-2'>
-        {filters.map((filter) => {
+        {filters?.map((filter) => {
           return (
             <div className='filter-item'>
               <Text className='filter-title'>{filter.label}</Text>
