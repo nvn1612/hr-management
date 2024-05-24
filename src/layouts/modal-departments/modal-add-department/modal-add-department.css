@@ -1,0 +1,21 @@
+.modal-add-department{
+    text-align: center;
+    .ant-modal-title{
+        font-size: 25px;
+        font-weight: 700;
+        color: #000;
+    }
+    .label-icon-container{
+        display: flex;
+        align-items: center;
+        gap: 10px; 
+        .icon-staffs{
+            color: #DAD9D9;
+            font-size: 20px;
+        }
+        span{
+            font-size: 15px;
+            font-weight: 700;
+        }
+    }
+}
