@@ -7,20 +7,26 @@ import {
   QuestionCircleOutlined,
 } from "@ant-design/icons";
 import "./card-departments.css";
+import { useDeleteDepartmentsMutation } from "src/share/services";
 
 type CardDepartmentssProps = {
   title?: string;
   manager?: string;
   onClick?: () => void;
+  departmentId?: string
 };
 
 export const CardDepartmentss: React.FC<CardDepartmentssProps> = ({
   title,
   manager,
   onClick,
+  departmentId
 }) => {
-  const handleDeleteClick = (event: React.MouseEvent<HTMLElement>) => {
+  const [deleteDepartment] = useDeleteDepartmentsMutation();
+
+  const handleDeleteClick = async (event: React.MouseEvent<HTMLElement>) => {
     event.stopPropagation();
+    await deleteDepartment({departmentId}).unwrap().then().catch();
   };
   
   return (
