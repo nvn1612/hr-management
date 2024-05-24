@@ -1,11 +1,12 @@
-import React from 'react'
-import { CardDepartments } from 'src/components/card-departments/card-departments'
-// import { ModalDepartments } from 'src/layouts/modal-departments'
+
+import { CardDepartments } from 'src/layouts/card-departments-list/card-departments-list'
+
 export const Departments = () => {
+  // const {data} = useGetDepartmentsQuery();
   return (
     <>
-        <CardDepartments />
-        {/* <ModalDepartments/> */}
+
+        <CardDepartments/>
     </>
   )
 }

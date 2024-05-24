@@ -5,6 +5,7 @@ export const store = configureStore({
   reducer: {
     [hrManagementApi.reducerPath]: hrManagementApi.reducer,
   },
+
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(hrManagementApi.middleware),
+    getDefaultMiddleware().concat([hrManagementApi.middleware]),
 });
