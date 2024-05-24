@@ -23,16 +23,15 @@ import { Projects } from "src/pages/dashboard/projects";
 import { ModalReportProjectDepartment } from "src/layouts/modal-departments/modal-report-project-department";
 import "./modal-departments.css";
 
-import type { Department } from "src/share/models";
-
 type ModalDepartmentsProps = {
   visible: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
-  departmentData?: Department;
+  manager? : string;
 };
 export const ModalDepartments = ({
   visible,
   setVisible,
+  manager
 }: ModalDepartmentsProps) => {
   const onChange = (key: string) => {
     console.log(key);
@@ -80,7 +79,7 @@ export const ModalDepartments = ({
                       onClick={showModal}
                     >
                       <Avatar icon={<UserOutlined />} size={25} />
-                      <p>Van Diep Doan</p>
+                      <p>{manager? manager : ''}</p>
                     </div>
                   </Col>
                   <Col span={2} className="edit-manager-icon">
