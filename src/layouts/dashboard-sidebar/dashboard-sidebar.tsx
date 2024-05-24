@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./dashboard-sidebar.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Avatar } from "antd";
 import {
   TeamOutlined,
@@ -9,7 +9,7 @@ import {
   UserOutlined,
   LogoutOutlined,
 } from "@ant-design/icons";
-import { useLogout } from "src/share/hooks";
+import { localStorageUtil } from "src/share/utils";
 
 import { Layout, Menu } from "antd";
 const { Sider } = Layout;
@@ -43,6 +43,13 @@ const menuItems = [
 const Dashboardsidebar: React.FC = () => {
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const [selectItem, setSelectItem] = useState<string>("0");
+  const navigate = useNavigate();
+
+  const logout = (): void => {
+    localStorageUtil.delete("accessToken");
+    localStorageUtil.delete("refreshToken");
+    navigate("/login");
+  };
 
   return (
     <Layout
@@ -80,7 +87,7 @@ const Dashboardsidebar: React.FC = () => {
               onClick={() => {
                 setSelectItem((index + 1).toString());
                 if (!item.url) {
-                  useLogout();
+                  logout();
                 }
               }}
             >

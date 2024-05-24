@@ -5,5 +5,5 @@ export const useLogout = (): void => {
   const navigate = useNavigate();
   localStorageUtil.delete("accessToken");
   localStorageUtil.delete("refreshToken");
-  navigate("login");
+  navigate("/login");
 };
