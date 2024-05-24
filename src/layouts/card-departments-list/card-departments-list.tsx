@@ -7,15 +7,11 @@ import { ModalAddDepartment } from "../modal-departments/modal-add-department";
 import { MngPageHeader } from "../mng-page-header";
 import { useGetDepartmentsQuery } from "src/share/services";
 import "./card-departments-list.css";
-
-// type DepartmentData= {
-//   title: string;
-//   manager: string;
-//   staffCount: number;
-// };
+import { Department } from "src/share/models";
 
 export const CardDepartments = () => {
   const [visible, setVisible] = useState(false);
+  const [mainDepartment, setMainDepartment] = useState<Department | undefined>();
   const [visibleAddDepartment, setVisibleAddDepartment] = useState(false);
   const showAddDepartment = () => {
     setVisibleAddDepartment(true);
@@ -48,9 +44,10 @@ export const CardDepartments = () => {
       <MngPageHeader
         title="Departments"
         addBtnContent='Create Department'
+        addBtnOnClick={showAddDepartment}
         filters={[]}
       />
-
+    
         
 
       {data?.data.departments.map((department) => (
@@ -58,7 +55,10 @@ export const CardDepartments = () => {
           <CardDepartmentss
             title={department.name}
             manager={department.manager_id}
-            onClick={() => setVisible(true)}
+            departmentId={department.department_id}
+            onClick={() => {setVisible(true);
+              setMainDepartment(department);
+            }}
           />
         </Col>
       ))}
@@ -68,7 +68,7 @@ export const CardDepartments = () => {
           onClick={showAddDepartment}
         />
       </Col>
-      <ModalDepartments visible={visible} setVisible={setVisible} />
+      <ModalDepartments visible={visible} setVisible={setVisible} manager={mainDepartment?.manager_id}/>
       <ModalAddDepartment visible={visibleAddDepartment} setVisible={setVisibleAddDepartment} />
     </Row>
   );
