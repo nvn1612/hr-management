@@ -1,6 +1,6 @@
 import { hrManagementApi } from "src/share/services";
 import {localStorageUtil} from 'src/share/utils'
-
+import type {User} from 'src/share/models/accountModels'
 import type { allDpmResp, Response,Department } from "src/share/models";
 import type { AddDepartmentForm } from "src/layouts/modal-departments/modal-add-department";
 const accessToken = localStorageUtil.get('accessToken')
@@ -43,8 +43,23 @@ export const DepartmentServices = hrManagementApi.injectEndpoints({
         };
       },
       invalidatesTags : ['department']
+    }),
+    getInfoManager: build.query<User,{id?: string}>({
+      query: ({id}) => {
+        return {
+          url: `users/admin/detail/${id}`,
+          method: "GET",
+          headers : {
+            authorization: accessToken
+          }
+        };
+      },
+      transformResponse: (response:Response<User>) =>response.data
     })
   }),
+  
 });
 
-export const { useGetDepartmentsQuery, useDeleteDepartmentsMutation,useAddDepartmentMutation } = DepartmentServices;
+
+
+export const { useGetDepartmentsQuery, useDeleteDepartmentsMutation,useAddDepartmentMutation,useGetInfoManagerQuery  } = DepartmentServices;

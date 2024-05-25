@@ -215,6 +215,7 @@ export const ModalDepartments = ({
       <ModalDepartmentManager
         visible={managerModalVisible}
         setVisible={setManagerModalVisible}
+        manager={manager}
       />
       <ModalListStaffDepartment
         visible={staffModalVisible}
