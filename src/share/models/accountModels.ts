@@ -1,7 +1,8 @@
 export const OUserRole = {
-  Admin: "admin",
-  Manager: "manager",
-  Staff: "staff",
+  All: "ALL",
+  Admin: "ADMIN",
+  Manager: "MANAGER",
+  Staff: "STAFF",
 } as const;
 
 export type UserRole = (typeof OUserRole)[keyof typeof OUserRole];
@@ -28,6 +29,15 @@ interface UserProperty {
   updatedAt?: string;
   deletedAt?: string;
   deletedMark: boolean;
+}
+
+export interface GetUserResp {
+  currentPage: number;
+  itemsPerPage: number;
+  nextPage?: number;
+  previousPage?: number;
+  total: number;
+  users: User[];
 }
 
 export interface LoginResp {

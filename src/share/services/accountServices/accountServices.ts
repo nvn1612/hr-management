@@ -1,8 +1,9 @@
 import { hrManagementApi } from "src/share/services/baseApi";
-import { User, Response, LoginResp } from "src/share/models";
+import { User, Response, LoginResp, OUserRole } from "src/share/models";
 import { localStorageUtil } from "src/share/utils";
 
 import type { LoginReqBody } from "src/layouts/login-form";
+import type { UserRole, GetUserResp } from "src/share/models/accountModels";
 
 const accessToken = localStorageUtil.get("accessToken");
 
@@ -47,20 +48,28 @@ const accountServices = hrManagementApi.injectEndpoints({
       },
       invalidatesTags: ["userDetail"],
     }),
-    getUsers: build.query<User[], void>({
-      query: () => {
+    getUsers: build.query<GetUserResp, { role: UserRole; page?: number }>({
+      query: ({ role, page }) => {
         return {
-          url: "accounts",
+          url: `users/admin/getAll`,
           method: "GET",
+          headers: {
+            authorization: accessToken,
+          },
+          params: {
+            role: role === OUserRole.All ? "" : role,
+            page: page ? page : 1,
+          },
         };
       },
+      transformResponse: (response: Response<GetUserResp>) => response.data,
       providesTags: ["User"],
     }),
     addUser: build.mutation<User, Partial<User>>({
       query(body) {
         return {
-          url: "accounts",
-          meothod: "POST",
+          url: "users/admin/getAll",
+          method: "POST",
           body,
         };
       },

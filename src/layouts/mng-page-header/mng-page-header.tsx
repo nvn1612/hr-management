@@ -11,7 +11,12 @@ interface MngPageHeaderProps {
   itemCount?: number;
   addBtnContent?: string;
   addBtnOnClick?: () => void;
-  filters?: MngFilterItem[];
+  filters?: PageFilter[];
+}
+
+export interface PageFilter {
+  onChange?: <ValueType>(value: ValueType) => void;
+  items: MngFilterItem;
 }
 
 export const MngPageHeader = ({
@@ -37,11 +42,12 @@ export const MngPageHeader = ({
         {filters?.map((filter) => {
           return (
             <div className='filter-item'>
-              <Text className='filter-title'>{filter.label}</Text>
+              <Text className='filter-title'>{filter.items.label}</Text>
               <Select
                 className='filter-selector'
-                options={filter.selector.options}
-                defaultValue={filter.selector.defaultValue}
+                options={filter.items.selector.options}
+                defaultValue={filter.items.selector.defaultValue}
+                onChange={filter.onChange && filter.onChange}
               />
             </div>
           );
