@@ -11,12 +11,11 @@ import { OUserRole } from "src/share/models";
 import type { PaginationProps } from "antd";
 import type { User, UserRole } from "src/share/models";
 import type { PageFilter } from "src/layouts/mng-page-header";
-import { Update } from "vite";
 
 export const Accounts = () => {
   const [openAccTab, setOpenAccTab] = useState<boolean>(false);
   const [selectedAcc, setSelectedAcc] = useState<User | null>(null);
-  const [formAction, setFormAction] = useState<"create" | "update">();
+  const [formAction, setFormAction] = useState<"create" | "update">("create");
   const [queries, setQueries] = useState<{
     role: UserRole;
     page: number | undefined;
@@ -60,11 +59,12 @@ export const Accounts = () => {
       >
         <MngPageHeader
           title='Accounts'
-          itemCount={data ? data.users.length : 0}
+          itemCount={data ? data.total : 0}
           addBtnContent='Create User'
           addBtnOnClick={() => {
             setSelectedAcc(null);
             setOpenAccTab(true);
+            setFormAction("create");
           }}
           filters={filters}
         />
@@ -96,6 +96,7 @@ export const Accounts = () => {
                           onClick={() => {
                             setOpenAccTab(true);
                             setSelectedAcc(user);
+                            setFormAction("update");
                           }}
                           username={user.username}
                           email={user.email}
@@ -112,7 +113,7 @@ export const Accounts = () => {
         selectedAcc={selectedAcc}
         openAccountTab={openAccTab}
         setOpenAccountTab={setOpenAccTab}
-        action={"update"}
+        action={formAction}
       />
     </>
   );
