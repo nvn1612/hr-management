@@ -47,3 +47,11 @@ export interface LoginResp {
     refreshToken: string;
   };
 }
+
+export interface RoleResp {
+  role_id?: string;
+  name?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  deletedAt?: null;
+}

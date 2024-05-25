@@ -43,7 +43,7 @@ export const AccountModal = ({
       {
         key: "1",
         label: "General",
-        children: <UserInfoForm />,
+        children: <UserInfoForm action='create' />,
       },
     ],
   };
