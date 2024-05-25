@@ -9,12 +9,14 @@ interface AccountModalProps {
   selectedAcc?: User | null;
   openAccountTab: boolean;
   setOpenAccountTab: (isOpen: false) => void;
+  action: "detail" | "update" | "create";
 }
 
 export const AccountModal = ({
   selectedAcc,
   openAccountTab,
   setOpenAccountTab,
+  action,
 }: AccountModalProps) => {
   const tabProps: {
     accDetail: TabsProps["items"];
@@ -26,6 +28,7 @@ export const AccountModal = ({
         label: "General",
         children: (
           <UserInfoForm
+            action={action}
             {...(selectedAcc !== null ? { initValues: selectedAcc } : {})}
           />
         ),
@@ -33,7 +36,7 @@ export const AccountModal = ({
       {
         key: "2",
         label: "Advanced",
-        children: <UserAdvance userRole='staff' />,
+        children: <UserAdvance userRole='STAFF' />,
       },
     ],
     createAcc: [
