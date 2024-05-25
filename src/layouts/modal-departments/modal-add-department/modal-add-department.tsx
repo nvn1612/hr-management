@@ -1,11 +1,35 @@
 import React, { useState } from "react";
-import { Modal, Input, Select, Form, Button } from "antd";
+import {
+  Modal,
+  Input,
+  Select,
+  Form,
+  Button,
+  message,
+  Steps,
+  theme,
+} from "antd";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import { ModalAddStaffsDepartment } from "../modal-add-staffs-department";
-import { useAddDepartmentMutation } from "src/share/services";
+// import { useAddDepartmentMutation } from "src/share/services";
+import { AddDepartmentStep1 } from "./add-department-step1";
 import "./modal-add-department.css";
+// import type { FormProps } from "antd";
 
-import type { FormProps } from "antd";
+const steps = [
+  {
+    title: "First",
+    content: <AddDepartmentStep1/>,
+  },
+  {
+    title: "Second",
+    content: "Second-content",
+  },
+  {
+    title: "Last",
+    content: "Last-content",
+  },
+];
 
 type ModalAddDepartmentProps = {
   visible: boolean;
@@ -21,21 +45,37 @@ export const ModalAddDepartment = ({
   visible,
   setVisible,
 }: ModalAddDepartmentProps) => {
-  const [addDepartment] = useAddDepartmentMutation();
-  const onFinish: FormProps<AddDepartmentForm>["onFinish"] = async (values) => {
-    await addDepartment(values).unwrap().then().catch();
+  const { token } = theme.useToken();
+  const [current, setCurrent] = useState(0);
+
+  const next = () => {
+    setCurrent(current + 1);
   };
 
-  const formItemLayout = {
-    labelCol: {
-      xs: { span: 24 },
-      sm: { span: 6 },
-    },
-    wrapperCol: {
-      xs: { span: 24 },
-      sm: { span: 14 },
-    },
+  const prev = () => {
+    setCurrent(current - 1);
   };
+  const items = steps.map((item) => ({ key: item.title, title: item.title }));
+
+  const contentStyle: React.CSSProperties = {
+    lineHeight: "260px",
+    textAlign: "center",
+    color: token.colorTextTertiary,
+    backgroundColor: token.colorFillAlter,
+    borderRadius: token.borderRadiusLG,
+    border: `1px dashed ${token.colorBorder}`,
+    marginTop: 16,
+  };
+  // const [addDepartment] = useAddDepartmentMutation();
+  // const [messageApi, contextHolder] = message.useMessage();
+  // const onFinish: FormProps<AddDepartmentForm>["onFinish"] = async (values) => {
+  //   await addDepartment(values)
+  //     .unwrap()
+  //     .then(() => messageApi.success("New dapartment was added"))
+  //     .catch(() => messageApi.error("something went wrong"));
+  // };
+
+
   const [showModalAddStaffs, setShowModalAddStaffs] = useState(false);
 
   const showlModal = () => {
@@ -43,6 +83,7 @@ export const ModalAddDepartment = ({
   };
   return (
     <>
+      {/* {contextHolder} */}
       <Modal
         title="Add Department"
         visible={visible}
@@ -52,37 +93,52 @@ export const ModalAddDepartment = ({
         className="modal-add-department"
         width={600}
       >
-        <Form
-          {...formItemLayout}
-          onFinish={onFinish}
-          variant="filled"
-          style={{ maxWidth: 600 }}
-        >
-          <Form.Item<AddDepartmentForm>
-            label="Name Department"
-            name="name"
-            rules={[{ required: true, message: "Please input!" }]}
-          >
-            <Input />
-          </Form.Item>
+        <Steps current={current} items={items} />
+        <div style={contentStyle}>{steps[current].content}</div>
+        <div style={{ marginTop: 24 }}>
+          {current < steps.length - 1 && (
+            <Button type="primary" onClick={() => next()}>
+              Next
+            </Button>
+          )}
+          {current === steps.length - 1 && (
+            <Button
+              type="primary"
+              onClick={() => message.success("Processing complete!")}
+            >
+              Done
+            </Button>
+          )}
+          {current > 0 && (
+            <Button style={{ margin: "0 8px" }} onClick={() => prev()}>
+              Previous
+            </Button>
+          )}
+        </div>
 
-          <Form.Item<AddDepartmentForm>
-            label="Description"
-            name="description"
-            rules={[{ required: true, message: "Please input!" }]}
-          >
-            <Input.TextArea />
-          </Form.Item>
+        
 
-          {/* <Form.Item
+        <ModalAddStaffsDepartment
+          visible={showModalAddStaffs}
+          setVisible={setShowModalAddStaffs}
+        />
+      </Modal>
+    </>
+  );
+};
+
+{
+  /* <Form.Item
             label="Manager"
             name="Manafger"
             rules={[{ required: true, message: "Please input!" }]}
           >
             <Select />
-          </Form.Item> */}
+          </Form.Item> */
+}
 
-          {/* <Form.Item
+{
+  /* <Form.Item
             name="Staffs"
             rules={[{ required: true, message: "Please input!" }]}
           >
@@ -93,17 +149,5 @@ export const ModalAddDepartment = ({
                 onClick={showlModal}
               />
             </div>
-          </Form.Item> */}
-          <Form.Item>
-            <Button type="primary" htmlType="submit">Add Department</Button>
-          </Form.Item>
-        </Form>
-
-        <ModalAddStaffsDepartment
-          visible={showModalAddStaffs}
-          setVisible={setShowModalAddStaffs}
-        />
-      </Modal>
-    </>
-  );
-};
+          </Form.Item> */
+}

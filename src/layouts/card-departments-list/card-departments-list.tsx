@@ -16,28 +16,7 @@ export const CardDepartments = () => {
   const showAddDepartment = () => {
     setVisibleAddDepartment(true);
   };
-  // const departments: DepartmentData[] = [
-  //   {
-  //     title: "APPLICATION DEVELOPER DEPARTMENT",
-  //     manager: "Van Diep Tran",
-  //     staffCount: 20,
-  //   },
-  //   {
-  //     title: "INFORMATION SECURITY DEPARTMENT",
-  //     manager: "Tung Hoang",
-  //     staffCount: 7,
-  //   },
-  //   {
-  //     title: "INFORMATION SECURITY DEPARTMENT",
-  //     manager: "Tung Hoang",
-  //     staffCount: 7,
-  //   },
-  //   {
-  //     title: "INFORMATION SECURITY DEPARTMENT",
-  //     manager: "Tung Hoang",
-  //     staffCount: 7,
-  //   },
-  // ];
+  
   const {data} =useGetDepartmentsQuery();
   return (
     <Row gutter={16} className="departments">
