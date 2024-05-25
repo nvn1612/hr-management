@@ -17,7 +17,6 @@ import { useUpdateUserDetailMutation } from "src/share/services/accountServices"
 import type { UserRole, User } from "src/share/models";
 import type { FormProps } from "antd";
 
-// types
 export interface UserInfoType {
   user_id?: string;
   username?: string;
@@ -33,7 +32,6 @@ interface UserFormProp {
   setOpenAcountTab?: (isOpen: boolean) => void;
   action: "create" | "detail" | "update";
 }
-//
 
 export const UserInfoForm = ({
   initValues,
@@ -84,7 +82,11 @@ export const UserInfoForm = ({
       initValues
         ? {
             ...initValues,
-            birthDay: dayjs(initValues?.birthday, "YYYY/MM/DD"),
+            birthday: dayjs(
+              initValues.birthday
+                ? initValues.birthday.substring(0, 10)
+                : new Date()
+            ),
           }
         : { ...newUserObj }
     );
@@ -128,7 +130,7 @@ export const UserInfoForm = ({
           <Form.Item<UserInfoType> label='Phone' name='phone'>
             <Input />
           </Form.Item>
-          <Form.Item<UserInfoType> label='Birth Day' name='birthday'>
+          <Form.Item<UserInfoType> label='Birth Day' name={"birthday"}>
             <DatePicker />
           </Form.Item>
           {!initValues && (
@@ -137,6 +139,7 @@ export const UserInfoForm = ({
             </Form.Item>
           )}
           <Form.Item wrapperCol={{ offset: 4 }}>
+            {}
             <Button type='primary' htmlType='submit'>
               Save Changes
             </Button>

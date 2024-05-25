@@ -6,31 +6,49 @@ import { AccountModal } from "src/layouts";
 import { MngPageHeader } from "src/layouts/mng-page-header";
 import { useGetUsersQuery } from "src/share/services";
 import { filterRoleOptions } from "src/share/utils";
+import { OUserRole } from "src/share/models";
 
-import type { User, MngFilterItem } from "src/share/models";
+import type { PaginationProps } from "antd";
+import type { User, UserRole } from "src/share/models";
+import type { PageFilter } from "src/layouts/mng-page-header";
+import { Update } from "vite";
 
 export const Accounts = () => {
   const [openAccTab, setOpenAccTab] = useState<boolean>(false);
   const [selectedAcc, setSelectedAcc] = useState<User | null>(null);
-  const { data, isLoading } = useGetUsersQuery();
+  const [formAction, setFormAction] = useState<"create" | "update">();
+  const [queries, setQueries] = useState<{
+    role: UserRole;
+    page: number | undefined;
+  }>({ role: OUserRole.All, page: 1 });
   const { Text } = Typography;
 
-  const filters: MngFilterItem[] = [
+  const filters: PageFilter[] = [
     {
-      label: "Role",
-      selector: {
-        defaultValue: "all",
-        options: filterRoleOptions,
+      items: {
+        label: "Role",
+        selector: {
+          defaultValue: OUserRole.All,
+          options: filterRoleOptions,
+        },
       },
     },
     {
-      label: "Department",
-      selector: {
-        defaultValue: "all",
-        options: [{ label: <Text>All</Text>, value: "all" }],
+      items: {
+        label: "Department",
+        selector: {
+          defaultValue: "all",
+          options: [{ label: <Text>All</Text>, value: "all" }],
+        },
       },
     },
   ];
+
+  const onChangePage: PaginationProps["onChange"] = (page) => {
+    setQueries({ ...queries, page });
+  };
+
+  const { data, isLoading } = useGetUsersQuery(queries);
 
   return (
     <>
@@ -42,7 +60,7 @@ export const Accounts = () => {
       >
         <MngPageHeader
           title='Accounts'
-          itemCount={data ? data.length : 0}
+          itemCount={data ? data.users.length : 0}
           addBtnContent='Create User'
           addBtnOnClick={() => {
             setSelectedAcc(null);
@@ -61,22 +79,32 @@ export const Accounts = () => {
               xl: 2,
               xxl: 3,
             }}
-            pagination={{ position: "bottom", align: "center", pageSize: 10 }}
-            dataSource={data}
-            renderItem={(user) => {
-              return (
-                <List.Item>
-                  <UserCard
-                    onClick={() => {
-                      setOpenAccTab(true);
-                      setSelectedAcc(user);
-                    }}
-                    username={user.username}
-                    role={user.role}
-                  />
-                </List.Item>
-              );
+            pagination={{
+              position: "bottom",
+              align: "center",
+              pageSize: 10,
+              total: data?.total,
+              onChange: onChangePage,
             }}
+            dataSource={data?.users}
+            renderItem={
+              data
+                ? (user) => {
+                    return (
+                      <List.Item>
+                        <UserCard
+                          onClick={() => {
+                            setOpenAccTab(true);
+                            setSelectedAcc(user);
+                          }}
+                          username={user.username}
+                          email={user.email}
+                        />
+                      </List.Item>
+                    );
+                  }
+                : undefined
+            }
           />
         </div>
       </Spin>
@@ -84,6 +112,7 @@ export const Accounts = () => {
         selectedAcc={selectedAcc}
         openAccountTab={openAccTab}
         setOpenAccountTab={setOpenAccTab}
+        action={"update"}
       />
     </>
   );

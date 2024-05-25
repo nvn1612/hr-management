@@ -4,6 +4,7 @@ import { TaskCard } from "src/components/task-card";
 import { Radio, Modal, Button, Popconfirm } from "antd";
 import { TaskForm } from "src/layouts/task-form";
 import { useGetUsersQuery } from "src/share/services";
+import { OUserRole } from "src/share/models";
 
 export const ProjectTasks = () => {
   const [showTaskForm, setShowTaskForm] = useState<boolean>(false);
@@ -14,7 +15,7 @@ export const ProjectTasks = () => {
     { label: "In Progress", value: "inProgress" },
   ];
 
-  const { data } = useGetUsersQuery();
+  const { data } = useGetUsersQuery({ role: OUserRole.All });
 
   return (
     <div className='task-section'>
@@ -61,7 +62,7 @@ export const ProjectTasks = () => {
             description: "nothing yet",
             status: true,
           }}
-          assignedStaffs={data}
+          assignedStaffs={data?.users}
         />
       </Modal>
     </div>
