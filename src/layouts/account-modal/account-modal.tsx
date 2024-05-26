@@ -36,14 +36,16 @@ export const AccountModal = ({
       {
         key: "2",
         label: "Advanced",
-        children: <UserAdvance userRole='STAFF' />,
+        children: (
+          <UserAdvance userRole='STAFF' userId={selectedAcc?.user_id} />
+        ),
       },
     ],
     createAcc: [
       {
         key: "1",
         label: "General",
-        children: <UserInfoForm />,
+        children: <UserInfoForm action='create' />,
       },
     ],
   };
