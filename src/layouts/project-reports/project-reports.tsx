@@ -1,6 +1,5 @@
 import "./project-reports.css";
 import { Timeline } from "antd";
-import { ProjectReportForm } from "./project-report-form";
 
 export const ProjectReports = () => {
   return (
@@ -42,7 +41,6 @@ export const ProjectReports = () => {
           },
         ]}
       />
-      <ProjectReportForm />
     </div>
   );
 };
