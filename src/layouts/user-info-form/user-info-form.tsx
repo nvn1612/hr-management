@@ -12,26 +12,15 @@ import {
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { userRoleOptions } from "src/share/utils";
-import { useUpdateUserDetailMutation } from "src/share/services/accountServices";
+import {
+  useUpdateUserDetailMutation,
+  useGetRoleQuery,
+  useCreateUserMutation,
+} from "src/share/services/accountServices";
 
-import type { UserRole, User } from "src/share/models";
+import type { User } from "src/share/models";
 import type { FormProps } from "antd";
-
-export interface UserInfoType {
-  user_id?: string;
-  username?: string;
-  name: string;
-  email: string;
-  phone: string;
-  birthday: string;
-  role?: UserRole;
-}
-
-interface UserFormProp {
-  initValues?: UserInfoType | User;
-  setOpenAcountTab?: (isOpen: boolean) => void;
-  action: "create" | "detail" | "update";
-}
+import type { CreateUserPartial, UserFormProp, UserInfoType } from "./models";
 
 export const UserInfoForm = ({
   initValues,
@@ -44,9 +33,11 @@ export const UserInfoForm = ({
     initValues ? false : true
   );
   const [updateUserDetail] = useUpdateUserDetailMutation();
+  const [createUser] = useCreateUserMutation();
+  const roleQuery = useGetRoleQuery();
 
   const onFinish: FormProps<UserInfoType>["onFinish"] = async (values) => {
-    let sentValues: User;
+    let sentValues: User | CreateUserPartial;
     setIsLoading(true);
     switch (action) {
       case "detail":
@@ -63,6 +54,26 @@ export const UserInfoForm = ({
           })
           .catch(() => {
             messageApi.error("Something went wrong");
+            setIsLoading(false);
+          });
+        break;
+      case "create":
+        sentValues = {
+          username: values.username,
+          email: values.email,
+          password: values.password,
+          role_id: roleQuery.data?.find((role) => values.role === role.name)
+            ?.role_id,
+        };
+        await createUser(sentValues)
+          .unwrap()
+          .then(() => {
+            setOpenAcountTab && setOpenAcountTab(false);
+            messageApi.success("New user is created");
+            setIsLoading(false);
+          })
+          .catch((e) => {
+            messageApi.error(e.data.message);
             setIsLoading(false);
           });
     }
@@ -111,20 +122,37 @@ export const UserInfoForm = ({
         )}
         <Form
           form={form}
-          disabled={!editableForm}
+          disabled={action === "create" ? false : !editableForm}
           name='user-info'
           onFinish={onFinish}
           labelCol={{ span: 4 }}
           wrapperCol={{ span: 16 }}
           className='user-form'
         >
-          <Form.Item<UserInfoType> label='username' name='username'>
+          <Form.Item<UserInfoType>
+            label='Username'
+            name='username'
+            rules={[{ required: true, message: "Username is required" }]}
+          >
             <Input />
           </Form.Item>
+          {action === "create" && (
+            <Form.Item<UserInfoType>
+              label='Password'
+              name='password'
+              rules={[{ required: true, message: "Password is required" }]}
+            >
+              <Input.Password placeholder='Password' />
+            </Form.Item>
+          )}
           <Form.Item<UserInfoType> label='Name' name='name'>
             <Input />
           </Form.Item>
-          <Form.Item<UserInfoType> label='Email' name='email'>
+          <Form.Item<UserInfoType>
+            label='Email'
+            name='email'
+            rules={[{ required: true, message: "Email is required" }]}
+          >
             <Input />
           </Form.Item>
           <Form.Item<UserInfoType> label='Phone' name='phone'>
@@ -134,14 +162,17 @@ export const UserInfoForm = ({
             <DatePicker />
           </Form.Item>
           {!initValues && (
-            <Form.Item<UserInfoType> label='Role' name='role'>
+            <Form.Item<UserInfoType>
+              label='Role'
+              name='role'
+              rules={[{ required: true, message: "Role is required" }]}
+            >
               <Select options={userRoleOptions} />
             </Form.Item>
           )}
           <Form.Item wrapperCol={{ offset: 4 }}>
-            {}
             <Button type='primary' htmlType='submit'>
-              Save Changes
+              {action === "create" ? "Create User" : "Save Changes"}
             </Button>
           </Form.Item>
         </Form>

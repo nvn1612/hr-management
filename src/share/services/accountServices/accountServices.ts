@@ -3,7 +3,12 @@ import { User, Response, LoginResp, OUserRole } from "src/share/models";
 import { localStorageUtil } from "src/share/utils";
 
 import type { LoginReqBody } from "src/layouts/login-form";
-import type { UserRole, GetUserResp } from "src/share/models/accountModels";
+import type {
+  UserRole,
+  GetUserResp,
+  RoleResp,
+} from "src/share/models/accountModels";
+import type { CreateUserPartial } from "src/layouts/user-info-form";
 
 const accessToken = localStorageUtil.get("accessToken");
 
@@ -65,23 +70,52 @@ const accountServices = hrManagementApi.injectEndpoints({
       transformResponse: (response: Response<GetUserResp>) => response.data,
       providesTags: ["User"],
     }),
-    addUser: build.mutation<User, Partial<User>>({
+    createUser: build.mutation<{ code: number }, Partial<CreateUserPartial>>({
       query(body) {
         return {
-          url: "users/admin/getAll",
+          url: "users/create",
           method: "POST",
+          headers: {
+            authorization: accessToken,
+          },
           body,
         };
       },
       invalidatesTags: ["User"],
+    }),
+    deleteUser: build.mutation<boolean, Partial<{ userId: string }>>({
+      query({ userId }) {
+        return {
+          url: `users/admin/delete/${userId}`,
+          method: "DELETE",
+          headers: {
+            authorization: accessToken,
+          },
+        };
+      },
+      invalidatesTags: ["User"],
+    }),
+    getRole: build.query<RoleResp[], void>({
+      query() {
+        return {
+          url: "roles/getAll",
+          method: "GET",
+          headers: {
+            authorization: accessToken,
+          },
+        };
+      },
+      transformResponse: (response: Response<RoleResp[]>) => response.data,
     }),
   }),
 });
 
 export const {
   useGetUsersQuery,
-  useAddUserMutation,
+  useCreateUserMutation,
   useLoginMutation,
   useGetUserDetailQuery,
   useUpdateUserDetailMutation,
+  useGetRoleQuery,
+  useDeleteUserMutation,
 } = accountServices;
