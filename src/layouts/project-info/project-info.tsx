@@ -4,13 +4,13 @@ import "./project-info.css";
 import { ProjectForm } from "src/layouts/project-info/project-form";
 
 interface ProjectInfoProp {
-  project: Project;
+  project?: Project;
 }
 
 export const ProjectInfo = ({ project }: ProjectInfoProp) => {
   return (
     <div className='project-info-container'>
-      <ProjectForm />
+      <ProjectForm project={project} />
     </div>
   );
 };

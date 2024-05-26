@@ -5,7 +5,7 @@ import { ProjectTasks } from "./project-tasks";
 import { Project } from "src/share/models";
 
 interface ProjectWorkspaceProp {
-  project: Project;
+  project?: Project;
 }
 
 export const ProjectWorkspace = ({ project }: ProjectWorkspaceProp) => {

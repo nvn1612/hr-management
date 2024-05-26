@@ -14,6 +14,7 @@ import type { Project } from "src/share/models";
 export const Projects = () => {
   const [openProjectTab, setOpenProjectTab] = useState<boolean>(false);
   const [selectedProject, setSelectedProject] = useState<Project | undefined>();
+  const [isCreate, setIsCreate] = useState<boolean>(false);
   const [queries, setQueries] = useState<{
     page: number | undefined;
   }>({ page: 1 });
@@ -23,12 +24,12 @@ export const Projects = () => {
     {
       key: "1",
       label: "General",
-      children: <ProjectInfo />,
+      children: <ProjectInfo project={selectedProject} />,
     },
     {
       key: "2",
       label: "Workspace",
-      children: <ProjectWorkspace />,
+      children: <ProjectWorkspace project={selectedProject} />,
     },
     {
       key: "3",
@@ -36,6 +37,15 @@ export const Projects = () => {
       children: <ProjectReports />,
     },
   ];
+
+  const createProjectTab: TabsProps["items"] = [
+    {
+      key: "1",
+      label: "General",
+      children: <ProjectInfo project={undefined} />,
+    },
+  ];
+
   const onChangePage: PaginationProps["onChange"] = (page) => {
     setQueries({ ...queries, page });
   };
@@ -46,9 +56,12 @@ export const Projects = () => {
         title='Projects'
         addBtnContent='Create Project'
         itemCount={data?.total}
+        addBtnOnClick={() => {
+          setIsCreate(true);
+          setOpenProjectTab(true);
+        }}
       />
-      <ProjectCard onClick={() => setOpenProjectTab(true)} />
-      <div className='user-card-container'>
+      <div className='project-card-container'>
         <List
           grid={{
             gutter: 16,
@@ -76,8 +89,11 @@ export const Projects = () => {
                         onClick={() => {
                           setOpenProjectTab(true);
                           setSelectedProject(project);
+                          setIsCreate(false);
                         }}
-                        project={selectedProject}
+                        projectName={project?.name}
+                        investor={project.investor}
+                        description={project.description}
                       />
                     </List.Item>
                   );
@@ -93,20 +109,25 @@ export const Projects = () => {
         onCancel={() => {
           setOpenProjectTab(false);
         }}
-        footer={[
-          <Popconfirm
-            title='Delete Project'
-            description='Are you sure to delete this Project?'
-            okText='Yes'
-            cancelText='No'
-          >
-            <Button type='primary' danger>
-              Delete Project
-            </Button>
-          </Popconfirm>,
-        ]}
+        footer={
+          !isCreate && [
+            <Popconfirm
+              title='Delete Project'
+              description='Are you sure to delete this Project?'
+              okText='Yes'
+              cancelText='No'
+            >
+              <Button type='primary' danger>
+                Delete Project
+              </Button>
+            </Popconfirm>,
+          ]
+        }
       >
-        <Tabs items={tabsProps} className='project-tabs' />
+        <Tabs
+          items={isCreate ? createProjectTab : tabsProps}
+          className='project-tabs'
+        />
       </Modal>
     </>
   );
