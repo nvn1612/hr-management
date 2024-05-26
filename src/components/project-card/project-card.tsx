@@ -1,26 +1,31 @@
 import "./project-card.css";
-import { Card, Progress } from "antd";
-import { TeamOutlined } from "@ant-design/icons";
+import { Card } from "antd";
+import { DollarOutlined, InfoCircleOutlined } from "@ant-design/icons";
 
 interface ProjectCardProp {
   onClick: () => void;
   projectName?: string;
   investor?: string;
+  description?: string;
 }
 
 export const ProjectCard = ({
   onClick,
   projectName,
   investor,
+  description,
 }: ProjectCardProp) => {
   return (
     <Card title={projectName} onClick={onClick} className='project-card'>
       <div className='project-card-content'>
-        <span>Investor : {investor ? investor : "None"}</span>
-        <div className='project-card-team'>
-          <TeamOutlined /> 5
-        </div>
-        <Progress percent={50} />
+        <span className='projec-card-line'>
+          <DollarOutlined />
+          Investor : {investor ? investor : "None"}
+        </span>
+        <span className='projec-card-line'>
+          <InfoCircleOutlined />
+          {description}
+        </span>
       </div>
     </Card>
   );

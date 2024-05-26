@@ -2,11 +2,12 @@ import "./project-docs.css";
 import { List, Upload, Button } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 
-export const ProjectDocs = () => {
-  const listData = [
-    { title: "Requirements", fileLink: "Link to Requirements Doc" },
-    { title: "Contract", fileLink: "Link to Contract Doc" },
-  ];
+export const ProjectDocs = ({ links }: { links?: string[] }) => {
+  const listData = links
+    ? links.map((link) => {
+        return { fileLink: link };
+      })
+    : [];
 
   return (
     <div className='project-docs-sec'>
@@ -16,7 +17,7 @@ export const ProjectDocs = () => {
         renderItem={(item) => {
           return (
             <List.Item>
-              <List.Item.Meta title={item.title} description={item.fileLink} />
+              <List.Item.Meta description={item.fileLink} />
             </List.Item>
           );
         }}

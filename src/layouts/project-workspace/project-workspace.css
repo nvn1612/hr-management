@@ -1,4 +1,4 @@
-.project-workspace-container {
+.project-workspace {
   display: flex;
   flex-direction: column;
   gap: var(--gap-xl);
