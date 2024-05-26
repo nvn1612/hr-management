@@ -1,10 +1,13 @@
 import { Form, Input, Button } from "antd";
 
+import type { Project } from "src/share/models";
+
 interface ProjectReportFields {
   reports: string;
+  project: Project;
 }
 
-export const ProjectReportForm = () => {
+export const ProjectReportForm = ({ project }) => {
   const [form] = Form.useForm();
   return (
     <Form

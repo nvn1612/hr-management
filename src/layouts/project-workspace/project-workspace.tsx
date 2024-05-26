@@ -2,8 +2,13 @@ import "./project-workspace.css";
 import { ProjectDocs } from "./project-docs";
 import { ProjectStaffs } from "./project-staffs";
 import { ProjectTasks } from "./project-tasks";
+import { Project } from "src/share/models";
 
-export const ProjectWorkspace = () => {
+interface ProjectWorkspaceProp {
+  project: Project;
+}
+
+export const ProjectWorkspace = ({ project }: ProjectWorkspaceProp) => {
   return (
     <div className='project-workspace'>
       <ProjectDocs />
