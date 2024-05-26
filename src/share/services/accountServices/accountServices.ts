@@ -83,6 +83,18 @@ const accountServices = hrManagementApi.injectEndpoints({
       },
       invalidatesTags: ["User"],
     }),
+    deleteUser: build.mutation<boolean, Partial<{ userId: string }>>({
+      query({ userId }) {
+        return {
+          url: `users/admin/delete/${userId}`,
+          method: "DELETE",
+          headers: {
+            authorization: accessToken,
+          },
+        };
+      },
+      invalidatesTags: ["User"],
+    }),
     getRole: build.query<RoleResp[], void>({
       query() {
         return {
@@ -105,4 +117,5 @@ export const {
   useGetUserDetailQuery,
   useUpdateUserDetailMutation,
   useGetRoleQuery,
+  useDeleteUserMutation,
 } = accountServices;
