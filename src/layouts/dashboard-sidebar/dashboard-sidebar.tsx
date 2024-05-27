@@ -76,7 +76,7 @@ const Dashboardsidebar: React.FC = () => {
             }}
           >
             <Avatar className='avatar-role' size={30} icon={<UserOutlined />} />
-            {collapsed && <div className='avatar-text'>User Role</div>}
+            {collapsed && <div className='avatar-text'>Account detail</div>}
           </div>
         </Link>
         <Menu theme='dark' mode='inline' selectedKeys={[selectItem]}>

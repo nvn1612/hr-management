@@ -1,6 +1,8 @@
 @import "src/index.css";
 
 .sidebar-container {
+  position: fixed;
+  z-index: 3;
   .side-avatar-containter {
     display: flex;
     height: 40px;
