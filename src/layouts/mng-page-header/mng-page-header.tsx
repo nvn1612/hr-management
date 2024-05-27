@@ -15,7 +15,8 @@ interface MngPageHeaderProps {
 }
 
 export interface PageFilter {
-  onChange?: <ValueType>(value: ValueType) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onChange?: (value: any) => void;
   items: MngFilterItem;
 }
 
