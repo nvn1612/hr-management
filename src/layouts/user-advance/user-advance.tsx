@@ -10,19 +10,28 @@ import {
 } from "antd";
 import { OUserRole } from "src/share/models";
 import { userRoleOptions } from "src/share/utils/role-selects";
-import { useDeleteUserMutation } from "src/share/services";
+import {
+  useDeleteUserMutation,
+  useGetRoleQuery,
+  useUpdateUserMutation,
+} from "src/share/services";
 
 import type { UserRole } from "src/share/models";
+import { useEffect, useState } from "react";
 
 interface propsType {
-  userRole?: UserRole;
+  userRoleId?: string;
   userId?: string;
 }
 
-export const UserAdvance = ({ userRole, userId }: propsType) => {
+export const UserAdvance = ({ userRoleId, userId }: propsType) => {
   const { Text } = Typography;
+  const [selectedRole, setSelectedRole] = useState<UserRole>(OUserRole.Staff);
   const [messageApi, contextHolder] = message.useMessage();
   const [deleteUser] = useDeleteUserMutation();
+  const [updateUser] = useUpdateUserMutation();
+  const { data } = useGetRoleQuery();
+
   const confirmDeleteUser = async () => {
     await deleteUser({ userId })
       .then(() => {
@@ -32,6 +41,27 @@ export const UserAdvance = ({ userRole, userId }: propsType) => {
         messageApi.error("Failed to delete account");
       });
   };
+
+  const changeRole = async () => {
+    const roleId = data?.find((role) => role.name === selectedRole)?.role_id;
+    await updateUser({ values: { UserProperty: { role_id: roleId } }, userId })
+      .unwrap()
+      .then(() => {
+        messageApi.success("Succesfully changing role");
+      })
+      .catch(() => {
+        messageApi.error("Failed to change role");
+      });
+  };
+  const updateRole = () => {
+    const roleResult = data?.find((role) => role.role_id === userRoleId)
+      ?.name as UserRole;
+    setSelectedRole(roleResult);
+  };
+
+  useEffect(() => {
+    updateRole();
+  }, [userRoleId]);
 
   return (
     <>
@@ -44,12 +74,21 @@ export const UserAdvance = ({ userRole, userId }: propsType) => {
           <Col span={14}>
             <Select
               className='role-selector'
-              defaultValue={userRole ? userRole : OUserRole.Staff}
+              value={selectedRole ? selectedRole : OUserRole.Staff}
               options={userRoleOptions}
+              onChange={(value: UserRole) => setSelectedRole(value)}
             />
           </Col>
           <Col span={6}>
-            <Button type='primary'>Save</Button>
+            <Popconfirm
+              title='Changing Role'
+              description="Are you sure to chnage this account's role ?"
+              okText='Yes'
+              cancelText='No'
+              onConfirm={changeRole}
+            >
+              <Button type='primary'>Save</Button>
+            </Popconfirm>
           </Col>
         </Row>
         <Row className='reset-password'>

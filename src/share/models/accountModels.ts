@@ -21,14 +21,14 @@ export interface User {
 }
 
 interface UserProperty {
-  user_property_id: string;
-  user_id: string;
-  role_id: string;
+  user_property_id?: string;
+  user_id?: string;
+  role_id?: string;
   department_id?: string;
   createdAt?: string;
   updatedAt?: string;
   deletedAt?: string;
-  deletedMark: boolean;
+  deletedMark?: boolean;
 }
 
 export interface GetUserResp {
