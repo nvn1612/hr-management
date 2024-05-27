@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
 import { Form, Input, Button, Checkbox, DatePicker, message } from "antd";
-import {
-  useCreateProjectMutation,
-  useDeleteProjectMutation,
-} from "src/share/services";
+import { useCreateProjectMutation } from "src/share/services";
 import dayjs from "dayjs";
 
 import type { Project } from "src/share/models";
@@ -17,7 +14,6 @@ export const ProjectForm = ({ project }: ProjectFormProps) => {
   const [form] = Form.useForm();
   const [editableForm, setEditableForm] = useState<boolean>(false);
   const [createProject] = useCreateProjectMutation();
-  const [deleteProject] = useDeleteProjectMutation();
   const [messageApi, contextHolder] = message.useMessage();
 
   const onFinish: FormProps<Project>["onFinish"] = async (values) => {
@@ -25,17 +21,18 @@ export const ProjectForm = ({ project }: ProjectFormProps) => {
       await createProject(values)
         .unwrap()
         .then(() => messageApi.success("sucess create project"))
-        .catch((e) => messageApi.error(e));
-    } else if (project) {
-      await deleteProject(project.project_id!).unwrap();
-      // .then(() => messageApi.success("updated"))
-      // .catch((e) => messageApi.error(e));
+        .catch(() => messageApi.error("There was an error"));
     }
   };
 
   const newProject: Project = {
     startAt: dayjs(),
     endAt: dayjs(),
+    ProjectProperty: [],
+    projectCode: "",
+    description: "",
+    investor: "",
+    name: "",
   };
 
   useEffect(() => {
@@ -54,27 +51,32 @@ export const ProjectForm = ({ project }: ProjectFormProps) => {
                 : new Date()
             ),
           }
-        : newProject
+        : { ...newProject }
     );
   });
 
   return (
     <>
       {contextHolder}
-      <Checkbox
-        checked={editableForm}
-        onChange={() => setEditableForm(!editableForm)}
-      >
-        Edit information
-      </Checkbox>
+      {project && (
+        <Checkbox
+          checked={editableForm}
+          onChange={() => setEditableForm(!editableForm)}
+        >
+          Edit information
+        </Checkbox>
+      )}
       <Form
         form={form}
-        disabled={!editableForm}
+        disabled={project ? !editableForm : false}
         onFinish={onFinish}
         labelCol={{ span: 4 }}
         wrapperCol={{ span: 16 }}
       >
         <Form.Item<Project> name={"name"} label='Project name'>
+          <Input />
+        </Form.Item>
+        <Form.Item<Project> name={"projectCode"} label='Project Code'>
           <Input />
         </Form.Item>
         <Form.Item<Project> name={"investor"} label='Investor'>
@@ -83,16 +85,15 @@ export const ProjectForm = ({ project }: ProjectFormProps) => {
         <Form.Item<Project> name={"description"} label='Description'>
           <Input.TextArea />
         </Form.Item>
-        <Form.Item<Project> name={"createdBy"} label='Created By'>
-          <Input />
-        </Form.Item>
-        <Form.Item<Project> name={"modifiedBy"} label='Updated By'>
-          <Input />
-        </Form.Item>
         {project && (
-          <Form.Item<Project> name={"startAt"} label='Start'>
-            <DatePicker />
-          </Form.Item>
+          <>
+            <Form.Item<Project> name={"createdBy"} label='Created By'>
+              <Input />
+            </Form.Item>
+            <Form.Item<Project> name={"startAt"} label='Start'>
+              <DatePicker />
+            </Form.Item>
+          </>
         )}
         <Form.Item<Project> name={"endAt"} label='End'>
           <DatePicker />

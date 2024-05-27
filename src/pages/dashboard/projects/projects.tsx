@@ -1,12 +1,15 @@
 import "./projects.css";
 import { useState } from "react";
-import { Tabs, Modal, Popconfirm, Button, List } from "antd";
+import { Tabs, Modal, Popconfirm, Button, List, message } from "antd";
 import { ProjectInfo } from "src/layouts/project-info";
 import { ProjectReports } from "src/layouts/project-reports";
 import { ProjectWorkspace } from "src/layouts/project-workspace";
 import { ProjectCard } from "src/components/project-card";
 import { MngPageHeader } from "src/layouts/mng-page-header";
-import { useGetAllProjectQuery } from "src/share/services";
+import {
+  useGetAllProjectQuery,
+  useDeleteProjectMutation,
+} from "src/share/services";
 
 import type { TabsProps, PaginationProps } from "antd";
 import type { Project } from "src/share/models";
@@ -16,9 +19,12 @@ export const Projects = () => {
   const [selectedProject, setSelectedProject] = useState<Project | undefined>();
   const [isCreate, setIsCreate] = useState<boolean>(false);
   const [queries, setQueries] = useState<{
-    page: number | undefined;
+    page: number;
   }>({ page: 1 });
-  const { data } = useGetAllProjectQuery({ page: 1 });
+  const [messageApi, contextHolder] = message.useMessage();
+
+  const { data } = useGetAllProjectQuery({ ...queries });
+  const [deleteProject] = useDeleteProjectMutation();
 
   const tabsProps: TabsProps["items"] = [
     {
@@ -52,6 +58,7 @@ export const Projects = () => {
 
   return (
     <>
+      {contextHolder}
       <MngPageHeader
         title='Projects'
         addBtnContent='Create Project'
@@ -115,6 +122,17 @@ export const Projects = () => {
               title='Delete Project'
               description='Are you sure to delete this Project?'
               okText='Yes'
+              onConfirm={async () => {
+                await deleteProject(selectedProject!.project_id!)
+                  .unwrap()
+                  .then(() => {
+                    messageApi.success("Project deleted");
+                    setOpenProjectTab(false);
+                  })
+                  .catch(() => {
+                    messageApi.error("Failed to delete project");
+                  });
+              }}
               cancelText='No'
             >
               <Button type='primary' danger>
