@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import { userRoleOptions } from "src/share/utils";
 import {
   useUpdateUserDetailMutation,
+  useUpdateUserMutation,
   useGetRoleQuery,
   useCreateUserMutation,
 } from "src/share/services/accountServices";
@@ -34,6 +35,7 @@ export const UserInfoForm = ({
   );
   const [updateUserDetail] = useUpdateUserDetailMutation();
   const [createUser] = useCreateUserMutation();
+  const [updateUser] = useUpdateUserMutation();
   const roleQuery = useGetRoleQuery();
 
   const onFinish: FormProps<UserInfoType>["onFinish"] = async (values) => {
@@ -70,6 +72,22 @@ export const UserInfoForm = ({
           .then(() => {
             setOpenAcountTab && setOpenAcountTab(false);
             messageApi.success("New user is created");
+            setIsLoading(false);
+          })
+          .catch((e) => {
+            messageApi.error(e.data.message);
+            setIsLoading(false);
+          });
+        break;
+      case "update":
+        sentValues = {
+          ...values,
+        };
+        await updateUser({ values: sentValues, userId: initValues?.user_id })
+          .unwrap()
+          .then(() => {
+            setOpenAcountTab && setOpenAcountTab(false);
+            messageApi.success("user is updated created");
             setIsLoading(false);
           })
           .catch((e) => {
