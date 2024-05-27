@@ -1,6 +1,6 @@
 import "./projects.css";
 import { useState } from "react";
-import { Tabs, Modal, Popconfirm, Button, List, message } from "antd";
+import { Tabs, Modal, Popconfirm, Button, List, message, Spin } from "antd";
 import { ProjectInfo } from "src/layouts/project-info";
 import { ProjectReports } from "src/layouts/project-reports";
 import { ProjectWorkspace } from "src/layouts/project-workspace";
@@ -23,7 +23,7 @@ export const Projects = () => {
   }>({ page: 1 });
   const [messageApi, contextHolder] = message.useMessage();
 
-  const { data } = useGetAllProjectQuery({ ...queries });
+  const { data, isLoading } = useGetAllProjectQuery({ ...queries });
   const [deleteProject] = useDeleteProjectMutation();
 
   const tabsProps: TabsProps["items"] = [
@@ -59,56 +59,63 @@ export const Projects = () => {
   return (
     <>
       {contextHolder}
-      <MngPageHeader
-        title='Projects'
-        addBtnContent='Create Project'
-        itemCount={data?.total}
-        addBtnOnClick={() => {
-          setIsCreate(true);
-          setOpenProjectTab(true);
-        }}
-      />
-      <div className='project-card-container'>
-        <List
-          grid={{
-            gutter: 16,
-            xs: 1,
-            sm: 1,
-            md: 1,
-            lg: 2,
-            xl: 2,
-            xxl: 3,
+      <Spin
+        spinning={isLoading}
+        tip='Loading Projects'
+        className='project-card-loading'
+        size='large'
+      >
+        <MngPageHeader
+          title='Projects'
+          addBtnContent='Create Project'
+          itemCount={data?.total}
+          addBtnOnClick={() => {
+            setIsCreate(true);
+            setOpenProjectTab(true);
           }}
-          pagination={{
-            position: "bottom",
-            align: "center",
-            pageSize: 10,
-            total: data?.total,
-            onChange: onChangePage,
-          }}
-          dataSource={data?.data}
-          renderItem={
-            data
-              ? (project) => {
-                  return (
-                    <List.Item>
-                      <ProjectCard
-                        onClick={() => {
-                          setOpenProjectTab(true);
-                          setSelectedProject(project);
-                          setIsCreate(false);
-                        }}
-                        projectName={project?.name}
-                        investor={project.investor}
-                        description={project.description}
-                      />
-                    </List.Item>
-                  );
-                }
-              : undefined
-          }
         />
-      </div>
+        <div className='project-card-container'>
+          <List
+            grid={{
+              gutter: 16,
+              xs: 1,
+              sm: 1,
+              md: 1,
+              lg: 2,
+              xl: 2,
+              xxl: 3,
+            }}
+            pagination={{
+              position: "bottom",
+              align: "center",
+              pageSize: 10,
+              total: data?.total,
+              onChange: onChangePage,
+            }}
+            dataSource={data?.data}
+            renderItem={
+              data
+                ? (project) => {
+                    return (
+                      <List.Item>
+                        <ProjectCard
+                          onClick={() => {
+                            setOpenProjectTab(true);
+                            setSelectedProject(project);
+                            setIsCreate(false);
+                          }}
+                          projectName={project?.name}
+                          investor={project.investor}
+                          description={project.description}
+                        />
+                      </List.Item>
+                    );
+                  }
+                : undefined
+            }
+          />
+        </div>
+      </Spin>
       <Modal
         title='Project Details'
         className='project-detail-modal'

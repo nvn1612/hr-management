@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { Form, Input, Button, Checkbox, DatePicker, message } from "antd";
-import { useCreateProjectMutation } from "src/share/services";
+import {
+  useCreateProjectMutation,
+  useUpdateProjectMutation,
+} from "src/share/services";
 import dayjs from "dayjs";
 
 import type { Project } from "src/share/models";
@@ -14,13 +17,19 @@ export const ProjectForm = ({ project }: ProjectFormProps) => {
   const [form] = Form.useForm();
   const [editableForm, setEditableForm] = useState<boolean>(false);
   const [createProject] = useCreateProjectMutation();
+  const [updateProject] = useUpdateProjectMutation();
   const [messageApi, contextHolder] = message.useMessage();
 
   const onFinish: FormProps<Project>["onFinish"] = async (values) => {
     if (!project) {
       await createProject(values)
         .unwrap()
-        .then(() => messageApi.success("sucess create project"))
+        .then(() => messageApi.success("Success create project"))
+        .catch(() => messageApi.error("There was an error"));
+    } else if (project) {
+      await updateProject({ values, projectId: project.project_id })
+        .unwrap()
+        .then(() => messageApi.success("Success update project"))
         .catch(() => messageApi.error("There was an error"));
     }
   };
