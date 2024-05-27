@@ -25,8 +25,8 @@ const projectServices = hrManagementApi.injectEndpoints({
     createProject: build.mutation<boolean, Partial<Project>>({
       query: (body) => {
         return {
-          url: `projects/admin/getAll`,
-          method: "GET",
+          url: `projects/create`,
+          method: "POST",
           headers: {
             authorization: accessToken,
           },
@@ -40,13 +40,43 @@ const projectServices = hrManagementApi.injectEndpoints({
       query: (body) => {
         return {
           url: `projects/admin/delete/${body}`,
-          method: "GET",
+          method: "DELETE",
           headers: {
             authorization: accessToken,
           },
         };
       },
       transformResponse: (response: Response<boolean>) => response.data,
+      invalidatesTags: ["project"],
+    }),
+    getClient: build.query<ProjectResp, { page: number }>({
+      query: ({ page }) => {
+        return {
+          url: `projects/admin/getAll`,
+          method: "GET",
+          headers: {
+            authorization: accessToken,
+          },
+          params: {
+            page,
+          },
+        };
+      },
+      transformResponse: (response: Response<ProjectResp>) => response.data,
+      providesTags: ["project"],
+    }),
+    getFile: build.mutation<string, Partial<{ filename: string }>>({
+      query: (body) => {
+        return {
+          url: `projects/getFile`,
+          method: "POST",
+          headers: {
+            authorization: accessToken,
+          },
+          body,
+        };
+      },
+      transformResponse: (response: Response<string>) => response.data,
       invalidatesTags: ["project"],
     }),
   }),
@@ -56,4 +86,5 @@ export const {
   useGetAllProjectQuery,
   useCreateProjectMutation,
   useDeleteProjectMutation,
+  useGetFileMutation,
 } = projectServices;
