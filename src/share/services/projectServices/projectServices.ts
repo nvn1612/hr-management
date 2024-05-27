@@ -65,6 +65,20 @@ const projectServices = hrManagementApi.injectEndpoints({
       transformResponse: (response: Response<ProjectResp>) => response.data,
       providesTags: ["project"],
     }),
+    getFile: build.mutation<string, Partial<{ filename: string }>>({
+      query: (body) => {
+        return {
+          url: `projects/getFile`,
+          method: "POST",
+          headers: {
+            authorization: accessToken,
+          },
+          body,
+        };
+      },
+      transformResponse: (response: Response<string>) => response.data,
+      invalidatesTags: ["project"],
+    }),
   }),
 });
 
@@ -72,4 +86,5 @@ export const {
   useGetAllProjectQuery,
   useCreateProjectMutation,
   useDeleteProjectMutation,
+  useGetFileMutation,
 } = projectServices;
