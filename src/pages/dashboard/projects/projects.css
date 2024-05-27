@@ -12,3 +12,7 @@
 .project-card-container {
   padding-top: var(--padding-m);
 }
+.project-card-loading {
+  width: 100%;
+  min-height: 300px;
+}
