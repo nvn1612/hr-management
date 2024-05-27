@@ -1,28 +1,66 @@
 import "./project-docs.css";
-import { List, Upload, Button } from "antd";
+import { List, Upload, Button, message } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
+import { localStorageUtil } from "src/share/utils";
+import { useGetFileMutation } from "src/share/services";
+import { useEffect, useState } from "react";
 
-export const ProjectDocs = ({ links }: { links?: string[] }) => {
-  const listData = links
-    ? links.map((link) => {
-        return { fileLink: link };
-      })
-    : [];
+import type { UploadProps } from "antd";
+import { Project } from "src/share/models";
+
+export const ProjectDocs = ({ project }: { project?: Project }) => {
+  const [getFile] = useGetFileMutation();
+  const [fileLinks, setFileLinks] = useState<string[]>([]);
+
+  const getLinks = () => {
+    setFileLinks([]);
+    return project?.document?.map((filename) =>
+      getFile({ filename })
+        .unwrap()
+        .then((link) => {
+          setFileLinks([...fileLinks, link]);
+        })
+    );
+  };
+
+  useEffect(() => {
+    if (project) {
+      getLinks();
+    }
+  }, [project]);
+
+  const uploadProps: UploadProps = {
+    action: `http://localhost:3050/projects/uploadFileFromLocal/${project?.project_id}`,
+    headers: {
+      authorization: localStorageUtil.get("accessToken")!,
+    },
+    onChange(info) {
+      if (info.file.status === "done") {
+        message.success(`${info.file.name} file uploaded successfully`);
+      } else if (info.file.status === "error") {
+        message.error(`file too large or bad internet`);
+      }
+    },
+  };
 
   return (
     <div className='project-docs-sec'>
       <p>Documents</p>
       <List
-        dataSource={listData}
-        renderItem={(item) => {
+        dataSource={
+          project !== undefined && project.document!.length >= 1
+            ? fileLinks
+            : []
+        }
+        renderItem={(link) => {
           return (
             <List.Item>
-              <List.Item.Meta description={item.fileLink} />
+              <a href={link}>{link}</a>
             </List.Item>
           );
         }}
       />
-      <Upload>
+      <Upload {...uploadProps}>
         <Button icon={<UploadOutlined />}>Upload new Document</Button>
       </Upload>
     </div>
