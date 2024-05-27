@@ -11,7 +11,7 @@ interface ProjectWorkspaceProp {
 export const ProjectWorkspace = ({ project }: ProjectWorkspaceProp) => {
   return (
     <div className='project-workspace'>
-      <ProjectDocs />
+      <ProjectDocs project={project} />
       <ProjectStaffs />
       <ProjectTasks />
     </div>
