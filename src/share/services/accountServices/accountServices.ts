@@ -111,6 +111,21 @@ const accountServices = hrManagementApi.injectEndpoints({
       },
       invalidatesTags: ["User"],
     }),
+    changePassword: build.mutation<
+      Response<boolean>,
+      Partial<{ email: string; password: string }>
+    >({
+      query(body) {
+        return {
+          url: "users/change-password",
+          method: "PUT",
+          headers: {
+            authorization: accessToken,
+          },
+          body,
+        };
+      },
+    }),
     getRole: build.query<RoleResp[], void>({
       query() {
         return {
@@ -135,4 +150,5 @@ export const {
   useUpdateUserDetailMutation,
   useGetRoleQuery,
   useDeleteUserMutation,
+  useChangePasswordMutation,
 } = accountServices;

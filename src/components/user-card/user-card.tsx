@@ -12,6 +12,7 @@ export const UserCard = ({ username, email, onClick }: UserCardProps) => {
   const { Meta } = Card;
   return (
     <Card
+      hoverable
       className='user-card'
       onClick={onClick}
       style={onClick && { cursor: "pointer" }}

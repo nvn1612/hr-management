@@ -7,6 +7,7 @@ import {
   Col,
   Popconfirm,
   message,
+  Input,
 } from "antd";
 import { OUserRole } from "src/share/models";
 import { userRoleOptions } from "src/share/utils/role-selects";
@@ -14,6 +15,7 @@ import {
   useDeleteUserMutation,
   useGetRoleQuery,
   useUpdateUserMutation,
+  useChangePasswordMutation,
 } from "src/share/services";
 
 import type { UserRole } from "src/share/models";
@@ -22,14 +24,17 @@ import { useEffect, useState } from "react";
 interface propsType {
   userRoleId?: string;
   userId?: string;
+  userEmail?: string;
 }
 
-export const UserAdvance = ({ userRoleId, userId }: propsType) => {
+export const UserAdvance = ({ userRoleId, userId, userEmail }: propsType) => {
   const { Text } = Typography;
   const [selectedRole, setSelectedRole] = useState<UserRole>(OUserRole.Staff);
+  const [newPassword, setNewPassword] = useState<string>("");
   const [messageApi, contextHolder] = message.useMessage();
   const [deleteUser] = useDeleteUserMutation();
   const [updateUser] = useUpdateUserMutation();
+  const [changePassword] = useChangePasswordMutation();
   const { data } = useGetRoleQuery();
 
   const confirmDeleteUser = async () => {
@@ -95,12 +100,31 @@ export const UserAdvance = ({ userRoleId, userId }: propsType) => {
           <Col span={4}>
             <Text>Reset Password</Text>
           </Col>
-          <Col offset={14} span={6}>
+          <Col span={14}>
+            <Input.Password
+              placeholder='New password'
+              className='new-password-input'
+              onChange={(e) => {
+                setNewPassword(e.target.value);
+              }}
+            />
+          </Col>
+          <Col span={6}>
             <Popconfirm
               title='Reset Password'
               description="Are you sure to reset this account's password ?"
               okText='Yes'
               cancelText='No'
+              onConfirm={async () => {
+                messageApi.loading("Changing Password");
+                await changePassword({
+                  email: userEmail,
+                  password: newPassword,
+                })
+                  .unwrap()
+                  .then(() => messageApi.success("Password changed"))
+                  .catch(() => messageApi.error("Failed to change password"));
+              }}
             >
               <Button type='primary' danger>
                 Reset
