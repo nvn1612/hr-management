@@ -40,6 +40,7 @@ export const AccountModal = ({
           <UserAdvance
             userRoleId={selectedAcc?.UserProperty?.role_id}
             userId={selectedAcc?.user_id}
+            userEmail={selectedAcc?.email}
           />
         ),
       },

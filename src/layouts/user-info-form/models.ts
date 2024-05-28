@@ -21,6 +21,5 @@ export interface CreateUserPartial {
   username: string;
   email: string;
   password: string;
-  birthDay: string;
   role_id: string;
 }
