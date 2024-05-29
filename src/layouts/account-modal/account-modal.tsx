@@ -37,7 +37,11 @@ export const AccountModal = ({
         key: "2",
         label: "Advanced",
         children: (
-          <UserAdvance userRole='STAFF' userId={selectedAcc?.user_id} />
+          <UserAdvance
+            userRoleId={selectedAcc?.UserProperty?.role_id}
+            userId={selectedAcc?.user_id}
+            userEmail={selectedAcc?.email}
+          />
         ),
       },
     ],
