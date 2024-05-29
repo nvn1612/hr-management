@@ -94,7 +94,18 @@ const projectServices = hrManagementApi.injectEndpoints({
         };
       },
       transformResponse: (response: Response<string>) => response.data,
-      invalidatesTags: ["project"],
+    }),
+    getProjectUserProperties: build.query<string[], { projectId?: string }>({
+      query: ({ projectId }) => {
+        return {
+          url: `assignments/getAllUserPropertyFromProject/${projectId}`,
+          method: "GET",
+          headers: {
+            authorization: accessToken,
+          },
+        };
+      },
+      transformResponse: (response: Response<string[]>) => response.data,
     }),
   }),
 });
@@ -105,4 +116,5 @@ export const {
   useDeleteProjectMutation,
   useGetFileMutation,
   useUpdateProjectMutation,
+  useGetProjectUserPropertiesQuery,
 } = projectServices;
