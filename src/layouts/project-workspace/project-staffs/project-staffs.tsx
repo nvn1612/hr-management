@@ -1,31 +1,66 @@
 import "./project-staffs.css";
-import { useState } from "react";
-import { Tag, Input } from "antd";
+import { useEffect, useState } from "react";
+import { List, Avatar } from "antd";
+import {
+  useGetProjectUserPropertiesQuery,
+  useGetUsersByPropertiesMutation,
+} from "src/share/services";
+import { UserOutlined } from "@ant-design/icons";
+import { GetUserResp } from "src/share/models";
 
-export const ProjectStaffs = () => {
-  const [showAddUser, setShowAddUser] = useState<boolean>(false);
+interface ProjectStaffsProps {
+  projectId?: string;
+}
 
-  const onEnterNewUser = () => {
-    setShowAddUser(false);
+export const ProjectStaffs = ({ projectId }: ProjectStaffsProps) => {
+  const [page, setPage] = useState<number>(1);
+  const [projectStaffs, setProjectStaffs] = useState<GetUserResp | undefined>();
+  const userPropertyIds = useGetProjectUserPropertiesQuery({ projectId });
+  const [getProjectStaff] = useGetUsersByPropertiesMutation();
+
+  const fetchStaffList = async () => {
+    await getProjectStaff({
+      values: { user_property_ids: userPropertyIds.data },
+      page,
+    })
+      .unwrap()
+      .then((result) => {
+        setProjectStaffs(result);
+      })
+      .catch(() => {});
   };
+
+  useEffect(() => {
+    fetchStaffList();
+  }, [projectId]);
 
   return (
     <div className='project-staffs'>
       <p>Staffs</p>
-      <Tag closable={true}>Nguyen Van A</Tag>
-      <Tag closable={true}>Nguyen Van B</Tag>
-      {showAddUser ? (
-        <Input size='small' onPressEnter={onEnterNewUser} />
-      ) : (
-        <Tag
-          className='add-user-tag'
-          onClick={() => {
-            setShowAddUser(true);
-          }}
-        >
-          New Staff
-        </Tag>
-      )}
+      <List
+        pagination={{
+          total: projectStaffs?.total,
+          onChange: (currPage) => {
+            setPage(currPage);
+            fetchStaffList();
+          },
+        }}
+        dataSource={projectStaffs?.users}
+        renderItem={(user) => {
+          return (
+            <List.Item>
+              <List.Item.Meta
+                avatar={
+                  <Avatar
+                    src={user.avartar ? user.avartar : <UserOutlined />}
+                  />
+                }
+                description={user.username}
+              />
+            </List.Item>
+          );
+        }}
+      ></List>
     </div>
   );
 };
