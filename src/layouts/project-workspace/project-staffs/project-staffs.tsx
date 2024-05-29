@@ -15,12 +15,12 @@ interface ProjectStaffsProps {
 export const ProjectStaffs = ({ projectId }: ProjectStaffsProps) => {
   const [page, setPage] = useState<number>(1);
   const [projectStaffs, setProjectStaffs] = useState<GetUserResp | undefined>();
-  const userPropertyIds = useGetProjectUserPropertiesQuery({ projectId });
   const [getProjectStaff] = useGetUsersByPropertiesMutation();
+  const userPropertyIds = useGetProjectUserPropertiesQuery({ projectId });
 
   const fetchStaffList = async () => {
     await getProjectStaff({
-      values: { user_property_ids: userPropertyIds.data },
+      values: { user_property_ids: userPropertyIds.data || [] },
       page,
     })
       .unwrap()
@@ -36,7 +36,7 @@ export const ProjectStaffs = ({ projectId }: ProjectStaffsProps) => {
 
   return (
     <div className='project-staffs'>
-      <p>Staffs</p>
+      <p className='project-section-title'>Staffs</p>
       <List
         pagination={{
           total: projectStaffs?.total,

@@ -1,4 +1,9 @@
-import type { ProjectResp, Response, Project } from "src/share/models";
+import type {
+  ProjectResp,
+  Response,
+  Project,
+  TaskResp,
+} from "src/share/models";
 import { hrManagementApi } from "src/share/services";
 import { localStorageUtil } from "src/share/utils";
 
@@ -94,7 +99,6 @@ const projectServices = hrManagementApi.injectEndpoints({
         };
       },
       transformResponse: (response: Response<string>) => response.data,
-      invalidatesTags: ["project"],
     }),
     getProjectUserProperties: build.query<string[], { projectId?: string }>({
       query: ({ projectId }) => {
@@ -107,6 +111,34 @@ const projectServices = hrManagementApi.injectEndpoints({
         };
       },
       transformResponse: (response: Response<string[]>) => response.data,
+    }),
+    getTaskProperties: build.query<string[], { projectId?: string }>({
+      query: ({ projectId }) => {
+        return {
+          url: `/assignments/getAllTaskPropertyFromProject/${projectId}`,
+          method: "GET",
+          headers: {
+            authorization: accessToken,
+          },
+        };
+      },
+      transformResponse: (response: Response<string[]>) => response.data,
+    }),
+    getTaskByProperties: build.mutation<
+      TaskResp,
+      { task_property_ids: string[] }
+    >({
+      query: (body) => {
+        return {
+          url: `/tasks/getAllTaskByTaskProperty`,
+          method: "GET",
+          headers: {
+            authorization: accessToken,
+          },
+          body,
+        };
+      },
+      transformResponse: (response: Response<TaskResp>) => response.data,
     }),
   }),
 });

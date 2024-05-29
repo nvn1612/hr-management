@@ -45,7 +45,7 @@ export const ProjectDocs = ({ project }: { project?: Project }) => {
 
   return (
     <div className='project-docs-sec'>
-      <p>Documents</p>
+      <p className='project-section-title'>Documents</p>
       <List
         dataSource={
           project !== undefined && project.document!.length >= 1
