@@ -20,7 +20,7 @@ export const ProjectTasks = () => {
   return (
     <div className='task-section'>
       <div className='filter-role'>
-        <p>Tasks</p>
+        <p className='project-section-title'>Tasks</p>
         <Radio.Group
           defaultValue='all'
           options={taskFilterOptions}
