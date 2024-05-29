@@ -83,6 +83,22 @@ const accountServices = hrManagementApi.injectEndpoints({
       },
       invalidatesTags: ["User"],
     }),
+    updateUser: build.mutation<
+      Response<boolean>,
+      Partial<{ values: User; userId: string }>
+    >({
+      query(body) {
+        return {
+          url: `users/admin/update/${body.userId}`,
+          method: "PUT",
+          headers: {
+            authorization: accessToken,
+          },
+          body: body.values,
+        };
+      },
+      invalidatesTags: ["User"],
+    }),
     deleteUser: build.mutation<boolean, Partial<{ userId: string }>>({
       query({ userId }) {
         return {
@@ -94,6 +110,21 @@ const accountServices = hrManagementApi.injectEndpoints({
         };
       },
       invalidatesTags: ["User"],
+    }),
+    changePassword: build.mutation<
+      Response<boolean>,
+      Partial<{ email: string; password: string }>
+    >({
+      query(body) {
+        return {
+          url: "users/change-password",
+          method: "PUT",
+          headers: {
+            authorization: accessToken,
+          },
+          body,
+        };
+      },
     }),
     getRole: build.query<RoleResp[], void>({
       query() {
@@ -113,9 +144,11 @@ const accountServices = hrManagementApi.injectEndpoints({
 export const {
   useGetUsersQuery,
   useCreateUserMutation,
+  useUpdateUserMutation,
   useLoginMutation,
   useGetUserDetailQuery,
   useUpdateUserDetailMutation,
   useGetRoleQuery,
   useDeleteUserMutation,
+  useChangePasswordMutation,
 } = accountServices;

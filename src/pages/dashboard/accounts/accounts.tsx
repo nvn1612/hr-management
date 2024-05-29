@@ -24,6 +24,12 @@ export const Accounts = () => {
 
   const filters: PageFilter[] = [
     {
+      onChange: (value: UserRole) => {
+        setQueries({
+          ...queries,
+          role: value,
+        });
+      },
       items: {
         label: "Role",
         selector: {
