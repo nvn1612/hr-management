@@ -138,6 +138,22 @@ const accountServices = hrManagementApi.injectEndpoints({
       },
       transformResponse: (response: Response<RoleResp[]>) => response.data,
     }),
+    getUsersByProperties: build.mutation<
+      GetUserResp,
+      Partial<{ values?: { user_property_ids?: string[] }; page: number }>
+    >({
+      query({ values, page }) {
+        return {
+          url: `/users/getAllStaffByUserProperty?page=${page ? page : 1}`,
+          method: "POST",
+          headers: {
+            authorization: accessToken,
+          },
+          body: values,
+        };
+      },
+      transformResponse: (response: Response<GetUserResp>) => response.data,
+    }),
   }),
 });
 
@@ -151,4 +167,5 @@ export const {
   useGetRoleQuery,
   useDeleteUserMutation,
   useChangePasswordMutation,
+  useGetUsersByPropertiesMutation,
 } = accountServices;
