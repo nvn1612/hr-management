@@ -45,7 +45,7 @@ export const ProjectDocs = ({ project }: { project?: Project }) => {
 
   return (
     <div className='project-docs-sec'>
-      <p>Documents</p>
+      <p className='project-section-title'>Documents</p>
       <List
         dataSource={
           project !== undefined && project.document!.length >= 1
@@ -61,7 +61,7 @@ export const ProjectDocs = ({ project }: { project?: Project }) => {
         }}
       />
       <Upload {...uploadProps}>
-        <Button icon={<UploadOutlined />}>Upload new Document</Button>
+        <Button icon={<UploadOutlined />}>Upload new document</Button>
       </Upload>
     </div>
   );

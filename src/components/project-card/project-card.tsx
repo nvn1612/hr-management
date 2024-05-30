@@ -16,7 +16,12 @@ export const ProjectCard = ({
   description,
 }: ProjectCardProp) => {
   return (
-    <Card title={projectName} onClick={onClick} className='project-card'>
+    <Card
+      hoverable
+      title={projectName}
+      onClick={onClick}
+      className='project-card'
+    >
       <div className='project-card-content'>
         <span className='projec-card-line'>
           <DollarOutlined />

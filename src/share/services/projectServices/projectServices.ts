@@ -1,4 +1,10 @@
-import type { ProjectResp, Response, Project } from "src/share/models";
+import type {
+  ProjectResp,
+  Response,
+  Project,
+  TaskResp,
+  Assignment,
+} from "src/share/models";
 import { hrManagementApi } from "src/share/services";
 import { localStorageUtil } from "src/share/utils";
 
@@ -94,7 +100,6 @@ const projectServices = hrManagementApi.injectEndpoints({
         };
       },
       transformResponse: (response: Response<string>) => response.data,
-      invalidatesTags: ["project"],
     }),
     getProjectUserProperties: build.query<string[], { projectId?: string }>({
       query: ({ projectId }) => {
@@ -108,6 +113,71 @@ const projectServices = hrManagementApi.injectEndpoints({
       },
       transformResponse: (response: Response<string[]>) => response.data,
     }),
+    getTaskProperties: build.query<string[], { projectId?: string }>({
+      query: ({ projectId }) => {
+        return {
+          url: `/assignments/getAllTaskPropertyFromProject/${projectId}`,
+          method: "GET",
+          headers: {
+            authorization: accessToken,
+          },
+        };
+      },
+      transformResponse: (response: Response<string[]>) => response.data,
+    }),
+    getTaskByProperties: build.mutation<
+      TaskResp,
+      Partial<{
+        values: { task_property_ids: string[] };
+        params: { page: number };
+      }>
+    >({
+      query: ({ values, params }) => {
+        return {
+          url: `/tasks/getAllTaskByTaskProperty`,
+          method: "GET",
+          headers: {
+            authorization: accessToken,
+          },
+          params: {
+            ...params,
+          },
+          body: values,
+        };
+      },
+      transformResponse: (response: Response<TaskResp>) => response.data,
+    }),
+    createAssigment: build.mutation<
+      Assignment,
+      Partial<{
+        user_property_id?: string;
+        project_property_id: string;
+        task_property_id?: string;
+      }>
+    >({
+      query(body) {
+        return {
+          url: "assignments/create",
+          method: "POST",
+          body,
+        };
+      },
+      transformErrorResponse: (response: Response<Assignment>) => response.data,
+    }),
+    createTask: build.mutation<
+      Response<boolean>,
+      Partial<{
+        description: string;
+      }>
+    >({
+      query(body) {
+        return {
+          url: "tasks/create",
+          method: "POST",
+          body,
+        };
+      },
+    }),
   }),
 });
 
@@ -118,4 +188,8 @@ export const {
   useGetFileMutation,
   useUpdateProjectMutation,
   useGetProjectUserPropertiesQuery,
+  useGetTaskByPropertiesMutation,
+  useGetTaskPropertiesQuery,
+  useCreateAssigmentMutation,
+  useCreateTaskMutation,
 } = projectServices;
