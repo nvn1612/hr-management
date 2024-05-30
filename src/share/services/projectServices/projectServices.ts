@@ -3,6 +3,7 @@ import type {
   Response,
   Project,
   TaskResp,
+  Assignment,
 } from "src/share/models";
 import { hrManagementApi } from "src/share/services";
 import { localStorageUtil } from "src/share/utils";
@@ -126,19 +127,56 @@ const projectServices = hrManagementApi.injectEndpoints({
     }),
     getTaskByProperties: build.mutation<
       TaskResp,
-      { task_property_ids: string[] }
+      Partial<{
+        values: { task_property_ids: string[] };
+        params: { page: number };
+      }>
     >({
-      query: (body) => {
+      query: ({ values, params }) => {
         return {
           url: `/tasks/getAllTaskByTaskProperty`,
           method: "GET",
           headers: {
             authorization: accessToken,
           },
-          body,
+          params: {
+            ...params,
+          },
+          body: values,
         };
       },
       transformResponse: (response: Response<TaskResp>) => response.data,
+    }),
+    createAssigment: build.mutation<
+      Assignment,
+      Partial<{
+        user_property_id?: string;
+        project_property_id: string;
+        task_property_id?: string;
+      }>
+    >({
+      query(body) {
+        return {
+          url: "assignments/create",
+          method: "POST",
+          body,
+        };
+      },
+      transformErrorResponse: (response: Response<Assignment>) => response.data,
+    }),
+    createTask: build.mutation<
+      Response<boolean>,
+      Partial<{
+        description: string;
+      }>
+    >({
+      query(body) {
+        return {
+          url: "tasks/create",
+          method: "POST",
+          body,
+        };
+      },
     }),
   }),
 });
@@ -150,4 +188,8 @@ export const {
   useGetFileMutation,
   useUpdateProjectMutation,
   useGetProjectUserPropertiesQuery,
+  useGetTaskByPropertiesMutation,
+  useGetTaskPropertiesQuery,
+  useCreateAssigmentMutation,
+  useCreateTaskMutation,
 } = projectServices;

@@ -8,12 +8,18 @@ import {
   Checkbox,
   List,
   Upload,
+  message,
 } from "antd";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { UploadOutlined } from "@ant-design/icons";
+import {
+  useCreateTaskMutation,
+  useCreateAssigmentMutation,
+} from "src/share/services";
 
-import type { User } from "src/share/models";
+import type { User, Task } from "src/share/models";
+import type { FormProps } from "antd";
 
 interface TaskFormFields {
   taskName: string;
@@ -24,13 +30,17 @@ interface TaskFormFields {
 }
 
 interface TaskFormProps {
-  taskFields?: TaskFormFields;
+  task?: Task;
+  action: "create" | "update";
   assignedStaffs?: User[] | undefined;
 }
 
-export const TaskForm = ({ taskFields, assignedStaffs }: TaskFormProps) => {
+export const TaskForm = ({ task, assignedStaffs, action }: TaskFormProps) => {
   const [showAddUser, setShowAddUser] = useState<boolean>(false);
   const [form] = Form.useForm();
+
+  const [createAssignment] = useCreateAssigmentMutation();
+  const [createTask] = useCreateTaskMutation();
 
   const documents = [
     { fileLink: "Link to document 1" },
@@ -45,14 +55,29 @@ export const TaskForm = ({ taskFields, assignedStaffs }: TaskFormProps) => {
   const onEnterNewUser = () => {
     setShowAddUser(false);
   };
-  const onFinish = () => {};
+  const onFinish: FormProps<TaskFormFields>["onFinish"] = async (values) => {
+    switch (action) {
+      case "create":
+        createTask({ description: values.description })
+          .unwrap()
+          .then((value) => {
+            /* createAssignment(value.TaskProperty.) */
+          })
+          .then(() => {
+            message.success("successful create task");
+          })
+          .catch(() => {
+            message.error("Failed to create task");
+          });
+    }
+  };
 
   useEffect(() => {
-    if (taskFields) {
+    if (task) {
       form.setFieldsValue({
-        ...taskFields,
-        start: dayjs(taskFields?.start, "YYYY/MM/DD"),
-        deadline: dayjs(taskFields?.deadline, "YYYY/MM/DD"),
+        description: task.description,
+        start: dayjs(task?.createdAt, "YYYY/MM/DD"),
+        deadline: dayjs(Date(), "YYYY/MM/DD"),
       });
     }
   });
@@ -66,9 +91,6 @@ export const TaskForm = ({ taskFields, assignedStaffs }: TaskFormProps) => {
         wrapperCol={{ span: 16 }}
         className='task-form'
       >
-        <Form.Item<TaskFormFields> label='Task' name={"taskName"}>
-          <Input />
-        </Form.Item>
         <Form.Item<TaskFormFields> label='Description' name={"description"}>
           <Input.TextArea />
         </Form.Item>
@@ -102,19 +124,23 @@ export const TaskForm = ({ taskFields, assignedStaffs }: TaskFormProps) => {
             </Tag>
           )}
         </Form.Item>
-        <Form.Item label='Documents'>
-          <List
-            dataSource={documents}
-            renderItem={(document) => (
-              <List.Item>
-                <List.Item.Meta description={document.fileLink} />
-              </List.Item>
-            )}
-          />
-          <Upload>
-            <Button icon={<UploadOutlined />}>Upload new Document</Button>
-          </Upload>
-        </Form.Item>
+        {action === "update" && (
+          <>
+            <Form.Item label='Documents'>
+              <List
+                dataSource={documents}
+                renderItem={(document) => (
+                  <List.Item>
+                    <List.Item.Meta description={document.fileLink} />
+                  </List.Item>
+                )}
+              />
+              <Upload>
+                <Button icon={<UploadOutlined />}>Upload new Document</Button>
+              </Upload>
+            </Form.Item>
+          </>
+        )}
         <Form.Item label='Activities'>
           <List
             dataSource={activites}

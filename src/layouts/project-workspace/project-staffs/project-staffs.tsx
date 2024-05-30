@@ -1,11 +1,15 @@
 import "./project-staffs.css";
 import { useEffect, useState } from "react";
-import { List, Avatar } from "antd";
+import { List, Avatar, Popconfirm, Button } from "antd";
 import {
   useGetProjectUserPropertiesQuery,
   useGetUsersByPropertiesMutation,
 } from "src/share/services";
-import { UserOutlined } from "@ant-design/icons";
+import {
+  UserOutlined,
+  MinusCircleOutlined,
+  PlusOutlined,
+} from "@ant-design/icons";
 import { GetUserResp } from "src/share/models";
 
 interface ProjectStaffsProps {
@@ -48,7 +52,13 @@ export const ProjectStaffs = ({ projectId }: ProjectStaffsProps) => {
         dataSource={projectStaffs?.users}
         renderItem={(user) => {
           return (
-            <List.Item>
+            <List.Item
+              actions={[
+                <Popconfirm title='Remove from project' onConfirm={() => {}}>
+                  <MinusCircleOutlined />
+                </Popconfirm>,
+              ]}
+            >
               <List.Item.Meta
                 avatar={
                   <Avatar
@@ -60,7 +70,10 @@ export const ProjectStaffs = ({ projectId }: ProjectStaffsProps) => {
             </List.Item>
           );
         }}
-      ></List>
+      />
+      <Button type='default'>
+        <PlusOutlined></PlusOutlined>Assign new user
+      </Button>
     </div>
   );
 };
