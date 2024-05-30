@@ -43,3 +43,15 @@ export interface Client {
   modifiedBy: string;
   ProjectProperty: ProjectProperty[];
 }
+
+export interface Assignment {
+  assignment_id?: string;
+  user_property_id?: string;
+  project_property_id?: string;
+  task_property_id?: string;
+  startAt?: string;
+  endAt?: string;
+  status?: boolean;
+  createdBy?: string;
+  createdAt?: string;
+}

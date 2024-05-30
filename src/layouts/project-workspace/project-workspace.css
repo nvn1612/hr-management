@@ -7,3 +7,8 @@
   padding: var(--padding-l);
   overflow-y: auto;
 }
+
+.project-section-title {
+  font-weight: 600;
+  font-size: large;
+}

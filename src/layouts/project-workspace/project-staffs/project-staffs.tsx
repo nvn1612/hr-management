@@ -1,11 +1,15 @@
 import "./project-staffs.css";
 import { useEffect, useState } from "react";
-import { List, Avatar } from "antd";
+import { List, Avatar, Popconfirm, Button } from "antd";
 import {
   useGetProjectUserPropertiesQuery,
   useGetUsersByPropertiesMutation,
 } from "src/share/services";
-import { UserOutlined } from "@ant-design/icons";
+import {
+  UserOutlined,
+  MinusCircleOutlined,
+  PlusOutlined,
+} from "@ant-design/icons";
 import { GetUserResp } from "src/share/models";
 
 interface ProjectStaffsProps {
@@ -15,12 +19,12 @@ interface ProjectStaffsProps {
 export const ProjectStaffs = ({ projectId }: ProjectStaffsProps) => {
   const [page, setPage] = useState<number>(1);
   const [projectStaffs, setProjectStaffs] = useState<GetUserResp | undefined>();
-  const userPropertyIds = useGetProjectUserPropertiesQuery({ projectId });
   const [getProjectStaff] = useGetUsersByPropertiesMutation();
+  const userPropertyIds = useGetProjectUserPropertiesQuery({ projectId });
 
   const fetchStaffList = async () => {
     await getProjectStaff({
-      values: { user_property_ids: userPropertyIds.data },
+      values: { user_property_ids: userPropertyIds.data || [] },
       page,
     })
       .unwrap()
@@ -36,7 +40,7 @@ export const ProjectStaffs = ({ projectId }: ProjectStaffsProps) => {
 
   return (
     <div className='project-staffs'>
-      <p>Staffs</p>
+      <p className='project-section-title'>Staffs</p>
       <List
         pagination={{
           total: projectStaffs?.total,
@@ -48,7 +52,13 @@ export const ProjectStaffs = ({ projectId }: ProjectStaffsProps) => {
         dataSource={projectStaffs?.users}
         renderItem={(user) => {
           return (
-            <List.Item>
+            <List.Item
+              actions={[
+                <Popconfirm title='Remove from project' onConfirm={() => {}}>
+                  <MinusCircleOutlined />
+                </Popconfirm>,
+              ]}
+            >
               <List.Item.Meta
                 avatar={
                   <Avatar
@@ -60,7 +70,10 @@ export const ProjectStaffs = ({ projectId }: ProjectStaffsProps) => {
             </List.Item>
           );
         }}
-      ></List>
+      />
+      <Button type='default'>
+        <PlusOutlined></PlusOutlined>Assign new user
+      </Button>
     </div>
   );
 };
