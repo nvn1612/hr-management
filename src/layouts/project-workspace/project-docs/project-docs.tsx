@@ -61,7 +61,7 @@ export const ProjectDocs = ({ project }: { project?: Project }) => {
         }}
       />
       <Upload {...uploadProps}>
-        <Button icon={<UploadOutlined />}>Upload new Document</Button>
+        <Button icon={<UploadOutlined />}>Upload new document</Button>
       </Upload>
     </div>
   );

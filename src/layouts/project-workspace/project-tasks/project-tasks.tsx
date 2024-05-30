@@ -1,13 +1,25 @@
 import "./project-tasks.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TaskCard } from "src/components/task-card";
-import { Radio, Modal, Button, Popconfirm } from "antd";
+import { Radio, Modal, Button, Popconfirm, List } from "antd";
 import { TaskForm } from "src/layouts/task-form";
-import { useGetUsersQuery } from "src/share/services";
-import { OUserRole } from "src/share/models";
+import {
+  useGetTaskByPropertiesMutation,
+  useGetTaskPropertiesQuery,
+} from "src/share/services";
 
-export const ProjectTasks = () => {
+import { Task } from "src/share/models";
+
+interface ProjectTasksProp {
+  projectId?: string;
+}
+
+export const ProjectTasks = ({ projectId }: ProjectTasksProp) => {
   const [showTaskForm, setShowTaskForm] = useState<boolean>(false);
+  const [selectedTask, setSelectedTask] = useState<Task>();
+  const [taskList, setTaskList] = useState<Task[]>();
+  const [page, setPage] = useState<number>(1);
+  const [formAction, setFormAction] = useState<"create" | "update">("create");
 
   const taskFilterOptions = [
     { label: "All", value: "all" },
@@ -15,7 +27,26 @@ export const ProjectTasks = () => {
     { label: "In Progress", value: "inProgress" },
   ];
 
-  const { data } = useGetUsersQuery({ role: OUserRole.All });
+  const { data } = useGetTaskPropertiesQuery({ projectId });
+  const [getTaskByProperties] = useGetTaskByPropertiesMutation();
+
+  const fetchTask = async () => {
+    await getTaskByProperties({
+      values: { task_property_ids: data || [] },
+      params: {
+        page,
+      },
+    })
+      .unwrap()
+      .then((values) => {
+        setTaskList(values.data);
+      })
+      .catch(() => {});
+  };
+
+  useEffect(() => {
+    fetchTask();
+  }, [projectId, page]);
 
   return (
     <div className='task-section'>
@@ -28,10 +59,32 @@ export const ProjectTasks = () => {
         />
       </div>
       <div className='task-card-container'>
-        <TaskCard onClick={() => setShowTaskForm(true)} />
-        <TaskCard onClick={() => setShowTaskForm(true)} />
-        <TaskCard onClick={() => setShowTaskForm(true)} />
-        <Button type='primary' onClick={() => setShowTaskForm(true)}>
+        <List
+          pagination={{
+            onChange: (selectedPage) => {
+              setPage(selectedPage);
+            },
+          }}
+          dataSource={taskList}
+          renderItem={(task) => {
+            return (
+              <TaskCard
+                onClick={() => {
+                  setShowTaskForm(true);
+                  setSelectedTask(task);
+                  setFormAction("update");
+                }}
+              />
+            );
+          }}
+        />
+        <Button
+          type='primary'
+          onClick={() => {
+            setShowTaskForm(true);
+            setFormAction("create");
+          }}
+        >
           Add new Task
         </Button>
       </div>
@@ -54,16 +107,7 @@ export const ProjectTasks = () => {
         ]}
         className='task-modal'
       >
-        <TaskForm
-          taskFields={{
-            deadline: "2024/12/12",
-            start: "2024/11/11",
-            taskName: "Fix Task Form UI ",
-            description: "nothing yet",
-            status: true,
-          }}
-          assignedStaffs={data?.users}
-        />
+        <TaskForm task={selectedTask} action={formAction} />
       </Modal>
     </div>
   );
