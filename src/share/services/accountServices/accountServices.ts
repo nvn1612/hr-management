@@ -10,7 +10,7 @@ import type {
 } from "src/share/models/accountModels";
 import type { CreateUserPartial } from "src/layouts/user-info-form";
 
-const accessToken = localStorageUtil.get("accessToken");
+const accessToken = () => localStorageUtil.get("accessToken");
 
 const accountServices = hrManagementApi.injectEndpoints({
   endpoints: (build) => ({
@@ -34,7 +34,7 @@ const accountServices = hrManagementApi.injectEndpoints({
           url: "users/detail",
           method: "GET",
           headers: {
-            authorization: accessToken,
+            authorization: accessToken(),
           },
         };
       },
@@ -46,7 +46,7 @@ const accountServices = hrManagementApi.injectEndpoints({
           url: "users/update",
           method: "PUT",
           headers: {
-            authorization: accessToken,
+            authorization: accessToken(),
           },
           body,
         };
@@ -59,7 +59,7 @@ const accountServices = hrManagementApi.injectEndpoints({
           url: `users/admin/getAll`,
           method: "GET",
           headers: {
-            authorization: accessToken,
+            authorization: accessToken(),
           },
           params: {
             role: role === OUserRole.All ? "" : role,
@@ -76,7 +76,7 @@ const accountServices = hrManagementApi.injectEndpoints({
           url: "users/create",
           method: "POST",
           headers: {
-            authorization: accessToken,
+            authorization: accessToken(),
           },
           body,
         };
@@ -92,7 +92,7 @@ const accountServices = hrManagementApi.injectEndpoints({
           url: `users/admin/update/${body.userId}`,
           method: "PUT",
           headers: {
-            authorization: accessToken,
+            authorization: accessToken(),
           },
           body: body.values,
         };
@@ -105,7 +105,7 @@ const accountServices = hrManagementApi.injectEndpoints({
           url: `users/admin/delete/${userId}`,
           method: "DELETE",
           headers: {
-            authorization: accessToken,
+            authorization: accessToken(),
           },
         };
       },
@@ -120,7 +120,7 @@ const accountServices = hrManagementApi.injectEndpoints({
           url: "users/change-password",
           method: "PUT",
           headers: {
-            authorization: accessToken,
+            authorization: accessToken(),
           },
           body,
         };
@@ -132,7 +132,7 @@ const accountServices = hrManagementApi.injectEndpoints({
           url: "roles/getAll",
           method: "GET",
           headers: {
-            authorization: accessToken,
+            authorization: accessToken(),
           },
         };
       },
@@ -147,7 +147,7 @@ const accountServices = hrManagementApi.injectEndpoints({
           url: `/users/getAllStaffByUserProperty?page=${page ? page : 1}`,
           method: "POST",
           headers: {
-            authorization: accessToken,
+            authorization: accessToken(),
           },
           body: values,
         };

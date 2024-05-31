@@ -7,11 +7,12 @@ import { localStorageUtil } from "src/share/utils";
 
 export const Dashboard = () => {
   const accessToken = localStorageUtil.get("accessToken");
+  const accessDate = Number(localStorageUtil.get("accessDate"));
   const { Content } = Layout;
 
   return (
     <>
-      {accessToken ? (
+      {accessToken && Date.now() - accessDate > 0 ? (
         <Layout>
           <Dashboardsidebar />
           <Layout>
