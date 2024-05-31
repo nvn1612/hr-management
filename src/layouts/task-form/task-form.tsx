@@ -16,6 +16,7 @@ import { UploadOutlined } from "@ant-design/icons";
 import {
   useCreateTaskMutation,
   useCreateAssigmentMutation,
+  // useGetTaskActivityQuery,
 } from "src/share/services";
 
 import type { User, Task } from "src/share/models";
@@ -30,17 +31,24 @@ interface TaskFormFields {
 }
 
 interface TaskFormProps {
-  task?: Task;
+  task: Task;
   action: "create" | "update";
   assignedStaffs?: User[] | undefined;
+  projectId: string;
 }
 
-export const TaskForm = ({ task, assignedStaffs, action }: TaskFormProps) => {
+export const TaskForm = ({
+  task,
+  assignedStaffs,
+  action,
+  projectId,
+}: TaskFormProps) => {
   const [showAddUser, setShowAddUser] = useState<boolean>(false);
   const [form] = Form.useForm();
 
   const [createAssignment] = useCreateAssigmentMutation();
   const [createTask] = useCreateTaskMutation();
+  // const { data } = useGetTaskActivityQuery({ taskId: task.task_id });
 
   const documents = [
     { fileLink: "Link to document 1" },
@@ -61,7 +69,10 @@ export const TaskForm = ({ task, assignedStaffs, action }: TaskFormProps) => {
         createTask({ description: values.description })
           .unwrap()
           .then((value) => {
-            /* createAssignment(value.TaskProperty.) */
+            createAssignment({
+              project_property_id: projectId,
+              task_property_id: value.data.TaskProperty.task_property_id,
+            });
           })
           .then(() => {
             message.success("successful create task");
