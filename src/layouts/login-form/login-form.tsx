@@ -31,8 +31,9 @@ export const LoginForm = () => {
       .then((resp) => {
         localStorageUtil.set("accessToken", resp.data.tokens.accessToken);
         localStorageUtil.set("refreshToken", resp.data.tokens.refreshToken);
+        localStorageUtil.set("role", resp.data.role);
+        localStorageUtil.set("accessDate", Date.now() + 86400000);
         navigate("/dashboard");
-        messageApi.success("success");
       })
       .catch((e) => {
         messageApi.error(e);
