@@ -9,7 +9,7 @@ export const Login = () => {
 
   return (
     <>
-      {accessToken && Date.now() - accessDate > 0 ? (
+      {accessToken && Date.now() - accessDate < 0 ? (
         <Navigate to={"/dashboard"} replace />
       ) : (
         <div className='login-page'>
