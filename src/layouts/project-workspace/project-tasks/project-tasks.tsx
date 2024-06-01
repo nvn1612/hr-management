@@ -107,7 +107,11 @@ export const ProjectTasks = ({ projectId }: ProjectTasksProp) => {
         ]}
         className='task-modal'
       >
-        <TaskForm task={selectedTask} action={formAction} />
+        <TaskForm
+          projectId={projectId!}
+          task={selectedTask!}
+          action={formAction}
+        />
       </Modal>
     </div>
   );
