@@ -5,11 +5,24 @@
   cursor: pointer;
   .project-card-content {
     display: flex;
-    flex-direction: column;
-    span {
+    align-items: flex-start;
+    justify-content: space-between;
+    .text-info {
       display: flex;
-      justify-content: flex-start;
-      gap: var(--gap-s);
+      flex-direction: column;
+      width: 80%;
+      .project-card-line {
+        display: flex;
+        justify-content: flex-start;
+        gap: var(--gap-s);
+        word-break: break-word;
+        .team-icon {
+          color: var(--primary-color);
+        }
+        .info-icon {
+          color: #faad14;
+        }
+      }
     }
   }
 }

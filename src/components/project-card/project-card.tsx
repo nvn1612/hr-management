@@ -1,20 +1,39 @@
 import "./project-card.css";
-import { Card } from "antd";
-import { DollarOutlined, InfoCircleOutlined } from "@ant-design/icons";
+import { Card, Progress } from "antd";
+import { TeamOutlined, InfoCircleOutlined } from "@ant-design/icons";
 
 interface ProjectCardProp {
   onClick: () => void;
   projectName?: string;
-  investor?: string;
   description?: string;
+  information?: {
+    total_user: number;
+    total_task: {
+      total_task_is_done: number;
+      total_task_is_not_done: number;
+    };
+  };
 }
 
 export const ProjectCard = ({
   onClick,
   projectName,
-  investor,
+  information,
   description,
 }: ProjectCardProp) => {
+  let totalTask = 0;
+  if (information) {
+    totalTask =
+      information.total_task.total_task_is_done +
+      information.total_task.total_task_is_not_done;
+  }
+
+  const calculateProgress = (): number => {
+    return (
+      Math.ceil(information!.total_task.total_task_is_done / totalTask) * 100
+    );
+  };
+
   return (
     <Card
       hoverable
@@ -23,14 +42,25 @@ export const ProjectCard = ({
       className='project-card'
     >
       <div className='project-card-content'>
-        <span className='projec-card-line'>
-          <DollarOutlined />
-          Investor : {investor ? investor : "None"}
-        </span>
-        <span className='projec-card-line'>
-          <InfoCircleOutlined />
-          {description}
-        </span>
+        <div className='text-info'>
+          <span className='project-card-line'>
+            <TeamOutlined className='team-icon' />
+            {information?.total_user}
+          </span>
+          <span className='project-card-line'>
+            <InfoCircleOutlined className='info-icon' />
+            {description}
+          </span>
+        </div>
+        <div className='project-progress'>
+          <Progress
+            type='dashboard'
+            steps={6}
+            percent={totalTask ? calculateProgress() : 0}
+            trailColor='rgba(0, 0, 0, 0.06)'
+            size={"small"}
+          />
+        </div>
       </div>
     </Card>
   );
