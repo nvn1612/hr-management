@@ -14,6 +14,13 @@ export interface Project {
   modifiedBy?: string;
   createdAt?: string;
   ProjectProperty: ProjectProperty[];
+  information?: {
+    total_user: number;
+    total_task: {
+      total_task_is_done: number;
+      total_task_is_not_done: number;
+    };
+  };
 }
 
 export interface ProjectProperty {

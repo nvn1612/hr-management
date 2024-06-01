@@ -4,6 +4,8 @@ import type {
   Project,
   TaskResp,
   Assignment,
+  Actitvity,
+  Task,
 } from "src/share/models";
 import { hrManagementApi } from "src/share/services";
 import { localStorageUtil } from "src/share/utils";
@@ -165,7 +167,7 @@ const projectServices = hrManagementApi.injectEndpoints({
       transformErrorResponse: (response: Response<Assignment>) => response.data,
     }),
     createTask: build.mutation<
-      Response<boolean>,
+      Response<Task>,
       Partial<{
         description: string;
       }>
@@ -177,6 +179,68 @@ const projectServices = hrManagementApi.injectEndpoints({
           body,
         };
       },
+    }),
+    getUserActivity: build.query<
+      Actitvity[],
+      {
+        page?: number | "ALL";
+        search?: string;
+        items_per_page?: number;
+      }
+    >({
+      query({ page, search, items_per_page }) {
+        return {
+          url: "/activities/getAllActivitiesByYourProperty/",
+          method: "GET",
+          headers: {
+            authorization: accessToken,
+          },
+          params: {
+            page: page || "1",
+            search: search ? search : "",
+            items_per_page: items_per_page || "10",
+          },
+        };
+      },
+      transformResponse: (response: Response<Actitvity[]>) => response.data,
+    }),
+    getTaskActivity: build.query<
+      Actitvity[],
+      {
+        page?: number;
+        search?: string;
+        items_per_page?: number;
+        taskId: string;
+      }
+    >({
+      query({ page, search, items_per_page, taskId }) {
+        return {
+          url: `/activities/getAllActivitiesFromTask/${taskId}`,
+          method: "GET",
+          headers: {
+            authorization: accessToken,
+          },
+          params: {
+            page: page || "1",
+            search: search ? search : "",
+            items_per_page: items_per_page || "10",
+          },
+        };
+      },
+      transformResponse: (response: Response<Actitvity[]>) => response.data,
+    }),
+    getTaskFile: build.mutation<string, Partial<{ filename: string }>>({
+      query(body) {
+        return {
+          url: "task/file/Get",
+          method: "POST",
+          headers: {
+            authorization: accessToken,
+          },
+          body,
+        };
+      },
+      transformResponse: (response: Response<string>) => response.data,
     }),
   }),
 });
@@ -192,4 +256,7 @@ export const {
   useGetTaskPropertiesQuery,
   useCreateAssigmentMutation,
   useCreateTaskMutation,
+  useGetTaskActivityQuery,
+  useGetUserActivityQuery,
+  useGetTaskFileMutation,
 } = projectServices;
