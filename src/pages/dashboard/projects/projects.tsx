@@ -105,8 +105,8 @@ export const Projects = () => {
                             setIsCreate(false);
                           }}
                           projectName={project?.name}
-                          investor={project.investor}
                           description={project.description}
+                          information={project.information}
                         />
                       </List.Item>
                     );
