@@ -13,14 +13,16 @@ type CardDepartmentssProps = {
   title?: string;
   manager?: string;
   onClick?: () => void;
-  departmentId?: string
+  departmentId?: string;
+  staffCount?: number;
 };
 
 export const CardDepartmentss: React.FC<CardDepartmentssProps> = ({
   title,
   manager,
   onClick,
-  departmentId
+  departmentId,
+  staffCount
 }) => {
   const [deleteDepartment] = useDeleteDepartmentsMutation();
 
@@ -56,7 +58,7 @@ export const CardDepartmentss: React.FC<CardDepartmentssProps> = ({
           </div>
           <div className="staff-departments-info">
             <TeamOutlined />
-            {/* <p>{staffCount}</p> */}
+            <p>{staffCount}</p>
           </div>
         </div>
       </Card>
