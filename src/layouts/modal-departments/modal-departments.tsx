@@ -27,11 +27,13 @@ type ModalDepartmentsProps = {
   visible: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
   manager? : string;
+  departments?: string;
 };
 export const ModalDepartments = ({
   visible,
   setVisible,
-  manager
+  manager,
+  departments
 }: ModalDepartmentsProps) => {
   const onChange = (key: string) => {
     console.log(key);

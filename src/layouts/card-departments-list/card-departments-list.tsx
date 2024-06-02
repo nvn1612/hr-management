@@ -1,54 +1,98 @@
-import React, { useState } from "react";
-import { Col, Row } from "antd";
-import {PlusCircleOutlined } from "@ant-design/icons";
+import { useState } from "react";
+import { List, Spin } from "antd";
 import { ModalDepartments } from "src/layouts/modal-departments";
 import { CardDepartmentss } from "src/components/card-departments";
 import { ModalAddDepartment } from "../modal-departments/modal-add-department";
 import { MngPageHeader } from "../mng-page-header";
 import { useGetDepartmentsQuery } from "src/share/services";
+import { useDeleteDepartmentsMutation } from "src/share/services";
 import "./card-departments-list.css";
 import { Department } from "src/share/models";
 
+import type { PaginationProps } from "antd";
+
 export const CardDepartments = () => {
   const [visible, setVisible] = useState(false);
+  const [queries, setQueries] = useState<{ page: number, itemsPerPage: number }>({ page: 1, itemsPerPage: 5 });
   const [mainDepartment, setMainDepartment] = useState<Department | undefined>();
   const [visibleAddDepartment, setVisibleAddDepartment] = useState(false);
   const showAddDepartment = () => {
     setVisibleAddDepartment(true);
   };
-  
-  const {data} =useGetDepartmentsQuery();
-  return (
-    <Row gutter={16} className="departments">
-      <MngPageHeader
-        title="Departments"
-        addBtnContent='Create Department'
-        addBtnOnClick={showAddDepartment}
-        filters={[]}
-      />
-    
-        
 
-      {data?.data.departments.map((department) => (
-        <Col span={8}>
-          <CardDepartmentss
-            title={department.name}
-            manager={department.manager_id}
-            departmentId={department.department_id}
-            onClick={() => {setVisible(true);
-              setMainDepartment(department);
-            }}
-          />
-        </Col>
-      ))}
-      <Col span={8} className="add-department-icon">
-          <PlusCircleOutlined 
-          className="icon-add-department"
-          onClick={showAddDepartment}
+  const { data, isLoading } = useGetDepartmentsQuery(queries);
+
+  const onChangePage: PaginationProps["onChange"] = (page) => {
+    setQueries({ ...queries, page });
+  };
+
+  return (
+    <>
+      <Spin
+        spinning={isLoading}
+        tip="Loading Departments"
+        className="department-card-loading"
+        size="large"
+      >
+        <MngPageHeader
+          title="Departments"
+          addBtnContent="Create Department"
+          addBtnOnClick={showAddDepartment}
+          itemCount={data?.total}
+          filters={[]}
         />
-      </Col>
-      <ModalDepartments visible={visible} setVisible={setVisible} manager={mainDepartment?.manager_id}/>
-      <ModalAddDepartment visible={visibleAddDepartment} setVisible={setVisibleAddDepartment} />
-    </Row>
+        <div className="department-card-container">
+          <List
+            grid={{
+              gutter: 16,
+              xs: 1,
+              sm: 1,
+              md: 1,
+              lg: 2,
+              xl: 3,
+              xxl: 3,
+            }}
+            pagination={{
+              position: "bottom",
+              align: "center",
+              pageSize: 10,
+              total: data?.total,
+              onChange: onChangePage,
+            }}
+            dataSource={data?.departments}
+            renderItem={
+              data
+                ? (department) => {
+                    return (
+                      <List.Item>
+                        <CardDepartmentss
+                          onClick={() => {
+                            setVisible(true);
+                            setMainDepartment(department);
+                          }}
+                          departmentId={department.department_id}
+                          title={department.name}
+                          manager={department.information?.manager?.username}
+                          staffCount={department.information?.total_staff}
+                        />
+                      </List.Item>
+                    );
+                  }
+                : undefined
+            }
+          />
+        </div>
+      </Spin>
+      <ModalDepartments
+        visible={visible}
+        setVisible={setVisible}
+        manager={mainDepartment?.manager_id}
+        department={mainDepartment?.department_id}
+      />
+      <ModalAddDepartment
+        visible={visibleAddDepartment}
+        setVisible={setVisibleAddDepartment}
+      />
+    </>
   );
 };
