@@ -12,8 +12,10 @@ export const ProjectWorkspace = ({ project }: ProjectWorkspaceProp) => {
   return (
     <div className='project-workspace'>
       <ProjectDocs project={project} />
-      <ProjectStaffs projectId={project?.project_id} />
-      <ProjectTasks projectId={project?.project_id} />
+      <ProjectStaffs project={project} />
+      <ProjectTasks
+        projectPropertyId={project?.ProjectProperty.project_property_id}
+      />
     </div>
   );
 };

@@ -4,13 +4,15 @@ import type {
   Project,
   TaskResp,
   Assignment,
-  Actitvity,
+  Activity,
   Task,
+  AssignmentResp,
+  TaskProperty,
 } from "src/share/models";
 import { hrManagementApi } from "src/share/services";
 import { localStorageUtil } from "src/share/utils";
 
-const accessToken = localStorageUtil.get("accessToken");
+const accessToken = () => localStorageUtil.get("accessToken");
 
 const projectServices = hrManagementApi.injectEndpoints({
   endpoints: (build) => ({
@@ -20,7 +22,7 @@ const projectServices = hrManagementApi.injectEndpoints({
           url: `projects/admin/getAll`,
           method: "GET",
           headers: {
-            authorization: accessToken,
+            authorization: accessToken(),
           },
           params: {
             page,
@@ -36,7 +38,7 @@ const projectServices = hrManagementApi.injectEndpoints({
           url: `projects/create`,
           method: "POST",
           headers: {
-            authorization: accessToken,
+            authorization: accessToken(),
           },
           body,
         };
@@ -53,7 +55,7 @@ const projectServices = hrManagementApi.injectEndpoints({
           url: `projects/update/${body.projectId}`,
           method: "PUT",
           headers: {
-            authorization: accessToken,
+            authorization: accessToken(),
           },
           body: body.values,
         };
@@ -67,7 +69,7 @@ const projectServices = hrManagementApi.injectEndpoints({
           url: `projects/admin/delete/${body}`,
           method: "DELETE",
           headers: {
-            authorization: accessToken,
+            authorization: accessToken(),
           },
         };
       },
@@ -80,7 +82,7 @@ const projectServices = hrManagementApi.injectEndpoints({
           url: `projects/admin/getAll`,
           method: "GET",
           headers: {
-            authorization: accessToken,
+            authorization: accessToken(),
           },
           params: {
             page,
@@ -96,32 +98,35 @@ const projectServices = hrManagementApi.injectEndpoints({
           url: `projects/getFile`,
           method: "POST",
           headers: {
-            authorization: accessToken,
+            authorization: accessToken(),
           },
           body,
         };
       },
       transformResponse: (response: Response<string>) => response.data,
     }),
-    getProjectUserProperties: build.query<string[], { projectId?: string }>({
-      query: ({ projectId }) => {
+    getProjectUserProperties: build.query<
+      string[],
+      { projectPropertyId?: string }
+    >({
+      query: ({ projectPropertyId }) => {
         return {
-          url: `assignments/getAllUserPropertyFromProject/${projectId}`,
+          url: `assignments/getAllUserPropertyFromProject/${projectPropertyId}`,
           method: "GET",
           headers: {
-            authorization: accessToken,
+            authorization: accessToken(),
           },
         };
       },
       transformResponse: (response: Response<string[]>) => response.data,
     }),
-    getTaskProperties: build.query<string[], { projectId?: string }>({
-      query: ({ projectId }) => {
+    getTaskProperties: build.query<string[], { projectPropertyId?: string }>({
+      query: ({ projectPropertyId }) => {
         return {
-          url: `/assignments/getAllTaskPropertyFromProject/${projectId}`,
+          url: `assignments/getAllTaskPropertyFromProject/${projectPropertyId}`,
           method: "GET",
           headers: {
-            authorization: accessToken,
+            authorization: accessToken(),
           },
         };
       },
@@ -136,10 +141,10 @@ const projectServices = hrManagementApi.injectEndpoints({
     >({
       query: ({ values, params }) => {
         return {
-          url: `/tasks/getAllTaskByTaskProperty`,
-          method: "GET",
+          url: `tasks/getAllTaskByTaskProperty`,
+          method: "POST",
           headers: {
-            authorization: accessToken,
+            authorization: accessToken(),
           },
           params: {
             ...params,
@@ -161,13 +166,16 @@ const projectServices = hrManagementApi.injectEndpoints({
         return {
           url: "assignments/create",
           method: "POST",
+          headers: {
+            authorization: accessToken(),
+          },
           body,
         };
       },
       transformErrorResponse: (response: Response<Assignment>) => response.data,
     }),
     createTask: build.mutation<
-      Response<Task>,
+      { task: Task; task_property: TaskProperty },
       Partial<{
         description: string;
       }>
@@ -176,12 +184,18 @@ const projectServices = hrManagementApi.injectEndpoints({
         return {
           url: "tasks/create",
           method: "POST",
+          headers: {
+            authorization: accessToken(),
+          },
           body,
         };
       },
+      transformResponse: (
+        response: Response<{ task: Task; task_property: TaskProperty }>
+      ) => response.data,
     }),
     getUserActivity: build.query<
-      Actitvity[],
+      Activity[],
       {
         page?: number | "ALL";
         search?: string;
@@ -190,10 +204,10 @@ const projectServices = hrManagementApi.injectEndpoints({
     >({
       query({ page, search, items_per_page }) {
         return {
-          url: "/activities/getAllActivitiesByYourProperty/",
+          url: "activities/getAllActivitiesByYourProperty/",
           method: "GET",
           headers: {
-            authorization: accessToken,
+            authorization: accessToken(),
           },
           params: {
             page: page || "1",
@@ -202,23 +216,23 @@ const projectServices = hrManagementApi.injectEndpoints({
           },
         };
       },
-      transformResponse: (response: Response<Actitvity[]>) => response.data,
+      transformResponse: (response: Response<Activity[]>) => response.data,
     }),
     getTaskActivity: build.query<
-      Actitvity[],
+      Activity[],
       {
         page?: number;
         search?: string;
         items_per_page?: number;
-        taskId: string;
+        taskId?: string;
       }
     >({
       query({ page, search, items_per_page, taskId }) {
         return {
-          url: `/activities/getAllActivitiesFromTask/${taskId}`,
+          url: `activities/getAllActivitiesFromTask/${taskId}`,
           method: "GET",
           headers: {
-            authorization: accessToken,
+            authorization: accessToken(),
           },
           params: {
             page: page || "1",
@@ -227,20 +241,44 @@ const projectServices = hrManagementApi.injectEndpoints({
           },
         };
       },
-      transformResponse: (response: Response<Actitvity[]>) => response.data,
+      transformResponse: (response: Response<Activity[]>) => response.data,
     }),
     getTaskFile: build.mutation<string, Partial<{ filename: string }>>({
       query(body) {
         return {
-          url: "task/file/Get",
+          url: "tasks/getFile",
           method: "POST",
           headers: {
-            authorization: accessToken,
+            authorization: accessToken(),
           },
           body,
         };
       },
       transformResponse: (response: Response<string>) => response.data,
+    }),
+    getProjectAssignments: build.query<
+      AssignmentResp,
+      {
+        projectPropertyId?: string;
+        page?: number;
+        itemsPerPage: number | "ALL";
+      }
+    >({
+      query({ projectPropertyId, page, itemsPerPage }) {
+        return {
+          url: `assignments/getAllAssignmentForProject/${projectPropertyId}`,
+          method: "GET",
+          headers: {
+            authorization: accessToken(),
+          },
+          params: {
+            isAssignment: true,
+            page,
+            items_per_page: itemsPerPage,
+          },
+        };
+      },
+      transformResponse: (response: Response<AssignmentResp>) => response.data,
     }),
   }),
 });
@@ -259,4 +297,5 @@ export const {
   useGetTaskActivityQuery,
   useGetUserActivityQuery,
   useGetTaskFileMutation,
+  useGetProjectAssignmentsQuery,
 } = projectServices;

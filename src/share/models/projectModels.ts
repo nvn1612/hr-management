@@ -1,4 +1,5 @@
 import type { Dayjs } from "dayjs";
+import { Task } from "src/share/models";
 
 export interface Project {
   project_id?: string;
@@ -13,7 +14,7 @@ export interface Project {
   createdBy?: string;
   modifiedBy?: string;
   createdAt?: string;
-  ProjectProperty: ProjectProperty[];
+  ProjectProperty: ProjectProperty;
   information?: {
     total_user: number;
     total_task: {
@@ -61,4 +62,31 @@ export interface Assignment {
   status?: boolean;
   createdBy?: string;
   createdAt?: string;
+  task_information?: Task[];
+  user_information?: {
+    user_id?: string;
+    username?: string;
+    password?: string;
+    email?: string;
+    status: boolean;
+    phone?: string;
+    avatar?: string;
+    name?: string;
+    birthday?: string;
+    createdBy?: string;
+    modifiedBy?: string;
+    createdAt?: string;
+    updatedAt?: string;
+    deletedAt?: string;
+    deletedMark: boolean;
+  };
+}
+
+export interface AssignmentResp {
+  assignments: Assignment[];
+  total: number;
+  nextPage?: number;
+  previousPage?: number;
+  currentPage: number;
+  itemsPerPage: number;
 }

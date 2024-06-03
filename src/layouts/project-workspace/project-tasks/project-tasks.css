@@ -13,6 +13,9 @@
     justify-content: flex-start;
     gap: var(--gap-s);
   }
+  .create-task-btn {
+    width: 150px;
+  }
 }
 .task-modal {
   width: 650px !important;
