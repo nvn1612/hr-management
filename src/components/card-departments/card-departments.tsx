@@ -28,9 +28,11 @@ export const CardDepartmentss: React.FC<CardDepartmentssProps> = ({
 
   const handleDeleteClick = async (event: React.MouseEvent<HTMLElement>) => {
     event.stopPropagation();
-    await deleteDepartment({departmentId}).unwrap().then().catch();
+    
   };
-  
+  const deleteDapartment = async () => {
+    await deleteDepartment({departmentId}).unwrap().then().catch()
+  }
   return (
     <>
       <Card
@@ -41,7 +43,7 @@ export const CardDepartmentss: React.FC<CardDepartmentssProps> = ({
               <Popconfirm
                 title="Are you sure to delete this department?"
                 icon={<QuestionCircleOutlined style={{ color: "red" }} />}
-                onConfirm={() => console.log("Delete department")} 
+                onConfirm={() => deleteDapartment()} 
               >
                 <DeleteOutlined />
               </Popconfirm>

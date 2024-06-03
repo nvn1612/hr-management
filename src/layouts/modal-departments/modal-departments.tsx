@@ -21,19 +21,23 @@ import { ModalListStaffDepartment } from "src/layouts/modal-departments/modal-li
 import { ModalAddManager } from "src/layouts/modal-departments/modal-add-manager";
 import { Projects } from "src/pages/dashboard/projects";
 import { ModalReportProjectDepartment } from "src/layouts/modal-departments/modal-report-project-department";
+import { Department } from "src/share/models/departmentModels";
+import { Project } from "src/share/models/projectModels";
+import { useDeleteDepartmentsMutation } from "src/share/services";
+import { useGetReportDepartmentsQuery } from 'src/share/services/departmentServices'
+import { useGetAllProjectDepartmentQuery } from "src/share/services/departmentServices";
+import { ProjectCard } from "src/components/project-card";
 import "./modal-departments.css";
 
 type ModalDepartmentsProps = {
   visible: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
-  manager? : string;
-  departments?: string;
+  department?: Department;
 };
 export const ModalDepartments = ({
   visible,
   setVisible,
-  manager,
-  departments
+  department
 }: ModalDepartmentsProps) => {
   const onChange = (key: string) => {
     console.log(key);
@@ -56,6 +60,13 @@ export const ModalDepartments = ({
     setshowReportProjectVisibel(true);
   };
 
+  const [deleteDepartment] = useDeleteDepartmentsMutation();
+  const handleDeleteDepartment = async () => {
+    await deleteDepartment({ departmentId: department?.department_id }).unwrap().then().catch()
+  }
+  const { data: reportData } = useGetReportDepartmentsQuery({ departmentId: department?.department_id })
+  const { data: projectData } = useGetAllProjectDepartmentQuery({ departmentId: department?.department_id })
+  console.log(department?.department_id)
   const items: TabsProps["items"] = [
     {
       key: "1",
@@ -64,8 +75,7 @@ export const ModalDepartments = ({
         <>
           <div className="information-departments">
             <p>
-              The department's main task is to develop applications to serve the
-              project including mobile applications and web applications.
+              {department?.description}
             </p>
             <div className="info-department-wrapper">
               <div className="department-manager">
@@ -81,7 +91,7 @@ export const ModalDepartments = ({
                       onClick={showModal}
                     >
                       <Avatar icon={<UserOutlined />} size={25} />
-                      <p>{manager? manager : ''}</p>
+                      <p>{department?.information?.manager?.username}</p>
                     </div>
                   </Col>
                   <Col span={2} className="edit-manager-icon">
@@ -102,7 +112,7 @@ export const ModalDepartments = ({
                   </Col>
                   <Col span={12}>
                     <div className="number-staff-department">
-                      <p>10</p>
+                      <p>{department?.information?.total_staff}</p>
                     </div>
                   </Col>
                   <Col span={2} className="icon-list-staff-department">
@@ -115,7 +125,11 @@ export const ModalDepartments = ({
               <Popconfirm
                 title="Are you sure to delete this department?"
                 icon={<QuestionCircleOutlined style={{ color: "red" }} />}
-                onConfirm={() => console.log("Delete department")}
+                onConfirm={() => {
+                  handleDeleteDepartment().then(() => {
+                    setVisible(false);
+                  });
+                }}
               >
                 <DeleteOutlined />
               </Popconfirm>
@@ -127,7 +141,9 @@ export const ModalDepartments = ({
     {
       key: "2",
       label: "Projects",
-      children: <Projects />,
+      children: projectData?.data.map((project: Project, index: number) => (
+        <ProjectCard onClick={() => console.log('hello world')} projectName={project.name} />
+      )),
     },
     {
       key: "3",
@@ -135,70 +151,25 @@ export const ModalDepartments = ({
       children: (
         <Timeline
           mode={"alternate"}
-          items={[
-            {
-              color: "black",
-              label: "2024-05-03",
-              children: (
-                <>
-                  <Tag onClick={showReportProject}>DA6582</Tag>
-                  <br />
-                  <strong>Design UI</strong>
-                  <p>
-                    Design UI mockup 3 screens: home, detail, report - by Van
-                    Tuan Tran
-                  </p>
-                  <p>Design UI mockup login screen - by Quoc Chinh Nguyen</p>
-                  <strong>Develop mobile application</strong>
-                  <p>Develop authentication feature - by The Hieu Pham</p>
-                  <Tag onClick={showReportProject}>DA8642</Tag>
-                  <br />
-                  <strong>Develop algorithm</strong>
-                  <p>Develop authentication feature - by The Hieu Pham</p>
-                </>
-              ),
-            },
-            {
-              color: "red",
-              label: "2024-05-02",
-              children: (
-                <>
-                  <Tag onClick={showReportProject}>DA6582</Tag>
-                  <br />
-                  <strong>Design UI</strong>
-                  <p>
-                    Design UI mockup 3 screens: home, detail, report - by Van
-                    Tuan Tran
-                  </p>
-                  <p>Design UI mockup login screen - by Quoc Chinh Nguyen</p>
-                  <strong>Develop mobile application</strong>
-                  <p>Develop authentication feature - by The Hieu Pham</p>
-                  <Tag onClick={showReportProject}>DA8642</Tag>
-                  <br />
-                  <strong>Develop algorithm</strong>
-                  <p>Develop authentication feature - by The Hieu Pham</p>
-                </>
-              ),
-            },
-            {
-              color: "green",
-              label: "2024-04-26",
-              children: (
-                <>
-                  <Tag onClick={showReportProject}>DA6582</Tag>
-                  <br />
-                  <strong>Design UI</strong>
-                  <p>
-                    Design UI mockup 3 screens: home, detail, report - by Van
-                    Tuan Tran
-                  </p>
-                  <p>Design UI mockup login screen - by Quoc Chinh Nguyen</p>
-                  <strong>Develop mobile application</strong>
-                  <p>Develop authentication feature - by The Hieu Pham</p>
-                </>
-              ),
-            },
-          ]}
+          items={reportData?.data?.map((item, index) => ({
+            // color: item.color,
+            // label: item.label,
+            children: (
+              <>
+                <Tag onClick={showReportProject}>{item.project_id}</Tag>
+                <br />
+                <strong>{item.name}</strong>
+                <p>{item.createdBy}</p>
+                <p>{item.description}</p>
+                <strong>{item.description}</strong>
+                <p>{item.description}</p>
+                <Tag onClick={showReportProject}>{item.description}</Tag>
+                <br />
+                <strong>{item.description}</strong>
+                <p>{item.description}</p>
+              </>
+            ),
+          }))}
         />
       ),
     },
@@ -217,15 +188,17 @@ export const ModalDepartments = ({
       <ModalDepartmentManager
         visible={managerModalVisible}
         setVisible={setManagerModalVisible}
-        manager={manager}
+        department={department}
       />
       <ModalListStaffDepartment
         visible={staffModalVisible}
         setVisible={setstaffModalVisible}
+        department={department}
       />
       <ModalAddManager
         visible={addManagerVisibel}
         setVisible={setAddManagerVisible}
+        department={department}
       />
       <ModalReportProjectDepartment
         visible={showReportProjectVisibel}
