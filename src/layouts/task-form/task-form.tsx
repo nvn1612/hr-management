@@ -16,7 +16,6 @@ import { UploadOutlined } from "@ant-design/icons";
 import {
   useCreateTaskMutation,
   useCreateAssigmentMutation,
-  useGetTaskByPropertiesMutation,
   useGetUsersByPropertiesMutation,
   useGetTaskActivityQuery,
 } from "src/share/services";
@@ -25,7 +24,6 @@ import type { User, Task, Assignment } from "src/share/models";
 import type { FormProps } from "antd";
 
 interface TaskFormFields {
-  taskName: string;
   description: string;
   start: string;
   deadline: string;
@@ -34,8 +32,8 @@ interface TaskFormFields {
 
 interface TaskFormProps {
   assignment?: Assignment;
+  task?: Task;
   action: "create" | "update";
-  assignedStaffs?: User[] | undefined;
   projectPropertyId: string;
   refetch: () => void;
 }
@@ -45,9 +43,9 @@ export const TaskForm = ({
   action,
   projectPropertyId,
   refetch,
+  task,
 }: TaskFormProps) => {
   const [showAddUser, setShowAddUser] = useState<boolean>(false);
-  const [task, setTask] = useState<Task | undefined>(undefined);
   const [assignedStaff, setAssignedStaff] = useState<User | undefined>(
     undefined
   );
@@ -55,7 +53,6 @@ export const TaskForm = ({
 
   const [createAssignment] = useCreateAssigmentMutation();
   const [createTask] = useCreateTaskMutation();
-  const [getTaskByProperties] = useGetTaskByPropertiesMutation();
   const { data: actitvityData } = useGetTaskActivityQuery({
     taskId: task?.task_id,
   });
@@ -90,34 +87,36 @@ export const TaskForm = ({
   };
 
   const fetchTask = async () => {
-    await getTaskByProperties({
-      values: { task_property_ids: [assignment?.project_property_id || ""] },
-    })
-      .unwrap()
-      .then((value) => {
-        // pass only 1 id - result as 1 item array
-        setTask(value.data[0]);
-      })
-      .catch(() => {
-        setTask(undefined);
-      });
-    if (task) {
+    if (task && assignment) {
       form.setFieldsValue({
         description: task.description,
-        deadline: dayjs(Date(), "YYYY/MM/DD"),
+        deadline: assignment.endAt
+          ? dayjs(assignment.endAt.substring(0, 9), "YYYY/MM/DD")
+          : dayjs(),
+        status: assignment?.status,
+      });
+    } else {
+      form.setFieldsValue({
+        description: "",
       });
     }
   };
 
   const fetchStaff = async () => {
-    await getStaff({
-      values: { user_property_ids: [assignment?.user_property_id || ""] },
-    })
-      .unwrap()
-      .then((value) => {
-        // same as above
-        setAssignedStaff(value.users[0]);
-      });
+    if (assignment?.user_property_id) {
+      await getStaff({
+        values: { user_property_ids: [assignment.user_property_id || ""] },
+      })
+        .unwrap()
+        .then((value) => {
+          // same as above
+          if (value.users.length > 0) {
+            setAssignedStaff(value.users[0]);
+          } else {
+            setAssignedStaff(undefined);
+          }
+        });
+    }
   };
 
   useEffect(() => {
@@ -137,33 +136,35 @@ export const TaskForm = ({
         <Form.Item<TaskFormFields> label='Description' name={"description"}>
           <Input.TextArea />
         </Form.Item>
-        <Form.Item<TaskFormFields> label='Deadline' name={"deadline"}>
-          <DatePicker />
-        </Form.Item>
-        <Form.Item<TaskFormFields>
-          label='Status'
-          name={"status"}
-          valuePropName='checked'
-        >
-          <Checkbox />
-        </Form.Item>
-        <Form.Item label='Assigned'>
-          {assignedStaff && <Tag closable={true}>{assignedStaff.username}</Tag>}
-          {showAddUser ? (
-            <Input size='small' onPressEnter={onEnterNewUser} />
-          ) : (
-            <Tag
-              className='add-user-tag'
-              onClick={() => {
-                setShowAddUser(true);
-              }}
-            >
-              New Staff
-            </Tag>
-          )}
-        </Form.Item>
         {action === "update" && (
           <>
+            <Form.Item<TaskFormFields> label='Deadline' name={"deadline"}>
+              <DatePicker />
+            </Form.Item>
+            <Form.Item<TaskFormFields>
+              label='Status'
+              name={"status"}
+              valuePropName='checked'
+            >
+              <Checkbox />
+            </Form.Item>
+            <Form.Item label='Assigned'>
+              {assignedStaff && (
+                <Tag closable={true}>{assignedStaff.username}</Tag>
+              )}
+              {showAddUser ? (
+                <Input size='small' onPressEnter={onEnterNewUser} />
+              ) : (
+                <Tag
+                  className='add-user-tag'
+                  onClick={() => {
+                    setShowAddUser(true);
+                  }}
+                >
+                  New Staff
+                </Tag>
+              )}
+            </Form.Item>
             <Form.Item label='Documents'>
               <List
                 dataSource={documents || []}
@@ -177,22 +178,24 @@ export const TaskForm = ({
                 <Button icon={<UploadOutlined />}>Upload new Document</Button>
               </Upload>
             </Form.Item>
+            <Form.Item label='Activities'>
+              <List
+                dataSource={
+                  actitvityData && actitvityData.length > 0 ? actitvityData : []
+                }
+                renderItem={(activity) => (
+                  <List.Item>
+                    <List.Item.Meta description={activity.description} />
+                  </List.Item>
+                )}
+              />
+              <Input placeholder='New activity' />
+            </Form.Item>
           </>
         )}
-        <Form.Item label='Activities'>
-          <List
-            dataSource={actitvityData || []}
-            renderItem={(activity) => (
-              <List.Item>
-                <List.Item.Meta description={activity.description} />
-              </List.Item>
-            )}
-          />
-          <Input placeholder='New activity' />
-        </Form.Item>
         <Form.Item wrapperCol={{ offset: 4 }}>
           <Button type='primary' htmlType='submit'>
-            Save Changes
+            {action === "update" ? "Save Changes" : "Create"}
           </Button>
         </Form.Item>
       </Form>

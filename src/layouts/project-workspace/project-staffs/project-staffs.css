@@ -5,16 +5,13 @@
     display: flex;
     justify-content: flex-start;
     gap: var(--gap-s);
-    .remove-user-icon {
-      color: var(--warning-color);
-      font-size: 18px;
-    }
-    .view-task-btn {
-      color: var(--primary-color);
-    }
-    .add-user-icon {
-      color: var(--primary-color);
-      font-size: 18px;
-    }
   }
+}
+.remove-user-icon {
+  color: var(--warning-color);
+  font-size: 18px;
+}
+.add-user-icon {
+  color: var(--primary-color);
+  font-size: 18px;
 }
