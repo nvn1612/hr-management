@@ -23,7 +23,7 @@ export const Projects = () => {
   }>({ page: 1 });
   const [messageApi, contextHolder] = message.useMessage();
 
-  const { data, isLoading } = useGetAllProjectQuery({ ...queries });
+  const { data, isFetching } = useGetAllProjectQuery({ ...queries });
   const [deleteProject] = useDeleteProjectMutation();
 
   const tabsProps: TabsProps["items"] = [
@@ -60,7 +60,7 @@ export const Projects = () => {
     <>
       {contextHolder}
       <Spin
-        spinning={isLoading}
+        spinning={isFetching}
         tip='Loading Projects'
         className='project-card-loading'
         size='large'

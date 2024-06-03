@@ -154,6 +154,29 @@ const accountServices = hrManagementApi.injectEndpoints({
       },
       transformResponse: (response: Response<GetUserResp>) => response.data,
     }),
+    getDepartmentStaffs: build.query<
+      GetUserResp,
+      {
+        departmentId?: string;
+        page?: number;
+        itemsPerPage?: number | "ALL";
+      }
+    >({
+      query({ departmentId, page, itemsPerPage }) {
+        return {
+          url: `users/admin/getAllStaffInDepartment/${departmentId}`,
+          method: "GET",
+          headers: {
+            authorization: accessToken(),
+          },
+          params: {
+            page: page || 1,
+            items_per_page: itemsPerPage,
+          },
+        };
+      },
+      transformResponse: (response: Response<GetUserResp>) => response.data,
+    }),
   }),
 });
 
@@ -168,4 +191,5 @@ export const {
   useDeleteUserMutation,
   useChangePasswordMutation,
   useGetUsersByPropertiesMutation,
+  useGetDepartmentStaffsQuery,
 } = accountServices;
