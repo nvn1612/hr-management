@@ -3,11 +3,13 @@ import { Modal, Table, } from "antd";
 import { MinusCircleOutlined, PlusSquareOutlined } from '@ant-design/icons';
 import { ModalAddStaffsDepartment } from "src/layouts/modal-departments/modal-add-staffs-department";
 import "./modal-list-staff-department.css";
-import {}
+import { Department } from "src/share/interfaces/department";
+import { useGetDepartmentStaffsQuery } from "src/share/services";
 
 type ModalDepartmentListStaffProps = {
   visible: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  department?: Department;
 };
 
 const columns = [
@@ -22,9 +24,9 @@ const columns = [
     key: "username",
   },
   {
-    title: "Role",
-    dataIndex: "role",
-    key: "role",
+    title: "email",
+    dataIndex: "email",
+    key: "email",
   },
   {
     title: "Action",
@@ -33,46 +35,20 @@ const columns = [
   },
 ];
 
+
 export const ModalListStaffDepartment = ({
   visible,
   setVisible,
+  department
 }: ModalDepartmentListStaffProps) => {
   const [visibleAddStaff, setVisibleAddStaff] = useState(false);
   const showModalAddStaff = () => {
     setVisibleAddStaff(true);
   }
-  const data = [
-    {
-      key: "1",
-      name: "Van Diep Doan",
-      username: "vanđiepdoan123",
-      role: "manager",
-    },
-    {
-      key: "2",
-      name: "Nguyen Van A",
-      username: "vana123",
-      role: "staff",
-    },
-    {
-      key: "3",
-      name: "Nguyen Van B",
-      username: "vanb123",
-      role: "staff",
-    },
-    {
-      key: "4",
-      name: "Nguyen Van C",
-      username: "vanc123",
-      role: "staff",
-    },
-    {
-      key: "5",
-      name: "Nguyen Van D",
-      username: "vanc123",
-      role: "staff",
-    },
-  ];
+  
+
+  const {data} = useGetDepartmentStaffsQuery({departmentId:department?.department_id});
+
   return (
     <>
       <Modal
@@ -84,7 +60,13 @@ export const ModalListStaffDepartment = ({
       >
         <Table
           columns={columns}
-          dataSource={data}
+          dataSource={data?.users.map((user) => ({
+            key: user.user_id,
+            name: user.name,
+            username: user.username,
+            email: user.email,
+          }))
+          }
           pagination={{ pageSize: 4 }}
         />
         <PlusSquareOutlined className="icon-add-staffs" onClick={showModalAddStaff}/>
