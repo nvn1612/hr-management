@@ -16,10 +16,12 @@ import { UploadOutlined } from "@ant-design/icons";
 import {
   useCreateTaskMutation,
   useCreateAssigmentMutation,
-  // useGetTaskActivityQuery,
+  useGetTaskByPropertiesMutation,
+  useGetUsersByPropertiesMutation,
+  useGetTaskActivityQuery,
 } from "src/share/services";
 
-import type { User, Task } from "src/share/models";
+import type { User, Task, Assignment } from "src/share/models";
 import type { FormProps } from "antd";
 
 interface TaskFormFields {
@@ -31,67 +33,97 @@ interface TaskFormFields {
 }
 
 interface TaskFormProps {
-  task: Task;
+  assignment?: Assignment;
   action: "create" | "update";
   assignedStaffs?: User[] | undefined;
-  projectId: string;
+  projectPropertyId: string;
+  refetch: () => void;
 }
 
 export const TaskForm = ({
-  task,
-  assignedStaffs,
+  assignment,
   action,
-  projectId,
+  projectPropertyId,
+  refetch,
 }: TaskFormProps) => {
   const [showAddUser, setShowAddUser] = useState<boolean>(false);
+  const [task, setTask] = useState<Task | undefined>(undefined);
+  const [assignedStaff, setAssignedStaff] = useState<User | undefined>(
+    undefined
+  );
   const [form] = Form.useForm();
 
   const [createAssignment] = useCreateAssigmentMutation();
   const [createTask] = useCreateTaskMutation();
-  // const { data } = useGetTaskActivityQuery({ taskId: task.task_id });
+  const [getTaskByProperties] = useGetTaskByPropertiesMutation();
+  const { data: actitvityData } = useGetTaskActivityQuery({
+    taskId: task?.task_id,
+  });
+  const [getStaff] = useGetUsersByPropertiesMutation();
 
-  const documents = [
-    { fileLink: "Link to document 1" },
-    { fileLink: "Link to document 2" },
-    { fileLink: "Link to document 3" },
-  ];
-  const activites = [
-    { description: "Activity 1" },
-    { description: "Activity 2" },
-  ];
+  const documents: string[] = [];
 
   const onEnterNewUser = () => {
     setShowAddUser(false);
   };
   const onFinish: FormProps<TaskFormFields>["onFinish"] = async (values) => {
     switch (action) {
-      case "create":
-        createTask({ description: values.description })
+      case "create": {
+        const newTask = await createTask({
+          description: values.description,
+        }).unwrap();
+        await createAssignment({
+          project_property_id: projectPropertyId,
+          task_property_id: newTask.task_property.task_property_id,
+        })
           .unwrap()
-          .then((value) => {
-            createAssignment({
-              project_property_id: projectId,
-              task_property_id: value.data.TaskProperty.task_property_id,
-            });
-          })
           .then(() => {
             message.success("successful create task");
+            refetch && refetch();
           })
-          .catch(() => {
-            message.error("Failed to create task");
-          });
+          .catch((e) => message.error(e));
+
+        break;
+      }
+      case "update":
     }
   };
 
-  useEffect(() => {
+  const fetchTask = async () => {
+    await getTaskByProperties({
+      values: { task_property_ids: [assignment?.project_property_id || ""] },
+    })
+      .unwrap()
+      .then((value) => {
+        // pass only 1 id - result as 1 item array
+        setTask(value.data[0]);
+      })
+      .catch(() => {
+        setTask(undefined);
+      });
     if (task) {
       form.setFieldsValue({
         description: task.description,
-        start: dayjs(task?.createdAt, "YYYY/MM/DD"),
         deadline: dayjs(Date(), "YYYY/MM/DD"),
       });
     }
-  });
+  };
+
+  const fetchStaff = async () => {
+    await getStaff({
+      values: { user_property_ids: [assignment?.user_property_id || ""] },
+    })
+      .unwrap()
+      .then((value) => {
+        // same as above
+        setAssignedStaff(value.users[0]);
+      });
+  };
+
+  useEffect(() => {
+    fetchTask();
+    fetchStaff();
+  }, [assignment, projectPropertyId]);
   return (
     <div className='task-form-container'>
       <Form
@@ -105,9 +137,6 @@ export const TaskForm = ({
         <Form.Item<TaskFormFields> label='Description' name={"description"}>
           <Input.TextArea />
         </Form.Item>
-        <Form.Item<TaskFormFields> label='Start' name={"start"}>
-          <DatePicker />
-        </Form.Item>
         <Form.Item<TaskFormFields> label='Deadline' name={"deadline"}>
           <DatePicker />
         </Form.Item>
@@ -119,9 +148,7 @@ export const TaskForm = ({
           <Checkbox />
         </Form.Item>
         <Form.Item label='Assigned'>
-          {assignedStaffs?.map((staff) => (
-            <Tag closable={true}>{staff.username}</Tag>
-          ))}
+          {assignedStaff && <Tag closable={true}>{assignedStaff.username}</Tag>}
           {showAddUser ? (
             <Input size='small' onPressEnter={onEnterNewUser} />
           ) : (
@@ -139,10 +166,10 @@ export const TaskForm = ({
           <>
             <Form.Item label='Documents'>
               <List
-                dataSource={documents}
+                dataSource={documents || []}
                 renderItem={(document) => (
                   <List.Item>
-                    <List.Item.Meta description={document.fileLink} />
+                    <List.Item.Meta description={document} />
                   </List.Item>
                 )}
               />
@@ -154,7 +181,7 @@ export const TaskForm = ({
         )}
         <Form.Item label='Activities'>
           <List
-            dataSource={activites}
+            dataSource={actitvityData || []}
             renderItem={(activity) => (
               <List.Item>
                 <List.Item.Meta description={activity.description} />
@@ -164,7 +191,9 @@ export const TaskForm = ({
           <Input placeholder='New activity' />
         </Form.Item>
         <Form.Item wrapperCol={{ offset: 4 }}>
-          <Button type='primary'>Save Changes</Button>
+          <Button type='primary' htmlType='submit'>
+            Save Changes
+          </Button>
         </Form.Item>
       </Form>
     </div>
