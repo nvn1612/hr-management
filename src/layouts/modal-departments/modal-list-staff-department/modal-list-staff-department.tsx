@@ -3,6 +3,7 @@ import { Modal, Table, } from "antd";
 import { MinusCircleOutlined, PlusSquareOutlined } from '@ant-design/icons';
 import { ModalAddStaffsDepartment } from "src/layouts/modal-departments/modal-add-staffs-department";
 import "./modal-list-staff-department.css";
+import {}
 
 type ModalDepartmentListStaffProps = {
   visible: boolean;
