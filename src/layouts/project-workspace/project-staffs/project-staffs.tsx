@@ -7,11 +7,12 @@ import {
   useGetDepartmentStaffsQuery,
 } from "src/share/services";
 import {
-  UserOutlined,
   MinusCircleOutlined,
   PlusCircleOutlined,
   PlusOutlined,
 } from "@ant-design/icons";
+import { randAvaBg } from "src/share/utils";
+
 import { GetUserResp, Project } from "src/share/models";
 
 interface ProjectStaffsProps {
@@ -22,6 +23,7 @@ export const ProjectStaffs = ({ project }: ProjectStaffsProps) => {
   const [page, setPage] = useState<number>(1);
   const [isAddMode, setIsAddMode] = useState<boolean>(false);
   const [projectStaffs, setProjectStaffs] = useState<GetUserResp | undefined>();
+
   const [getProjectStaff, { isLoading: staffLoading }] =
     useGetUsersByPropertiesMutation();
   const userPropertyIds = useGetProjectUserPropertiesQuery({
@@ -81,10 +83,15 @@ export const ProjectStaffs = ({ project }: ProjectStaffsProps) => {
                   <List.Item.Meta
                     avatar={
                       <Avatar
-                        src={user.avartar ? user.avartar : <UserOutlined />}
-                      />
+                        {...(user.avatar
+                          ? { src: user.avatar }
+                          : { style: { background: randAvaBg() } })}
+                      >
+                        {!user.avatar && user.username?.substring(0, 1)}
+                      </Avatar>
                     }
                     title={user.username}
+                    description={user.email}
                   />
                 </List.Item>
               );
@@ -116,10 +123,15 @@ export const ProjectStaffs = ({ project }: ProjectStaffsProps) => {
                   <List.Item.Meta
                     avatar={
                       <Avatar
-                        src={user.avartar ? user.avartar : <UserOutlined />}
-                      />
+                        {...(user.avatar
+                          ? { src: user.avatar }
+                          : { style: { background: randAvaBg() } })}
+                      >
+                        {!user.avatar && user.username!.substring(0, 1)}
+                      </Avatar>
                     }
                     title={user.username}
+                    description={user.email}
                   />
                 </List.Item>
               );
