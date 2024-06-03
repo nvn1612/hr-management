@@ -5,10 +5,7 @@ export interface Task {
   createdBy: string;
   modifiedBy: string;
   createdAt: string;
-  TaskProperty: {
-    task_property_id: string;
-    task_id: string;
-  };
+  TaskProperty: TaskProperty;
 }
 
 export interface TaskResp {
@@ -20,24 +17,35 @@ export interface TaskResp {
   itemsPerPage: number;
 }
 
-export interface Actitvity {
-  activity_id: string;
-  description: string;
-  createdBy: string;
-  modifiedBy: string;
-  createdAt: string;
-  ActivityProperty: {
-    activity_property_id: string;
-    user_property_id: string;
-    activity_id: string;
+export interface Activity {
+  activity_id?: string;
+  description?: string;
+  createdBy?: string;
+  modifiedBy?: string;
+  createdAt?: string;
+  ActivityProperty?: {
+    activity_property_id?: string;
+    user_property_id?: string;
+    activity_id?: string;
   };
 }
 
 export interface ActivityResp {
-  data: Actitvity[];
+  data: Activity[];
   total: number;
   nextPage: number;
   previousPage: number;
   currentPage: number;
   itemsPerPage: number;
+}
+
+export interface TaskProperty {
+  task_property_id?: string;
+  task_id?: string;
+  createdBy?: string;
+  modifiedBy?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  deletedAt?: string;
+  deletedMark?: boolean;
 }

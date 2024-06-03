@@ -6,17 +6,20 @@ import { TaskForm } from "src/layouts/task-form";
 import {
   useGetTaskByPropertiesMutation,
   useGetTaskPropertiesQuery,
+  useGetProjectAssignmentsQuery,
 } from "src/share/services";
 
-import { Task } from "src/share/models";
+import { Assignment, Task } from "src/share/models";
 
 interface ProjectTasksProp {
-  projectId?: string;
+  projectPropertyId?: string;
 }
 
-export const ProjectTasks = ({ projectId }: ProjectTasksProp) => {
+export const ProjectTasks = ({ projectPropertyId }: ProjectTasksProp) => {
   const [showTaskForm, setShowTaskForm] = useState<boolean>(false);
-  const [selectedTask, setSelectedTask] = useState<Task>();
+  const [selectedAssigment, setSelectedAssigment] = useState<
+    Assignment | undefined
+  >();
   const [taskList, setTaskList] = useState<Task[]>();
   const [page, setPage] = useState<number>(1);
   const [formAction, setFormAction] = useState<"create" | "update">("create");
@@ -27,7 +30,11 @@ export const ProjectTasks = ({ projectId }: ProjectTasksProp) => {
     { label: "In Progress", value: "inProgress" },
   ];
 
-  const { data } = useGetTaskPropertiesQuery({ projectId });
+  const { data } = useGetTaskPropertiesQuery({ projectPropertyId });
+  const projectAssignments = useGetProjectAssignmentsQuery({
+    projectPropertyId,
+    itemsPerPage: 7,
+  });
   const [getTaskByProperties] = useGetTaskByPropertiesMutation();
 
   const fetchTask = async () => {
@@ -46,7 +53,7 @@ export const ProjectTasks = ({ projectId }: ProjectTasksProp) => {
 
   useEffect(() => {
     fetchTask();
-  }, [projectId, page]);
+  }, [projectPropertyId, page]);
 
   return (
     <div className='task-section'>
@@ -65,27 +72,31 @@ export const ProjectTasks = ({ projectId }: ProjectTasksProp) => {
               setPage(selectedPage);
             },
           }}
-          dataSource={taskList}
-          renderItem={(task) => {
-            return (
-              <TaskCard
-                onClick={() => {
-                  setShowTaskForm(true);
-                  setSelectedTask(task);
-                  setFormAction("update");
-                }}
-              />
-            );
+          dataSource={projectAssignments.data?.assignments}
+          renderItem={(assignment) => {
+            if (assignment.task_information) {
+              const matchedTask = taskList?.find(
+                (task) =>
+                  task.TaskProperty.task_property_id ===
+                  assignment.task_property_id
+              );
+              return (
+                <List.Item>
+                  <List.Item.Meta title={matchedTask?.description} />
+                </List.Item>
+              );
+            }
           }}
         />
         <Button
+          className='create-task-btn'
           type='primary'
           onClick={() => {
             setShowTaskForm(true);
             setFormAction("create");
           }}
         >
-          Add new Task
+          Create new Task
         </Button>
       </div>
       <Modal
@@ -108,9 +119,9 @@ export const ProjectTasks = ({ projectId }: ProjectTasksProp) => {
         className='task-modal'
       >
         <TaskForm
-          projectId={projectId!}
-          task={selectedTask!}
+          projectPropertyId={projectPropertyId!}
           action={formAction}
+          refetch={fetchTask}
         />
       </Modal>
     </div>
