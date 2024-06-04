@@ -180,6 +180,7 @@ const accountServices = hrManagementApi.injectEndpoints({
           },
         };
       },
+      providesTags: ["User"],
       transformResponse: (response: Response<GetUserResp>) => response.data,
     }),
   }),
