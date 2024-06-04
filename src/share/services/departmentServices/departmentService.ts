@@ -61,10 +61,10 @@ export const DepartmentServices = hrManagementApi.injectEndpoints({
           headers: {
             authorization: accessToken(),
           },
-          body : {managerId}
+          body : {manager_id : managerId}
         };
       },
-      invalidatesTags : ['department']
+      invalidatesTags : ['department','User']
     }),
     getReportDepartments: build.query<ProjectResp,{departmentId?: string}>({
       query: ({departmentId}) => { 
@@ -90,11 +90,28 @@ export const DepartmentServices = hrManagementApi.injectEndpoints({
       },
       transformResponse: (response:Response<ProjectResp>) =>response.data,
     }),
+    deleteStaffDepartment: build.mutation<Response<{count : number}>,{departmentId?: string, listStaff?: string[]}>({
+      query({departmentId,listStaff}) {
+        return {
+          url: `users/removeStaffFromDepartment/${departmentId}`,
+          method: "DELETE",
+          headers: {
+            authorization: accessToken(),
+          },
+          body : {
+            list_user_ids: listStaff,
+          }
+        };
+      },
+      invalidatesTags : ['department']
+    }),
+    
   }),
+  
   
   
 });
 
 
 
-export const { useGetDepartmentsQuery, useDeleteDepartmentsMutation,useAddDepartmentMutation,useUpdateManagerDepartmentMutation ,useGetReportDepartmentsQuery,useGetAllProjectDepartmentQuery } = DepartmentServices;
+export const { useGetDepartmentsQuery, useDeleteDepartmentsMutation,useAddDepartmentMutation,useUpdateManagerDepartmentMutation ,useGetReportDepartmentsQuery,useGetAllProjectDepartmentQuery, useDeleteStaffDepartmentMutation } = DepartmentServices;
