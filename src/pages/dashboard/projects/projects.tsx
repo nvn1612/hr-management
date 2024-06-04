@@ -40,7 +40,7 @@ export const Projects = () => {
     {
       key: "3",
       label: "Reports",
-      children: <ProjectReports />,
+      children: <ProjectReports projectId={selectedProject?.project_id} />,
     },
   ];
 

@@ -12,7 +12,7 @@ export interface User {
   username?: string;
   email?: string;
   phone?: string;
-  avartar?: string;
+  avatar?: string;
   name?: string;
   birthday?: string;
   createdAt?: string;

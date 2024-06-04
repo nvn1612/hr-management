@@ -96,9 +96,6 @@ export const ProjectForm = ({ project }: ProjectFormProps) => {
         </Form.Item>
         {project && (
           <>
-            <Form.Item<Project> name={"createdBy"} label='Created By'>
-              <Input />
-            </Form.Item>
             <Form.Item<Project> name={"startAt"} label='Start'>
               <DatePicker />
             </Form.Item>

@@ -1,13 +1,13 @@
 import "./project-tasks.css";
 import { useEffect, useState } from "react";
-import { TaskCard } from "src/components/task-card";
-import { Radio, Modal, Button, Popconfirm, List } from "antd";
-import { TaskForm } from "src/layouts/task-form";
+import { Modal, Button, Popconfirm, List, Spin } from "antd";
+import { TaskForm } from "src/layouts";
 import {
   useGetTaskByPropertiesMutation,
   useGetTaskPropertiesQuery,
   useGetProjectAssignmentsQuery,
 } from "src/share/services";
+import { ClockCircleOutlined, CheckCircleOutlined } from "@ant-design/icons";
 
 import { Assignment, Task } from "src/share/models";
 
@@ -17,25 +17,22 @@ interface ProjectTasksProp {
 
 export const ProjectTasks = ({ projectPropertyId }: ProjectTasksProp) => {
   const [showTaskForm, setShowTaskForm] = useState<boolean>(false);
-  const [selectedAssigment, setSelectedAssigment] = useState<
-    Assignment | undefined
-  >();
+
   const [taskList, setTaskList] = useState<Task[]>();
+  const [selectedTask, setSelectedTask] = useState<Task | undefined>(undefined);
+  const [selectedAssignment, setSelectedAssignment] = useState<
+    Assignment | undefined
+  >(undefined);
   const [page, setPage] = useState<number>(1);
   const [formAction, setFormAction] = useState<"create" | "update">("create");
-
-  const taskFilterOptions = [
-    { label: "All", value: "all" },
-    { label: "Finished", value: "finished" },
-    { label: "In Progress", value: "inProgress" },
-  ];
 
   const { data } = useGetTaskPropertiesQuery({ projectPropertyId });
   const projectAssignments = useGetProjectAssignmentsQuery({
     projectPropertyId,
     itemsPerPage: 7,
   });
-  const [getTaskByProperties] = useGetTaskByPropertiesMutation();
+  const [getTaskByProperties, { isLoading: taskLoading }] =
+    useGetTaskByPropertiesMutation();
 
   const fetchTask = async () => {
     await getTaskByProperties({
@@ -59,38 +56,57 @@ export const ProjectTasks = ({ projectPropertyId }: ProjectTasksProp) => {
     <div className='task-section'>
       <div className='filter-role'>
         <p className='project-section-title'>Tasks</p>
-        <Radio.Group
-          defaultValue='all'
-          options={taskFilterOptions}
-          optionType='button'
-        />
       </div>
       <div className='task-card-container'>
-        <List
-          pagination={{
-            onChange: (selectedPage) => {
-              setPage(selectedPage);
-            },
-          }}
-          dataSource={projectAssignments.data?.assignments}
-          renderItem={(assignment) => {
-            if (assignment.task_information) {
-              const matchedTask = taskList?.find(
-                (task) =>
-                  task.TaskProperty.task_property_id ===
-                  assignment.task_property_id
-              );
-              return (
-                <List.Item>
-                  <List.Item.Meta title={matchedTask?.description} />
-                </List.Item>
-              );
-            }
-          }}
-        />
+        <Spin
+          spinning={projectAssignments.isFetching || taskLoading}
+          tip='Getting Tasks'
+        >
+          <List
+            pagination={{
+              onChange: (selectedPage) => {
+                setPage(selectedPage);
+              },
+            }}
+            dataSource={projectAssignments.data?.assignments}
+            renderItem={(assignment) => {
+              if (assignment.task_property_id) {
+                const matchedTask = taskList?.find(
+                  (task) =>
+                    task.TaskProperty.task_property_id ===
+                    assignment.task_property_id
+                );
+                return (
+                  <List.Item
+                    actions={[
+                      <Button
+                        type='link'
+                        onClick={() => {
+                          setShowTaskForm(true);
+                          setFormAction("update");
+                          setSelectedTask(matchedTask);
+                          setSelectedAssignment(assignment);
+                        }}
+                      >
+                        View detail
+                      </Button>,
+                      assignment.status ? (
+                        <CheckCircleOutlined />
+                      ) : (
+                        <ClockCircleOutlined />
+                      ),
+                    ]}
+                  >
+                    <List.Item.Meta title={matchedTask?.description} />
+                  </List.Item>
+                );
+              }
+            }}
+          />
+        </Spin>
         <Button
           className='create-task-btn'
-          type='primary'
+          type='default'
           onClick={() => {
             setShowTaskForm(true);
             setFormAction("create");
@@ -105,16 +121,18 @@ export const ProjectTasks = ({ projectPropertyId }: ProjectTasksProp) => {
         onCancel={() => setShowTaskForm(false)}
         onOk={() => setShowTaskForm(false)}
         footer={[
-          <Popconfirm
-            title='Delete Project'
-            description='Are you sure to delete this task ?'
-            okText='Yes'
-            cancelText='No'
-          >
-            <Button type='primary' danger>
-              Delete task
-            </Button>
-          </Popconfirm>,
+          formAction === "update" && (
+            <Popconfirm
+              title='Delete Project'
+              description='Are you sure to delete this task ?'
+              okText='Yes'
+              cancelText='No'
+            >
+              <Button type='primary' danger>
+                Delete task
+              </Button>
+            </Popconfirm>
+          ),
         ]}
         className='task-modal'
       >
@@ -122,6 +140,8 @@ export const ProjectTasks = ({ projectPropertyId }: ProjectTasksProp) => {
           projectPropertyId={projectPropertyId!}
           action={formAction}
           refetch={fetchTask}
+          assignment={selectedAssignment}
+          task={selectedTask}
         />
       </Modal>
     </div>

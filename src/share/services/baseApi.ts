@@ -5,6 +5,6 @@ export const hrManagementApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: "http://localhost:3050/",
   }),
-  tagTypes: ["User", "userDetail", "department", "project"],
+  tagTypes: ["User", "userDetail", "department", "project", "task", "activity"],
   endpoints: () => ({}),
 });
