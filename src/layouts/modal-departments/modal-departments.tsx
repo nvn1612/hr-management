@@ -34,6 +34,113 @@ type ModalDepartmentsProps = {
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
   department?: Department;
 };
+
+
+const reportProject =
+{
+  "12-5-2024": [
+    {
+      "DA6582": [
+        {
+          "task1": [
+            {
+              "activity-1": "nguyen van A"
+            },
+            {
+              "activity-2": "nguyen van B"
+            }
+          ]
+        },
+        {
+          "task2": [
+            {
+              "activity-3": "nguyen van A"
+            },
+            {
+              "activity-4": "nguyen van B"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "DA6583": [
+        {
+          "task1": [
+            {
+              "activity-1": "nguyen van A"
+            },
+            {
+              "activity-2": "nguyen van B"
+            }
+          ]
+        },
+        {
+          "task2": [
+            {
+              "activity-3": "nguyen van A"
+            },
+            {
+              "activity-4": "nguyen van B"
+            }
+          ]
+        }
+      ]
+    },
+  ],
+  "6-6-2024": [
+    {
+      "DA6582": [
+        {
+          "task1": [
+            {
+              "activity-1": "nguyen van A"
+            },
+            {
+              "activity-2": "nguyen van B"
+            }
+          ]
+        },
+        {
+          "task2": [
+            {
+              "activity-3": "nguyen van A"
+            },
+            {
+              "activity-4": "nguyen van B"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "DA6583": [
+        {
+          "task1": [
+            {
+              "activity-1": "nguyen van A"
+            },
+            {
+              "activity-2": "nguyen van B"
+            }
+          ]
+        },
+        {
+          "task2": [
+            {
+              "activity-3": "nguyen van A"
+            },
+            {
+              "activity-4": "nguyen van B"
+            }
+          ]
+        }
+      ]
+    },
+  ]
+};
+
+
 export const ModalDepartments = ({
   visible,
   setVisible,
@@ -66,7 +173,6 @@ export const ModalDepartments = ({
   }
   const { data: reportData } = useGetReportDepartmentsQuery({ departmentId: department?.department_id })
   const { data: projectData } = useGetAllProjectDepartmentQuery({ departmentId: department?.department_id })
-  console.log(department?.department_id)
   const items: TabsProps["items"] = [
     {
       key: "1",
@@ -151,25 +257,70 @@ export const ModalDepartments = ({
       children: (
         <Timeline
           mode={"alternate"}
-          items={reportData?.data?.map((item, index) => ({
-            // color: item.color,
-            // label: item.label,
-            children: (
-              <>
-                <Tag onClick={showReportProject}>{item.project_id}</Tag>
-                <br />
-                <strong>{item.name}</strong>
-                <p>{item.createdBy}</p>
-                <p>{item.description}</p>
-                <strong>{item.description}</strong>
-                <p>{item.description}</p>
-                <Tag onClick={showReportProject}>{item.description}</Tag>
-                <br />
-                <strong>{item.description}</strong>
-                <p>{item.description}</p>
-              </>
-            ),
-          }))}
+          items={[
+            {
+              color: "black",
+              label: "2024-05-03",
+              children: (
+                <>
+                  <Tag onClick={showReportProject}>DA6582</Tag>
+                  <br />
+                  <strong>Design UI</strong>
+                  <p>
+                    Design UI mockup 3 screens: home, detail, report - by Van
+                    Tuan Tran
+                  </p>
+                  <p>Design UI mockup login screen - by Quoc Chinh Nguyen</p>
+                  <strong>Develop mobile application</strong>
+                  <p>Develop authentication feature - by The Hieu Pham</p>
+                  <Tag onClick={showReportProject}>DA8642</Tag>
+                  <br />
+                  <strong>Develop algorithm</strong>
+                  <p>Develop authentication feature - by The Hieu Pham</p>
+                </>
+              ),
+            },
+            {
+              color: "red",
+              label: "2024-05-02",
+              children: (
+                <>
+                  <Tag onClick={showReportProject}>DA6582</Tag>
+                  <br />
+                  <strong>Design UI</strong>
+                  <p>
+                    Design UI mockup 3 screens: home, detail, report - by Van
+                    Tuan Tran
+                  </p>
+                  <p>Design UI mockup login screen - by Quoc Chinh Nguyen</p>
+                  <strong>Develop mobile application</strong>
+                  <p>Develop authentication feature - by The Hieu Pham</p>
+                  <Tag onClick={showReportProject}>DA8642</Tag>
+                  <br />
+                  <strong>Develop algorithm</strong>
+                  <p>Develop authentication feature - by The Hieu Pham</p>
+                </>
+              ),
+            },
+            {
+              color: "green",
+              label: "2024-04-26",
+              children: (
+                <>
+                  <Tag onClick={showReportProject}>DA6582</Tag>
+                  <br />
+                  <strong>Design UI</strong>
+                  <p>
+                    Design UI mockup 3 screens: home, detail, report - by Van
+                    Tuan Tran
+                  </p>
+                  <p>Design UI mockup login screen - by Quoc Chinh Nguyen</p>
+                  <strong>Develop mobile application</strong>
+                  <p>Develop authentication feature - by The Hieu Pham</p>
+                </>
+              ),
+            },
+          ]}
         />
       ),
     },

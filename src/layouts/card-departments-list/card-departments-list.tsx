@@ -19,7 +19,7 @@ export const CardDepartments = () => {
     setVisibleAddDepartment(true);
   };
 
-  const { data, isLoading } = useGetDepartmentsQuery(queries);
+  const { data, isFetching } = useGetDepartmentsQuery(queries);
 
   const onChangePage: PaginationProps["onChange"] = (page) => {
     setQueries({ ...queries, page });
@@ -28,7 +28,7 @@ export const CardDepartments = () => {
   return (
     <>
       <Spin
-        spinning={isLoading}
+        spinning={isFetching}
         tip="Loading Departments"
         className="department-card-loading"
         size="large"

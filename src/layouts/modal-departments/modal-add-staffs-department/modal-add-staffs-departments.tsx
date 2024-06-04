@@ -3,6 +3,8 @@ import { Modal, Radio, Input, Avatar, List, Checkbox, DatePicker } from "antd";
 import VirtualList from "rc-virtual-list";
 import { SearchOutlined, UserOutlined } from "@ant-design/icons";
 import type { RadioChangeEvent } from "antd";
+import { useGetUsersQuery } from "src/share/services";
+import {User} from 'src/share/models/accountModels'
 import "./modal-add-staffs-departments.css";
 type ModalAddStaffsDepartmentProps = {
   visible: boolean;
@@ -79,6 +81,8 @@ export const ModalAddStaffsDepartment = ({
       return newState;
     });
   };
+  const {data : staffData} = useGetUsersQuery({role:"STAFF"});
+  
   return (
     <>
       <Modal
@@ -121,17 +125,17 @@ export const ModalAddStaffsDepartment = ({
           <div className="list-add-staffs">
             <List>
               <VirtualList
-                data={data}
+                data={staffData?.users.filter(user => user.UserProperty?.department_id===null) ?? []}
                 height={ContainerHeight}
                 itemHeight={47}
                 itemKey="email"
                 onScroll={onScroll}
               >
-                {(item: UserItem, index: number) => (
+                {(item: User, index: number) => (
                   <List.Item key={item.email}>
                     <List.Item.Meta
-                      avatar={<Avatar src={item.picture.large} />}
-                      title={<a href="">{item.name.last}</a>}
+                      avatar={<Avatar src={item.avatar} />}
+                      title={<a href="">{item.username}</a>}
                     />
                     <Checkbox
                       className="checkbox-staff"

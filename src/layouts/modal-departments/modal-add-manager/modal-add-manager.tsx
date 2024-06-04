@@ -51,10 +51,9 @@ export const ModalAddManager = ({
               {data?.users.filter(user => user.UserProperty?.department_id === null).map((manager, index) => (
                 <Col className="gutter-row" span={6} key={index}>
                   <div className="item-list-manager"onClick={() => setSelectedManager(selectedManager === index ? null : index)}>
-                    <div className="checkbox-select-staff">
+                    <div className="checkbox-select-staff" onClick={() => setMainManager(manager.user_id)}>
                     <Checkbox 
                       checked={selectedManager === index}
-                      onClick={() => setMainManager(manager.user_id)}
                     />
                     </div>
                     <div className="avatar-manager">
