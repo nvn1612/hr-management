@@ -53,8 +53,11 @@ const accountServices = hrManagementApi.injectEndpoints({
       },
       invalidatesTags: ["userDetail"],
     }),
-    getUsers: build.query<GetUserResp, { role: UserRole; page?: number }>({
-      query: ({ role, page }) => {
+    getUsers: build.query<
+      GetUserResp,
+      { role: UserRole; page?: number; search?: string }
+    >({
+      query: ({ role, page, search }) => {
         return {
           url: `users/admin/getAll`,
           method: "GET",
@@ -64,6 +67,7 @@ const accountServices = hrManagementApi.injectEndpoints({
           params: {
             role: role === OUserRole.All ? "" : role,
             page: page ? page : 1,
+            search: search || "",
           },
         };
       },
