@@ -28,7 +28,7 @@ const accountServices = hrManagementApi.injectEndpoints({
         };
       },
     }),
-    getUserDetail: build.query<Response<User>, void>({
+    getUserDetail: build.query<User, void>({
       query: () => {
         return {
           url: "users/detail",
@@ -38,6 +38,7 @@ const accountServices = hrManagementApi.injectEndpoints({
           },
         };
       },
+      transformResponse: (response: Response<User>) => response.data,
       providesTags: ["userDetail"],
     }),
     updateUserDetail: build.mutation<Response<User>, Partial<User>>({

@@ -17,18 +17,16 @@ export interface User {
   birthday?: string;
   createdAt?: string;
   createBy?: string;
+  role?: UserRole;
   UserProperty?: UserProperty;
 }
 
 interface UserProperty {
   user_property_id?: string;
-  user_id?: string;
-  role_id?: string;
+  role?: {
+    name: UserRole;
+  };
   department_id?: string;
-  createdAt?: string;
-  updatedAt?: string;
-  deletedAt?: string;
-  deletedMark?: boolean;
 }
 
 export interface GetUserResp {
