@@ -8,6 +8,7 @@ import type {
   Task,
   AssignmentResp,
   TaskProperty,
+  ProjectReportResp,
 } from "src/share/models";
 import { hrManagementApi } from "src/share/services";
 import { localStorageUtil } from "src/share/utils";
@@ -262,9 +263,10 @@ const projectServices = hrManagementApi.injectEndpoints({
         projectPropertyId?: string;
         page?: number;
         itemsPerPage: number | "ALL";
+        isAssigned?: boolean;
       }
     >({
-      query({ projectPropertyId, page, itemsPerPage }) {
+      query({ projectPropertyId, page, itemsPerPage, isAssigned }) {
         return {
           url: `assignments/getAllAssignmentForProject/${projectPropertyId}`,
           method: "GET",
@@ -272,13 +274,49 @@ const projectServices = hrManagementApi.injectEndpoints({
             authorization: accessToken(),
           },
           params: {
-            isAssignment: true,
+            isAssignment: isAssigned || "",
             page,
             items_per_page: itemsPerPage,
           },
         };
       },
       transformResponse: (response: Response<AssignmentResp>) => response.data,
+    }),
+    updateTask: build.mutation<
+      Response<boolean>,
+      {
+        value: { description: string };
+        taskId: string;
+      }
+    >({
+      query({ taskId, value }) {
+        return {
+          url: `assignments/getAllAssignmentForProject/${taskId}`,
+          method: "GET",
+          headers: {
+            authorization: accessToken(),
+          },
+          body: value,
+        };
+      },
+    }),
+    getProjectReports: build.query<
+      ProjectReportResp,
+      {
+        projectId?: string;
+      }
+    >({
+      query({ projectId }) {
+        return {
+          url: `gateway/api/access/reportForProject/${projectId}`,
+          method: "GET",
+          headers: {
+            authorization: accessToken(),
+          },
+        };
+      },
+      transformResponse: (response: Response<ProjectReportResp>) =>
+        response.data,
     }),
   }),
 });
@@ -298,4 +336,5 @@ export const {
   useGetUserActivityQuery,
   useGetTaskFileMutation,
   useGetProjectAssignmentsQuery,
+  useGetProjectReportsQuery,
 } = projectServices;
