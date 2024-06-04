@@ -175,7 +175,7 @@ const accountServices = hrManagementApi.injectEndpoints({
           },
         };
       },
-      transformResponse: (response: Response<GetUserResp>) => response.data,
+      transformResponse: (response: Response<GetUserResp>) => response.data,  
     }),
   }),
 });
