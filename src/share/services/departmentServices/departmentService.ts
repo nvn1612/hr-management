@@ -114,4 +114,4 @@ export const DepartmentServices = hrManagementApi.injectEndpoints({
 
 
 
-export const { useGetDepartmentsQuery, useDeleteDepartmentsMutation,useAddDepartmentMutation,useUpdateManagerDepartmentMutation ,useGetReportDepartmentsQuery,useGetAllProjectDepartmentQuery } = DepartmentServices;
+export const { useGetDepartmentsQuery, useDeleteDepartmentsMutation,useAddDepartmentMutation,useUpdateManagerDepartmentMutation ,useGetReportDepartmentsQuery,useGetAllProjectDepartmentQuery, useDeleteStaffDepartmentMutation } = DepartmentServices;

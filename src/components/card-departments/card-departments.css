@@ -22,5 +22,6 @@ span{
 }
 .card-department
 {
+    height: 140px;
     margin-top: 10px;
 }
