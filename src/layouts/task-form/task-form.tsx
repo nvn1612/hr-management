@@ -9,6 +9,7 @@ import {
   List,
   Upload,
   message,
+  Typography,
 } from "antd";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
@@ -18,6 +19,7 @@ import {
   useCreateAssigmentMutation,
   useGetUsersByPropertiesMutation,
   useGetTaskActivityQuery,
+  useCreateActivityMutation,
 } from "src/share/services";
 
 import type { User, Task, Assignment } from "src/share/models";
@@ -53,12 +55,15 @@ export const TaskForm = ({
 
   const [createAssignment] = useCreateAssigmentMutation();
   const [createTask] = useCreateTaskMutation();
+  const [createActivity] = useCreateActivityMutation();
   const { data: actitvityData } = useGetTaskActivityQuery({
-    taskId: task?.task_id,
+    taskPropertyId: task?.TaskProperty.task_property_id,
+    items_per_page: "ALL",
   });
   const [getStaff] = useGetUsersByPropertiesMutation();
 
   const documents: string[] = [];
+  const { Text } = Typography;
 
   const onEnterNewUser = () => {
     setShowAddUser(false);
@@ -122,7 +127,7 @@ export const TaskForm = ({
   useEffect(() => {
     fetchTask();
     fetchStaff();
-  }, [assignment, projectPropertyId]);
+  }, [assignment, projectPropertyId, task, actitvityData]);
   return (
     <div className='task-form-container'>
       <Form
@@ -165,6 +170,11 @@ export const TaskForm = ({
                 </Tag>
               )}
             </Form.Item>
+            <Form.Item wrapperCol={{ offset: 4 }}>
+              <Button type='primary' htmlType='submit'>
+                {action === "update" ? "Save Changes" : "Create"}
+              </Button>
+            </Form.Item>
             <Form.Item label='Documents'>
               <List
                 dataSource={documents || []}
@@ -180,24 +190,28 @@ export const TaskForm = ({
             </Form.Item>
             <Form.Item label='Activities'>
               <List
-                dataSource={
-                  actitvityData && actitvityData.length > 0 ? actitvityData : []
-                }
+                dataSource={actitvityData ? actitvityData : []}
                 renderItem={(activity) => (
                   <List.Item>
-                    <List.Item.Meta description={activity.description} />
+                    <Text>{activity.description}</Text>
                   </List.Item>
                 )}
               />
-              <Input placeholder='New activity' />
+              <Input
+                placeholder='New activity'
+                onPressEnter={async (e) => {
+                  createActivity({
+                    description: (e.target as HTMLInputElement).value,
+                    task_property_id: task?.TaskProperty.task_property_id,
+                  })
+                    .unwrap()
+                    .then(() => message.success("New task is created"))
+                    .catch(() => message.error("Failed to create task"));
+                }}
+              />
             </Form.Item>
           </>
         )}
-        <Form.Item wrapperCol={{ offset: 4 }}>
-          <Button type='primary' htmlType='submit'>
-            {action === "update" ? "Save Changes" : "Create"}
-          </Button>
-        </Form.Item>
       </Form>
     </div>
   );
