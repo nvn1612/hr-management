@@ -14,7 +14,8 @@ export interface Project {
   createdBy?: string;
   modifiedBy?: string;
   createdAt?: string;
-  ProjectProperty: ProjectProperty;
+  ProjectProperty?: ProjectProperty;
+  department_id?: string;
   information?: {
     total_user: number;
     total_task: {

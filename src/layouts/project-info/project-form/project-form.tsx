@@ -1,8 +1,18 @@
 import { useEffect, useState } from "react";
-import { Form, Input, Button, Checkbox, DatePicker, message } from "antd";
+import {
+  Form,
+  Input,
+  Button,
+  Checkbox,
+  DatePicker,
+  message,
+  Select,
+  Typography,
+} from "antd";
 import {
   useCreateProjectMutation,
   useUpdateProjectMutation,
+  useGetDepartmentsQuery,
 } from "src/share/services";
 import dayjs from "dayjs";
 
@@ -18,7 +28,12 @@ export const ProjectForm = ({ project }: ProjectFormProps) => {
   const [editableForm, setEditableForm] = useState<boolean>(false);
   const [createProject] = useCreateProjectMutation();
   const [updateProject] = useUpdateProjectMutation();
+  const { data: departmentData } = useGetDepartmentsQuery({
+    itemsPerPage: "ALL",
+  });
+
   const [messageApi, contextHolder] = message.useMessage();
+  const { Text } = Typography;
 
   const onFinish: FormProps<Project>["onFinish"] = async (values) => {
     if (!project) {
@@ -37,11 +52,11 @@ export const ProjectForm = ({ project }: ProjectFormProps) => {
   const newProject: Project = {
     startAt: dayjs(),
     endAt: dayjs(),
-    ProjectProperty: [],
     projectCode: "",
     description: "",
     investor: "",
     name: "",
+    department_id: undefined,
   };
 
   useEffect(() => {
@@ -59,6 +74,7 @@ export const ProjectForm = ({ project }: ProjectFormProps) => {
                 ? project.endAt.substring(0, 10)
                 : new Date()
             ),
+            department_id: project.ProjectProperty?.department_id,
           }
         : { ...newProject }
     );
@@ -93,6 +109,16 @@ export const ProjectForm = ({ project }: ProjectFormProps) => {
         </Form.Item>
         <Form.Item<Project> name={"description"} label='Description'>
           <Input.TextArea />
+        </Form.Item>
+        <Form.Item<Project> name={"department_id"} label='Department'>
+          <Select
+            options={departmentData?.departments?.map((department) => {
+              return {
+                label: <Text>{department.name}</Text>,
+                value: department.department_id,
+              };
+            })}
+          />
         </Form.Item>
         {project && (
           <>
