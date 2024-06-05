@@ -28,7 +28,7 @@ const accountServices = hrManagementApi.injectEndpoints({
         };
       },
     }),
-    getUserDetail: build.query<Response<User>, void>({
+    getUserDetail: build.query<User, void>({
       query: () => {
         return {
           url: "users/detail",
@@ -38,6 +38,7 @@ const accountServices = hrManagementApi.injectEndpoints({
           },
         };
       },
+      transformResponse: (response: Response<User>) => response.data,
       providesTags: ["userDetail"],
     }),
     updateUserDetail: build.mutation<Response<User>, Partial<User>>({
@@ -53,8 +54,11 @@ const accountServices = hrManagementApi.injectEndpoints({
       },
       invalidatesTags: ["userDetail"],
     }),
-    getUsers: build.query<GetUserResp, { role: UserRole; page?: number }>({
-      query: ({ role, page }) => {
+    getUsers: build.query<
+      GetUserResp,
+      { role: UserRole; page?: number; search?: string }
+    >({
+      query: ({ role, page, search }) => {
         return {
           url: `users/admin/getAll`,
           method: "GET",
@@ -64,6 +68,7 @@ const accountServices = hrManagementApi.injectEndpoints({
           params: {
             role: role === OUserRole.All ? "" : role,
             page: page ? page : 1,
+            search: search || "",
           },
         };
       },
@@ -175,6 +180,7 @@ const accountServices = hrManagementApi.injectEndpoints({
           },
         };
       },
+      providesTags: ["User"],
       transformResponse: (response: Response<GetUserResp>) => response.data,
     }),
   }),

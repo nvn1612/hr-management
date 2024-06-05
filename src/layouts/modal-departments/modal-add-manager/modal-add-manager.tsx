@@ -1,49 +1,39 @@
 import React, { useState } from "react";
 import { Modal, Col, Divider, Row, Avatar, Checkbox } from "antd";
 import "./modal-add-manager.css";
+import { useGetUsersQuery } from "src/share/services";
+import {useUpdateManagerDepartmentMutation} from 'src/share/services/departmentServices'
+import { Department } from "src/share/models";
 type ModalAddManagerProps = {
   visible: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  department?: Department;
 };
 export const ModalAddManager = ({
   visible,
   setVisible,
+  department
 }: ModalAddManagerProps) => {
-  const manager = [
-    {
-      name: "Tung Hoang",
-      avatar:
-        "https://cdn.iconscout.com/icon/free/png-512/free-avatar-370-456322.png?f=webp&w=256",
-    },
-    {
-      name: "Tuan Manh Nguyen",
-      avatar:"https://cdn.iconscout.com/icon/free/png-512/free-avatar-372-456324.png?f=webp&w=256",
-    },
-    {
-      name: "Vuong",
-      avatar:
-        "https://cdn.iconscout.com/icon/free/png-512/free-avatar-380-456332.png?f=webp&w=256",
-    },
-    {
-      name: "Duc Pham",
-      avatar:
-        "https://cdn.iconscout.com/icon/free/png-512/free-avatar-367-456319.png?f=webp&w=256",
-    },
-    {
-      name: "Duc Manh",
-      avatar:
-        "https://cdn.iconscout.com/icon/free/png-512/free-avatar-366-456318.png?f=webp&w=256",
-    },
 
-  ];
+  const [mainManager, setMainManager] = useState<string | undefined>();
+
+  const {data} = useGetUsersQuery({role:"MANAGER"});
+  console.log(data);
   const [selectedManager, setSelectedManager] = useState<number | null>(null);
+  
+  const [updateManager] = useUpdateManagerDepartmentMutation();
+
+  const handleUpadateManager = async () => {
+      await updateManager({departmentId: department?.department_id, managerId: mainManager});
+      setVisible(false);
+  }
 
   return (
     <>
       <Modal
         title="Select Manager"
         visible={visible}
-        onOk={() => setVisible(false)}
+        onOk={() => handleUpadateManager()}
         onCancel={() => setVisible(false)}
         width={800}
         className="modal-select-manager"
@@ -58,14 +48,16 @@ export const ModalAddManager = ({
               List Manager
             </Divider>
             <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
-              {manager.map((manager, index) => (
+              {data?.users.filter(user => user.UserProperty?.department_id === null).map((manager, index) => (
                 <Col className="gutter-row" span={6} key={index}>
                   <div className="item-list-manager"onClick={() => setSelectedManager(selectedManager === index ? null : index)}>
-                    <div className="checkbox-select-staff">
-                    <Checkbox checked={selectedManager === index} />
+                    <div className="checkbox-select-staff" onClick={() => setMainManager(manager.user_id)}>
+                    <Checkbox 
+                      checked={selectedManager === index}
+                    />
                     </div>
                     <div className="avatar-manager">
-                      <Avatar size={64} src={manager.avatar}/>
+                      <Avatar size={64} src={manager.avartar}/>
                     </div>
                     <div className="name-manager">{manager.name}</div>
                   </div>

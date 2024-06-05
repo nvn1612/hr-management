@@ -9,11 +9,9 @@ import {
   message,
   Input,
 } from "antd";
-import { OUserRole } from "src/share/models";
 import { userRoleOptions } from "src/share/utils/role-selects";
 import {
   useDeleteUserMutation,
-  useGetRoleQuery,
   useUpdateUserMutation,
   useChangePasswordMutation,
 } from "src/share/services";
@@ -22,20 +20,21 @@ import type { UserRole } from "src/share/models";
 import { useEffect, useState } from "react";
 
 interface propsType {
-  userRoleId?: string;
+  userRole?: UserRole;
   userId?: string;
   userEmail?: string;
 }
 
-export const UserAdvance = ({ userRoleId, userId, userEmail }: propsType) => {
+export const UserAdvance = ({ userRole, userId, userEmail }: propsType) => {
   const { Text } = Typography;
-  const [selectedRole, setSelectedRole] = useState<UserRole>(OUserRole.Staff);
+  const [selectedRole, setSelectedRole] = useState<UserRole | undefined>(
+    undefined
+  );
   const [newPassword, setNewPassword] = useState<string>("");
   const [messageApi, contextHolder] = message.useMessage();
   const [deleteUser] = useDeleteUserMutation();
   const [updateUser] = useUpdateUserMutation();
   const [changePassword] = useChangePasswordMutation();
-  const { data } = useGetRoleQuery();
 
   const confirmDeleteUser = async () => {
     await deleteUser({ userId })
@@ -48,8 +47,7 @@ export const UserAdvance = ({ userRoleId, userId, userEmail }: propsType) => {
   };
 
   const changeRole = async () => {
-    const roleId = data?.find((role) => role.name === selectedRole)?.role_id;
-    await updateUser({ values: { UserProperty: { role_id: roleId } }, userId })
+    await updateUser({ values: { role: selectedRole }, userId })
       .unwrap()
       .then(() => {
         messageApi.success("Succesfully changing role");
@@ -58,15 +56,10 @@ export const UserAdvance = ({ userRoleId, userId, userEmail }: propsType) => {
         messageApi.error("Failed to change role");
       });
   };
-  const updateRole = () => {
-    const roleResult = data?.find((role) => role.role_id === userRoleId)
-      ?.name as UserRole;
-    setSelectedRole(roleResult);
-  };
 
   useEffect(() => {
-    updateRole();
-  }, [userRoleId]);
+    setSelectedRole(undefined);
+  }, [userRole]);
 
   return (
     <>
@@ -79,7 +72,7 @@ export const UserAdvance = ({ userRoleId, userId, userEmail }: propsType) => {
           <Col span={14}>
             <Select
               className='role-selector'
-              value={selectedRole ? selectedRole : OUserRole.Staff}
+              value={selectedRole || userRole}
               options={userRoleOptions}
               onChange={(value: UserRole) => setSelectedRole(value)}
             />
@@ -87,7 +80,7 @@ export const UserAdvance = ({ userRoleId, userId, userEmail }: propsType) => {
           <Col span={6}>
             <Popconfirm
               title='Changing Role'
-              description="Are you sure to chnage this account's role ?"
+              description="Are you sure to change this account's role ?"
               okText='Yes'
               cancelText='No'
               onConfirm={changeRole}
