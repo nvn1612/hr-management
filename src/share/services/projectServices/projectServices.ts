@@ -331,7 +331,7 @@ const projectServices = hrManagementApi.injectEndpoints({
     updateAssignment: build.mutation<
       Response<boolean>,
       {
-        value: { status: boolean; endAt: string };
+        value: { status?: boolean; endAt?: string; user_property_id?: string };
         assigmentId: string;
       }
     >({
@@ -365,6 +365,38 @@ const projectServices = hrManagementApi.injectEndpoints({
       transformResponse: (response: Response<ProjectReportResp>) =>
         response.data,
     }),
+    deleteAssignment: build.mutation<
+      Response<boolean>,
+      Partial<{
+        assigmentId?: string;
+      }>
+    >({
+      query({ assigmentId }) {
+        return {
+          url: `assignments/delete/${assigmentId}`,
+          method: "DELETE",
+          headers: {
+            authorization: accessToken(),
+          },
+        };
+      },
+    }),
+    deleteTask: build.mutation<
+      Response<boolean>,
+      Partial<{
+        taskId?: string;
+      }>
+    >({
+      query({ taskId }) {
+        return {
+          url: `tasks/admin/delete/${taskId}`,
+          method: "DELETE",
+          headers: {
+            authorization: accessToken(),
+          },
+        };
+      },
+    }),
   }),
 });
 
@@ -387,4 +419,6 @@ export const {
   useCreateActivityMutation,
   useUpdateTaskMutation,
   useUpdateAssignmentMutation,
+  useDeleteAssignmentMutation,
+  useDeleteTaskMutation,
 } = projectServices;

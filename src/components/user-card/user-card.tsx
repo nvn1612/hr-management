@@ -1,6 +1,5 @@
 import "./user-card.css";
 import { Card, Avatar } from "antd";
-import { UserOutlined } from "@ant-design/icons";
 import { randAvaBg } from "src/share/utils";
 
 interface UserCardProps {
