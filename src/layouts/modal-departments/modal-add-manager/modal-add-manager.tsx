@@ -57,7 +57,7 @@ export const ModalAddManager = ({
                     />
                     </div>
                     <div className="avatar-manager">
-                      <Avatar size={64} src={manager.avartar}/>
+                      <Avatar size={64} src={manager.avatar}/>
                     </div>
                     <div className="name-manager">{manager.name}</div>
                   </div>

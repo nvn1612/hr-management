@@ -8,7 +8,7 @@ const accessToken = () => localStorageUtil.get("accessToken");
 
 export const DepartmentServices = hrManagementApi.injectEndpoints({
   endpoints: (build) => ({
-    getDepartments: build.query<getDepartmentsResp,{itemsPerPage?: number, page?: number, search?: string}>({
+    getDepartments: build.query<getDepartmentsResp,{itemsPerPage?: number | 'ALL', page?: number, search?: string}>({
       query: ({itemsPerPage, page, search}) => { 
         return {
           url: `departments/admin/getAll`,
