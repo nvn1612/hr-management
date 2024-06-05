@@ -21,16 +21,11 @@ export const ProjectCard = ({
   information,
   description,
 }: ProjectCardProp) => {
-  let totalTask = 0;
-  if (information) {
-    totalTask =
-      information.total_task.total_task_is_done +
-      information.total_task.total_task_is_not_done;
-  }
-
   const calculateProgress = (): number => {
-    return (
-      Math.ceil(information!.total_task.total_task_is_done / totalTask) * 100
+    return Math.ceil(
+      (information!.total_task.total_task_is_done /
+        information!.total_task.total_task_is_not_done) *
+        100
     );
   };
 
@@ -56,7 +51,11 @@ export const ProjectCard = ({
           <Progress
             type='dashboard'
             steps={6}
-            percent={totalTask ? calculateProgress() : 0}
+            percent={
+              information!.total_task.total_task_is_not_done
+                ? calculateProgress()
+                : 0
+            }
             trailColor='rgba(0, 0, 0, 0.06)'
             size={"small"}
           />
