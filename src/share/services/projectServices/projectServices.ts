@@ -121,6 +121,7 @@ const projectServices = hrManagementApi.injectEndpoints({
         };
       },
       transformResponse: (response: Response<string[]>) => response.data,
+      providesTags: ["assignment"],
     }),
     getTaskProperties: build.query<string[], { projectPropertyId?: string }>({
       query: ({ projectPropertyId }) => {
@@ -133,6 +134,7 @@ const projectServices = hrManagementApi.injectEndpoints({
         };
       },
       transformResponse: (response: Response<string[]>) => response.data,
+      providesTags: ["assignment"],
     }),
     getTaskByProperties: build.mutation<
       TaskResp,
@@ -175,6 +177,7 @@ const projectServices = hrManagementApi.injectEndpoints({
         };
       },
       transformErrorResponse: (response: Response<Assignment>) => response.data,
+      invalidatesTags: ["assignment"],
     }),
     createTask: build.mutation<
       { task: Task; task_property: TaskProperty },
@@ -195,6 +198,7 @@ const projectServices = hrManagementApi.injectEndpoints({
       transformResponse: (
         response: Response<{ task: Task; task_property: TaskProperty }>
       ) => response.data,
+      invalidatesTags: ["task"],
     }),
     getUserActivity: build.query<
       Activity[],
@@ -303,6 +307,7 @@ const projectServices = hrManagementApi.injectEndpoints({
         };
       },
       transformResponse: (response: Response<AssignmentResp>) => response.data,
+      providesTags: ["assignment"],
     }),
     updateTask: build.mutation<
       Response<boolean>,
@@ -313,14 +318,34 @@ const projectServices = hrManagementApi.injectEndpoints({
     >({
       query({ taskId, value }) {
         return {
-          url: `assignments/getAllAssignmentForProject/${taskId}`,
-          method: "GET",
+          url: `tasks/update/${taskId}`,
+          method: "PUT",
           headers: {
             authorization: accessToken(),
           },
           body: value,
         };
       },
+      invalidatesTags: ["task"],
+    }),
+    updateAssignment: build.mutation<
+      Response<boolean>,
+      {
+        value: { status: boolean; endAt: string };
+        assigmentId: string;
+      }
+    >({
+      query({ assigmentId, value }) {
+        return {
+          url: `assignments/update/${assigmentId}`,
+          method: "PUT",
+          headers: {
+            authorization: accessToken(),
+          },
+          body: value,
+        };
+      },
+      invalidatesTags: ["assignment", "project"],
     }),
     getProjectReports: build.query<
       ProjectReportResp,
@@ -360,4 +385,6 @@ export const {
   useGetProjectAssignmentsQuery,
   useGetProjectReportsQuery,
   useCreateActivityMutation,
+  useUpdateTaskMutation,
+  useUpdateAssignmentMutation,
 } = projectServices;
