@@ -331,7 +331,7 @@ export const ModalDepartments = ({
         visible={visible}
         onCancel={() => setVisible(false)}
         footer={null}
-        title="APPLICATION DEVELOPER DEPARTMENT"
+        title={department?.name}
         width={1000}
       >
         <Tabs defaultActiveKey="1" items={items} onChange={onChange} />

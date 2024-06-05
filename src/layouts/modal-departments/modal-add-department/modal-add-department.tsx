@@ -1,35 +1,21 @@
 import React, { useState } from "react";
 import {
   Modal,
-  Input,
-  Select,
-  Form,
   Button,
   message,
   Steps,
   theme,
+  Input,
+  List,
+  Avatar,
+  Checkbox,
 } from "antd";
-import { PlusCircleOutlined } from "@ant-design/icons";
-import { ModalAddStaffsDepartment } from "../modal-add-staffs-department";
-// import { useAddDepartmentMutation } from "src/share/services";
-import { AddDepartmentStep1 } from "./add-department-step1";
+import { useAddDepartmentMutation } from "src/share/services";
+import { useGetUsersQuery } from "src/share/services";
 import "./modal-add-department.css";
-// import type { FormProps } from "antd";
+const { TextArea } = Input;
 
-const steps = [
-  {
-    title: "First",
-    content: <AddDepartmentStep1/>,
-  },
-  {
-    title: "Second",
-    content: "Second-content",
-  },
-  {
-    title: "Last",
-    content: "Last-content",
-  },
-];
+
 
 type ModalAddDepartmentProps = {
   visible: boolean;
@@ -39,6 +25,8 @@ type ModalAddDepartmentProps = {
 export interface AddDepartmentForm {
   name: string;
   description: string;
+  managerId: string;
+  staffs: string[];
 }
 
 export const ModalAddDepartment = ({
@@ -47,16 +35,10 @@ export const ModalAddDepartment = ({
 }: ModalAddDepartmentProps) => {
   const { token } = theme.useToken();
   const [current, setCurrent] = useState(0);
-
-  const next = () => {
-    setCurrent(current + 1);
-  };
-
-  const prev = () => {
-    setCurrent(current - 1);
-  };
-  const items = steps.map((item) => ({ key: item.title, title: item.title }));
-
+  const [listStaffs, setListStaffs] = useState<string[]>([]);
+  const [manager, setManager] = useState<string | undefined>(undefined);
+  const [name, setName] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
   const contentStyle: React.CSSProperties = {
     lineHeight: "260px",
     textAlign: "center",
@@ -66,28 +48,111 @@ export const ModalAddDepartment = ({
     border: `1px dashed ${token.colorBorder}`,
     marginTop: 16,
   };
-  // const [addDepartment] = useAddDepartmentMutation();
-  // const [messageApi, contextHolder] = message.useMessage();
-  // const onFinish: FormProps<AddDepartmentForm>["onFinish"] = async (values) => {
-  //   await addDepartment(values)
-  //     .unwrap()
-  //     .then(() => messageApi.success("New dapartment was added"))
-  //     .catch(() => messageApi.error("something went wrong"));
-  // };
 
+  const { data: managerData } = useGetUsersQuery({ role: "MANAGER" });
+  const { data: staffData } = useGetUsersQuery({ role: "STAFF" });
 
-  const [showModalAddStaffs, setShowModalAddStaffs] = useState(false);
+  const handleCheckChangeStaff = (checked: boolean, userId: string | undefined) => {
+    if (userId) {
+      if (checked) {
+        setListStaffs(prevStaffs => [...prevStaffs, userId]);
+      } else {
+        setListStaffs(prevStaffs => prevStaffs.filter(id => id !== userId));
+      }
+    }
+  };
 
-  const showlModal = () => {
-    setShowModalAddStaffs(true);
+  const handleCheckChangeManager = (checked: boolean, ManagerId: string | undefined) => {
+    if (ManagerId) {
+      if (checked) {
+        setManager(ManagerId); 
+      } else {
+        setManager(''); 
+      }
+    }
+  };
+  
+  const steps = [
+    {
+      title: "First",
+      content:
+      <>
+      <Input placeholder="Basic usage" value={name} onChange={e => setName(e.target.value)} />
+      <TextArea rows={4} placeholder="maxLength is 6" maxLength={6} value={description} onChange={e => setDescription(e.target.value)} />
+    </>
+      ,
+    },
+    {
+      title: "Second",
+      content:
+        <>
+          <List
+            itemLayout="horizontal"
+            dataSource={managerData?.users.filter(user => user.UserProperty?.department_id === null) ?? []}
+            renderItem={(item, index) => (
+              <List.Item>
+                <List.Item.Meta
+                  avatar={<Avatar />}
+                  title={<a href="">{item.username}</a>}
+                  description="this is manager"
+                />
+                <Checkbox onChange={(e) => handleCheckChangeManager(e.target.checked, item.user_id)} />
+              </List.Item>
+            )}
+          />
+        </>
+      ,
+    },
+    {
+      title: "Last",
+      content:
+        <>
+          <List
+            itemLayout="horizontal"
+            dataSource={staffData?.users.filter(user => user.UserProperty?.department_id === null) ?? []}
+            renderItem={(item, index) => (
+              <List.Item>
+                <List.Item.Meta
+                  avatar={<Avatar />}
+                  title={
+                      <a href="">{item.username}</a>
+                  }
+                  description="this is staff"
+                />
+
+                  <Checkbox onChange={(e) => handleCheckChangeStaff(e.target.checked, item.user_id)} />
+              </List.Item>
+            )}
+          />
+        </>
+      ,
+    },
+  ];
+  const next = () => {
+    setCurrent(current + 1);
+  };
+
+  const prev = () => {
+    setCurrent(current - 1);
+  };
+  const items = steps.map((item) => ({ key: item.title, title: item.title }));
+
+  const [addDepartment] = useAddDepartmentMutation();
+  const handleAddDepartment = async () => {
+    try {
+      await addDepartment({ name, description, managerId: manager, staffs: listStaffs });
+      message.success("Department added successfully!");
+      setVisible(false);
+    } catch (error) {
+      message.error("Failed to add department!");
+    }
   };
   return (
     <>
-      {/* {contextHolder} */}
       <Modal
         title="Add Department"
         visible={visible}
-        onOk={() => setVisible(false)}
+        onOk={handleAddDepartment}
         onCancel={() => setVisible(false)}
         okText="Save"
         className="modal-add-department"
@@ -115,39 +180,8 @@ export const ModalAddDepartment = ({
             </Button>
           )}
         </div>
-
-        
-
-        <ModalAddStaffsDepartment
-          visible={showModalAddStaffs}
-          setVisible={setShowModalAddStaffs}
-        />
       </Modal>
     </>
   );
 };
 
-{
-  /* <Form.Item
-            label="Manager"
-            name="Manafger"
-            rules={[{ required: true, message: "Please input!" }]}
-          >
-            <Select />
-          </Form.Item> */
-}
-
-{
-  /* <Form.Item
-            name="Staffs"
-            rules={[{ required: true, message: "Please input!" }]}
-          >
-            <div className="label-icon-container">
-              <span>Staffs</span>
-              <PlusCircleOutlined
-                className="icon-staffs"
-                onClick={showlModal}
-              />
-            </div>
-          </Form.Item> */
-}
