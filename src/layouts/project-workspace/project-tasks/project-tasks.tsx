@@ -1,11 +1,13 @@
 import "./project-tasks.css";
 import { useEffect, useState } from "react";
-import { Modal, Button, Popconfirm, List, Spin } from "antd";
+import { Modal, Button, Popconfirm, List, Spin, message } from "antd";
 import { TaskForm } from "src/layouts";
 import {
   useGetTaskByPropertiesMutation,
   useGetTaskPropertiesQuery,
   useGetProjectAssignmentsQuery,
+  useDeleteAssignmentMutation,
+  useDeleteTaskMutation,
 } from "src/share/services";
 import { ClockCircleOutlined, CheckCircleOutlined } from "@ant-design/icons";
 
@@ -35,6 +37,8 @@ export const ProjectTasks = ({ project }: ProjectTasksProp) => {
   });
   const [getTaskByProperties, { isLoading: taskLoading }] =
     useGetTaskByPropertiesMutation();
+  const [deleteAssignment] = useDeleteAssignmentMutation();
+  const [deleteTask] = useDeleteTaskMutation();
 
   const fetchTask = async () => {
     await getTaskByProperties({
@@ -118,7 +122,7 @@ export const ProjectTasks = ({ project }: ProjectTasksProp) => {
         </Button>
       </div>
       <Modal
-        title='Task Details'
+        title={formAction === "update" ? "Task Details" : "Create Task"}
         open={showTaskForm}
         onCancel={() => setShowTaskForm(false)}
         onOk={() => setShowTaskForm(false)}
@@ -129,6 +133,17 @@ export const ProjectTasks = ({ project }: ProjectTasksProp) => {
               description='Are you sure to delete this task ?'
               okText='Yes'
               cancelText='No'
+              onConfirm={async () => {
+                try {
+                  await deleteAssignment({
+                    assigmentId: selectedAssignment?.assignment_id,
+                  }).unwrap();
+                  await deleteTask({ taskId: selectedTask?.task_id });
+                  message.success("Deleted task");
+                } catch {
+                  message.error("Failed to delete task");
+                }
+              }}
             >
               <Button type='primary' danger>
                 Delete task
