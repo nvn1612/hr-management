@@ -9,13 +9,13 @@ import {
 } from "src/share/services";
 import { ClockCircleOutlined, CheckCircleOutlined } from "@ant-design/icons";
 
-import { Assignment, Task } from "src/share/models";
+import { Assignment, Project, Task } from "src/share/models";
 
 interface ProjectTasksProp {
-  projectPropertyId?: string;
+  project: Project;
 }
 
-export const ProjectTasks = ({ projectPropertyId }: ProjectTasksProp) => {
+export const ProjectTasks = ({ project }: ProjectTasksProp) => {
   const [showTaskForm, setShowTaskForm] = useState<boolean>(false);
 
   const [taskList, setTaskList] = useState<Task[]>();
@@ -26,10 +26,12 @@ export const ProjectTasks = ({ projectPropertyId }: ProjectTasksProp) => {
   const [page, setPage] = useState<number>(1);
   const [formAction, setFormAction] = useState<"create" | "update">("create");
 
-  const { data } = useGetTaskPropertiesQuery({ projectPropertyId });
+  const { data } = useGetTaskPropertiesQuery({
+    projectPropertyId: project.ProjectProperty?.project_property_id,
+  });
   const projectAssignments = useGetProjectAssignmentsQuery({
-    projectPropertyId,
-    itemsPerPage: 7,
+    projectPropertyId: project.ProjectProperty?.project_property_id,
+    itemsPerPage: 5,
   });
   const [getTaskByProperties, { isLoading: taskLoading }] =
     useGetTaskByPropertiesMutation();
@@ -50,7 +52,7 @@ export const ProjectTasks = ({ projectPropertyId }: ProjectTasksProp) => {
 
   useEffect(() => {
     fetchTask();
-  }, [projectPropertyId, page, projectAssignments]);
+  }, [project, page, projectAssignments]);
 
   return (
     <div className='task-section'>
@@ -91,9 +93,9 @@ export const ProjectTasks = ({ projectPropertyId }: ProjectTasksProp) => {
                         View detail
                       </Button>,
                       assignment.status ? (
-                        <CheckCircleOutlined />
+                        <CheckCircleOutlined className='task-done-icon' />
                       ) : (
-                        <ClockCircleOutlined />
+                        <ClockCircleOutlined className='task-in-progress-icon' />
                       ),
                     ]}
                   >
@@ -123,7 +125,7 @@ export const ProjectTasks = ({ projectPropertyId }: ProjectTasksProp) => {
         footer={[
           formAction === "update" && (
             <Popconfirm
-              title='Delete Project'
+              title='Delete Task'
               description='Are you sure to delete this task ?'
               okText='Yes'
               cancelText='No'
@@ -137,7 +139,7 @@ export const ProjectTasks = ({ projectPropertyId }: ProjectTasksProp) => {
         className='task-modal'
       >
         <TaskForm
-          projectPropertyId={projectPropertyId!}
+          project={project}
           action={formAction}
           refetch={fetchTask}
           assignment={selectedAssignment}

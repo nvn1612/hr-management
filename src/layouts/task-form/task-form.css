@@ -9,3 +9,10 @@
     width: 100%;
   }
 }
+.task-user-selector-item {
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  align-items: center;
+  gap: var(--gap-s);
+}
