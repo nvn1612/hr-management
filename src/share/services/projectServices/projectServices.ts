@@ -9,6 +9,7 @@ import type {
   AssignmentResp,
   TaskProperty,
   ProjectReportResp,
+  ActivityResp,
 } from "src/share/models";
 import { hrManagementApi } from "src/share/services";
 import { localStorageUtil } from "src/share/utils";
@@ -224,13 +225,13 @@ const projectServices = hrManagementApi.injectEndpoints({
       {
         page?: number;
         search?: string;
-        items_per_page?: number;
-        taskId?: string;
+        items_per_page?: number | "ALL";
+        taskPropertyId?: string;
       }
     >({
-      query({ page, search, items_per_page, taskId }) {
+      query({ page, search, items_per_page, taskPropertyId }) {
         return {
-          url: `activities/getAllActivitiesFromTask/${taskId}`,
+          url: `activities/getAllActivitiesFromTask/${taskPropertyId}`,
           method: "GET",
           headers: {
             authorization: accessToken(),
@@ -242,7 +243,28 @@ const projectServices = hrManagementApi.injectEndpoints({
           },
         };
       },
-      transformResponse: (response: Response<Activity[]>) => response.data,
+      transformResponse: (response: Response<ActivityResp>) =>
+        response.data.data,
+      providesTags: ["activity"],
+    }),
+    createActivity: build.mutation<
+      Response<boolean>,
+      Partial<{
+        description?: string;
+        task_property_id?: string;
+      }>
+    >({
+      query(body) {
+        return {
+          url: `activities/create`,
+          method: "POST",
+          headers: {
+            authorization: accessToken(),
+          },
+          body,
+        };
+      },
+      invalidatesTags: ["activity"],
     }),
     getTaskFile: build.mutation<string, Partial<{ filename: string }>>({
       query(body) {
@@ -337,4 +359,5 @@ export const {
   useGetTaskFileMutation,
   useGetProjectAssignmentsQuery,
   useGetProjectReportsQuery,
+  useCreateActivityMutation,
 } = projectServices;
