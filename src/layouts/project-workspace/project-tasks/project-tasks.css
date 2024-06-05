@@ -1,3 +1,5 @@
+@import url(src/index.css);
+
 .task-section {
   display: flex;
   flex-direction: column;
@@ -15,6 +17,14 @@
   }
   .create-task-btn {
     width: 150px;
+  }
+  .task-done-icon {
+    color: var(--success-color);
+    font-size: large;
+  }
+  .task-in-progress-icon {
+    color: var(--info-color);
+    font-size: large;
   }
 }
 .task-modal {
