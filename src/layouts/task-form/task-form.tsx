@@ -20,6 +20,8 @@ import {
   useGetUsersByPropertiesMutation,
   useGetTaskActivityQuery,
   useCreateActivityMutation,
+  useUpdateTaskMutation,
+  useUpdateAssignmentMutation,
 } from "src/share/services";
 
 import type { User, Task, Assignment } from "src/share/models";
@@ -56,11 +58,13 @@ export const TaskForm = ({
   const [createAssignment] = useCreateAssigmentMutation();
   const [createTask] = useCreateTaskMutation();
   const [createActivity] = useCreateActivityMutation();
+  const [getStaff] = useGetUsersByPropertiesMutation();
+  const [updateTask] = useUpdateTaskMutation();
+  const [updateAssignment] = useUpdateAssignmentMutation();
   const { data: actitvityData } = useGetTaskActivityQuery({
     taskPropertyId: task?.TaskProperty.task_property_id,
     items_per_page: "ALL",
   });
-  const [getStaff] = useGetUsersByPropertiesMutation();
 
   const documents: string[] = [];
   const { Text } = Typography;
@@ -87,7 +91,21 @@ export const TaskForm = ({
 
         break;
       }
-      case "update":
+      case "update": {
+        try {
+          await updateTask({
+            taskId: task!.task_id,
+            value: { description: values.description },
+          }).unwrap();
+          await updateAssignment({
+            assigmentId: assignment!.assignment_id!,
+            value: { endAt: values.deadline, status: values.status },
+          });
+          message.success("Task is updated");
+        } catch {
+          message.error("Failed to update task");
+        }
+      }
     }
   };
 
