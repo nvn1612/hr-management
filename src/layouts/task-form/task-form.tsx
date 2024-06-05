@@ -129,9 +129,10 @@ export const TaskForm = ({
     } else {
       form.setFieldsValue({
         description: "",
+        assignedStaff: "",
       });
     }
-  }, [assignment, project, task, actitvityData]);
+  }, [assignment, project, task, actitvityData, action]);
 
   return (
     <div className='task-form-container'>
@@ -178,11 +179,15 @@ export const TaskForm = ({
               >
                 <Checkbox />
               </Form.Item>
-              <Form.Item wrapperCol={{ offset: 4 }}>
-                <Button type='primary' htmlType='submit'>
-                  {action === "update" ? "Save Changes" : "Create"}
-                </Button>
-              </Form.Item>
+            </>
+          )}
+          <Form.Item wrapperCol={{ offset: 4 }}>
+            <Button type='primary' htmlType='submit'>
+              {action === "update" ? "Save Changes" : "Create"}
+            </Button>
+          </Form.Item>
+          {action === "update" && (
+            <>
               <Form.Item label='Documents'>
                 <List
                   dataSource={documents || []}
