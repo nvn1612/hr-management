@@ -50,7 +50,7 @@ export const ProjectTasks = ({ projectPropertyId }: ProjectTasksProp) => {
 
   useEffect(() => {
     fetchTask();
-  }, [projectPropertyId, page]);
+  }, [projectPropertyId, page, projectAssignments]);
 
   return (
     <div className='task-section'>
