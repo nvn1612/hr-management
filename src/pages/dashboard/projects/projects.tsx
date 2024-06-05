@@ -117,7 +117,7 @@ export const Projects = () => {
         </div>
       </Spin>
       <Modal
-        title='Project Details'
+        title={isCreate ? "Create Project" : "Project Details"}
         className='project-detail-modal'
         open={openProjectTab}
         onCancel={() => {
