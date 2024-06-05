@@ -177,7 +177,7 @@ const projectServices = hrManagementApi.injectEndpoints({
         };
       },
       transformErrorResponse: (response: Response<Assignment>) => response.data,
-      invalidatesTags: ["assignment"],
+      invalidatesTags: ["assignment", "project"],
     }),
     createTask: build.mutation<
       { task: Task; task_property: TaskProperty },
@@ -380,6 +380,7 @@ const projectServices = hrManagementApi.injectEndpoints({
           },
         };
       },
+      invalidatesTags: ["assignment"],
     }),
     deleteTask: build.mutation<
       Response<boolean>,
@@ -396,6 +397,7 @@ const projectServices = hrManagementApi.injectEndpoints({
           },
         };
       },
+      invalidatesTags: ["task"],
     }),
   }),
 });
