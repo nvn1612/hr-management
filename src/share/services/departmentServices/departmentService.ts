@@ -1,8 +1,9 @@
 import { hrManagementApi } from "src/share/services";
 import {localStorageUtil} from 'src/share/utils'
 import type {User} from 'src/share/models/accountModels'
-import type { Response,getDepartmentsResp } from "src/share/models";
+import type { Response,getDepartmentsResp,Department } from "src/share/models";
 import type { AddDepartmentForm } from "src/layouts/modal-departments/modal-add-department";
+import { ProjectResp } from "src/share/models/projectModels";
 const accessToken = () => localStorageUtil.get("accessToken");
 
 export const DepartmentServices = hrManagementApi.injectEndpoints({
@@ -52,22 +53,65 @@ export const DepartmentServices = hrManagementApi.injectEndpoints({
       },
       invalidatesTags : ['department']
     }),
-    getInfoManager: build.query<User,{id?: string}>({
-      query: ({id}) => {
+    updateManagerDepartment: build.mutation<Response<{data:boolean}>, {departmentId?: string, managerId?: string}>({
+      query({departmentId,managerId}) {
         return {
-          url: `users/admin/detail/${id}`,
+          url: `departments/admin/update/${departmentId}`,
+          method: "PUT",
+          headers: {
+            authorization: accessToken(),
+          },
+          body : {manager_id : managerId}
+        };
+      },
+      invalidatesTags : ['department','User']
+    }),
+    getReportDepartments: build.query<ProjectResp,{departmentId?: string}>({
+      query: ({departmentId}) => { 
+        return {
+          url: `gateway/api/access/reportForDepartment/${departmentId}`,
           method: "GET",
           headers : {
             authorization: accessToken()
+          },
+        };
+      },
+      transformResponse: (response:Response<ProjectResp>) =>response.data,
+    }),
+    getAllProjectDepartment: build.query<ProjectResp,{departmentId?: string}>({
+      query: ({departmentId}) => { 
+        return {
+          url: `projects/getAllProjectInDepartment/${departmentId}`,
+          method: "GET",
+          headers : {
+            authorization: accessToken()
+          },
+        };
+      },
+      transformResponse: (response:Response<ProjectResp>) =>response.data,
+    }),
+    deleteStaffDepartment: build.mutation<Response<{count : number}>,{departmentId?: string, listStaff?: string[]}>({
+      query({departmentId,listStaff}) {
+        return {
+          url: `users/removeStaffFromDepartment/${departmentId}`,
+          method: "DELETE",
+          headers: {
+            authorization: accessToken(),
+          },
+          body : {
+            list_user_ids: listStaff,
           }
         };
       },
-      transformResponse: (response:Response<User>) =>response.data
-    })
+      invalidatesTags : ['department']
+    }),
+    
   }),
+  
+  
   
 });
 
 
 
-export const { useGetDepartmentsQuery, useDeleteDepartmentsMutation,useAddDepartmentMutation,useGetInfoManagerQuery  } = DepartmentServices;
+export const { useGetDepartmentsQuery, useDeleteDepartmentsMutation,useAddDepartmentMutation,useUpdateManagerDepartmentMutation ,useGetReportDepartmentsQuery,useGetAllProjectDepartmentQuery, useDeleteStaffDepartmentMutation } = DepartmentServices;

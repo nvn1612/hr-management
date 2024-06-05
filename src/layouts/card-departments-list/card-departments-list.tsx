@@ -5,7 +5,6 @@ import { CardDepartmentss } from "src/components/card-departments";
 import { ModalAddDepartment } from "../modal-departments/modal-add-department";
 import { MngPageHeader } from "../mng-page-header";
 import { useGetDepartmentsQuery } from "src/share/services";
-import { useDeleteDepartmentsMutation } from "src/share/services";
 import "./card-departments-list.css";
 import { Department } from "src/share/models";
 
@@ -20,7 +19,7 @@ export const CardDepartments = () => {
     setVisibleAddDepartment(true);
   };
 
-  const { data, isLoading } = useGetDepartmentsQuery(queries);
+  const { data, isFetching } = useGetDepartmentsQuery(queries);
 
   const onChangePage: PaginationProps["onChange"] = (page) => {
     setQueries({ ...queries, page });
@@ -29,7 +28,7 @@ export const CardDepartments = () => {
   return (
     <>
       <Spin
-        spinning={isLoading}
+        spinning={isFetching}
         tip="Loading Departments"
         className="department-card-loading"
         size="large"
@@ -86,8 +85,7 @@ export const CardDepartments = () => {
       <ModalDepartments
         visible={visible}
         setVisible={setVisible}
-        manager={mainDepartment?.manager_id}
-        department={mainDepartment?.department_id}
+        department={mainDepartment}
       />
       <ModalAddDepartment
         visible={visibleAddDepartment}

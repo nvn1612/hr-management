@@ -21,19 +21,130 @@ import { ModalListStaffDepartment } from "src/layouts/modal-departments/modal-li
 import { ModalAddManager } from "src/layouts/modal-departments/modal-add-manager";
 import { Projects } from "src/pages/dashboard/projects";
 import { ModalReportProjectDepartment } from "src/layouts/modal-departments/modal-report-project-department";
+import { Department } from "src/share/models/departmentModels";
+import { Project } from "src/share/models/projectModels";
+import { useDeleteDepartmentsMutation } from "src/share/services";
+import { useGetReportDepartmentsQuery } from 'src/share/services/departmentServices'
+import { useGetAllProjectDepartmentQuery } from "src/share/services/departmentServices";
+import { ProjectCard } from "src/components/project-card";
 import "./modal-departments.css";
 
 type ModalDepartmentsProps = {
   visible: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
-  manager? : string;
-  departments?: string;
+  department?: Department;
 };
+
+
+const reportProject =
+{
+  "12-5-2024": [
+    {
+      "DA6582": [
+        {
+          "task1": [
+            {
+              "activity-1": "nguyen van A"
+            },
+            {
+              "activity-2": "nguyen van B"
+            }
+          ]
+        },
+        {
+          "task2": [
+            {
+              "activity-3": "nguyen van A"
+            },
+            {
+              "activity-4": "nguyen van B"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "DA6583": [
+        {
+          "task1": [
+            {
+              "activity-1": "nguyen van A"
+            },
+            {
+              "activity-2": "nguyen van B"
+            }
+          ]
+        },
+        {
+          "task2": [
+            {
+              "activity-3": "nguyen van A"
+            },
+            {
+              "activity-4": "nguyen van B"
+            }
+          ]
+        }
+      ]
+    },
+  ],
+  "6-6-2024": [
+    {
+      "DA6582": [
+        {
+          "task1": [
+            {
+              "activity-1": "nguyen van A"
+            },
+            {
+              "activity-2": "nguyen van B"
+            }
+          ]
+        },
+        {
+          "task2": [
+            {
+              "activity-3": "nguyen van A"
+            },
+            {
+              "activity-4": "nguyen van B"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "DA6583": [
+        {
+          "task1": [
+            {
+              "activity-1": "nguyen van A"
+            },
+            {
+              "activity-2": "nguyen van B"
+            }
+          ]
+        },
+        {
+          "task2": [
+            {
+              "activity-3": "nguyen van A"
+            },
+            {
+              "activity-4": "nguyen van B"
+            }
+          ]
+        }
+      ]
+    },
+  ]
+};
+
+
 export const ModalDepartments = ({
   visible,
   setVisible,
-  manager,
-  departments
+  department
 }: ModalDepartmentsProps) => {
   const onChange = (key: string) => {
     console.log(key);
@@ -56,6 +167,12 @@ export const ModalDepartments = ({
     setshowReportProjectVisibel(true);
   };
 
+  const [deleteDepartment] = useDeleteDepartmentsMutation();
+  const handleDeleteDepartment = async () => {
+    await deleteDepartment({ departmentId: department?.department_id }).unwrap().then().catch()
+  }
+  const { data: reportData } = useGetReportDepartmentsQuery({ departmentId: department?.department_id })
+  const { data: projectData } = useGetAllProjectDepartmentQuery({ departmentId: department?.department_id })
   const items: TabsProps["items"] = [
     {
       key: "1",
@@ -64,8 +181,7 @@ export const ModalDepartments = ({
         <>
           <div className="information-departments">
             <p>
-              The department's main task is to develop applications to serve the
-              project including mobile applications and web applications.
+              {department?.description}
             </p>
             <div className="info-department-wrapper">
               <div className="department-manager">
@@ -81,7 +197,7 @@ export const ModalDepartments = ({
                       onClick={showModal}
                     >
                       <Avatar icon={<UserOutlined />} size={25} />
-                      <p>{manager? manager : ''}</p>
+                      <p>{department?.information?.manager?.username}</p>
                     </div>
                   </Col>
                   <Col span={2} className="edit-manager-icon">
@@ -102,7 +218,7 @@ export const ModalDepartments = ({
                   </Col>
                   <Col span={12}>
                     <div className="number-staff-department">
-                      <p>10</p>
+                      <p>{department?.information?.total_staff}</p>
                     </div>
                   </Col>
                   <Col span={2} className="icon-list-staff-department">
@@ -115,7 +231,11 @@ export const ModalDepartments = ({
               <Popconfirm
                 title="Are you sure to delete this department?"
                 icon={<QuestionCircleOutlined style={{ color: "red" }} />}
-                onConfirm={() => console.log("Delete department")}
+                onConfirm={() => {
+                  handleDeleteDepartment().then(() => {
+                    setVisible(false);
+                  });
+                }}
               >
                 <DeleteOutlined />
               </Popconfirm>
@@ -127,7 +247,9 @@ export const ModalDepartments = ({
     {
       key: "2",
       label: "Projects",
-      children: <Projects />,
+      children: projectData?.data.map((project: Project, index: number) => (
+        <ProjectCard onClick={() => console.log('hello world')} projectName={project.name} />
+      )),
     },
     {
       key: "3",
@@ -217,15 +339,17 @@ export const ModalDepartments = ({
       <ModalDepartmentManager
         visible={managerModalVisible}
         setVisible={setManagerModalVisible}
-        manager={manager}
+        department={department}
       />
       <ModalListStaffDepartment
         visible={staffModalVisible}
         setVisible={setstaffModalVisible}
+        department={department}
       />
       <ModalAddManager
         visible={addManagerVisibel}
         setVisible={setAddManagerVisible}
+        department={department}
       />
       <ModalReportProjectDepartment
         visible={showReportProjectVisibel}

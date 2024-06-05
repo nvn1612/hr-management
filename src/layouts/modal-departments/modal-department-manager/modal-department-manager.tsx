@@ -2,23 +2,23 @@ import React from "react";
 import { Modal, Form, Input, Avatar, DatePicker } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import "./modal-department-manager.css";
-import { useGetInfoManagerQuery } from "src/share/services";
 import dayjs from "dayjs";
+import { Department } from "src/share/models";
 type ModalDepartmentManagerProps = {
   visible: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
   manager?:string
+  department?: Department
 };
 
 export const ModalDepartmentManager = ({
   visible,
   setVisible,
-  manager
+  department
 }: ModalDepartmentManagerProps) => {
-  console.log(manager)
+ 
 
-  const {data} = useGetInfoManagerQuery({ id: manager })
-  console.log(data)
+ 
 
 
   return (
@@ -46,21 +46,21 @@ export const ModalDepartmentManager = ({
             </div>
             <div className="layout-2">
               <Form.Item label="Username">
-                <Input value={data?.username} readOnly />
+                <Input value={department?.information?.manager?.username} readOnly />
               </Form.Item>
               <Form.Item label="Name">
-                <Input value={data?.name} readOnly />
+                <Input value={department?.information?.manager?.name} readOnly />
               </Form.Item>
             </div>
             <div className="layout-3">
                 <Form.Item label="Email">
-                  <Input value={data?.email} readOnly />
+                  <Input value={department?.information?.manager?.email} readOnly />
                 </Form.Item>
                 <Form.Item label="Phone">
-                  <Input value={data?.phone} readOnly />
+                  <Input value={department?.information?.manager?.phone} readOnly />
                 </Form.Item>
                 <Form.Item label="birthday">
-                  <DatePicker value={dayjs(data?.birthday)} format="DD/MM/YYYY" disabled />
+                  <DatePicker value={department?.information?.manager?.birthday} format="DD/MM/YYYY" disabled />
                 </Form.Item>
             </div>
           </div>
