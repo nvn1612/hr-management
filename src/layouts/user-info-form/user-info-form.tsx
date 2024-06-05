@@ -66,6 +66,9 @@ export const UserInfoForm = ({
           password: values.password,
           role_id: roleQuery.data?.find((role) => values.role === role.name)
             ?.role_id,
+          birthday: values.birthday,
+          phone: values.phone,
+          name: values.name,
         };
         await createUser(sentValues)
           .unwrap()

@@ -11,8 +11,8 @@ export const UserInfo = () => {
     <Spin size='large' tip='Loading User Detail' spinning={isLoading}>
       <div className='user-info-container'>
         <div className='first-section'>
-          <Avatar size={128} style={{ background: randAvaBg(), fontSize: 75 }}>
-            {data?.username?.substring(0, 1)}
+          <Avatar size={128} style={{ background: randAvaBg(), fontSize: 64 }}>
+            {data?.username?.substring(0, 1).toLocaleUpperCase()}
           </Avatar>
           <h3>{data?.username}</h3>
           <h3>{role}</h3>
