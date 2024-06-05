@@ -7,8 +7,8 @@ import type {
   UserRole,
   GetUserResp,
   RoleResp,
+  CreateUserPartial,
 } from "src/share/models/accountModels";
-import type { CreateUserPartial } from "src/layouts/user-info-form";
 
 const accessToken = () => localStorageUtil.get("accessToken");
 

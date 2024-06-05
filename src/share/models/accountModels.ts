@@ -53,3 +53,11 @@ export interface RoleResp {
   updatedAt?: string;
   deletedAt?: null;
 }
+
+export interface CreateUserPartial {
+  username: string;
+  email: string;
+  password: string;
+  role: UserRole;
+  department_id?: string;
+}
