@@ -15,13 +15,12 @@ import { userRoleOptions } from "src/share/utils";
 import {
   useUpdateUserDetailMutation,
   useUpdateUserMutation,
-  useGetRoleQuery,
   useCreateUserMutation,
 } from "src/share/services/accountServices";
 
-import type { User } from "src/share/models";
+import type { User, CreateUserPartial } from "src/share/models";
 import type { FormProps } from "antd";
-import type { CreateUserPartial, UserFormProp, UserInfoType } from "./models";
+import type { UserFormProp, UserInfoType } from "./models";
 
 export const UserInfoForm = ({
   initValues,
@@ -36,14 +35,12 @@ export const UserInfoForm = ({
   const [updateUserDetail] = useUpdateUserDetailMutation();
   const [createUser] = useCreateUserMutation();
   const [updateUser] = useUpdateUserMutation();
-  const roleQuery = useGetRoleQuery();
 
   const onFinish: FormProps<UserInfoType>["onFinish"] = async (values) => {
-    let sentValues: User | CreateUserPartial;
     setIsLoading(true);
     switch (action) {
-      case "detail":
-        sentValues = {
+      case "detail": {
+        const sentValues = {
           ...values,
           username: values.username ? values.username : "",
         };
@@ -59,16 +56,13 @@ export const UserInfoForm = ({
             setIsLoading(false);
           });
         break;
-      case "create":
-        sentValues = {
-          username: values.username,
+      }
+      case "create": {
+        const sentValues: CreateUserPartial = {
+          password: values.password!,
+          username: values.username!,
           email: values.email,
-          password: values.password,
-          role_id: roleQuery.data?.find((role) => values.role === role.name)
-            ?.role_id,
-          birthday: values.birthday,
-          phone: values.phone,
-          name: values.name,
+          role: values.role!,
         };
         await createUser(sentValues)
           .unwrap()
@@ -82,8 +76,9 @@ export const UserInfoForm = ({
             setIsLoading(false);
           });
         break;
-      case "update":
-        sentValues = {
+      }
+      case "update": {
+        const sentValues: User = {
           ...values,
         };
         await updateUser({ values: sentValues, userId: initValues?.user_id })
@@ -97,6 +92,7 @@ export const UserInfoForm = ({
             messageApi.error(e.data.message);
             setIsLoading(false);
           });
+      }
     }
   };
 
@@ -166,9 +162,6 @@ export const UserInfoForm = ({
               <Input.Password placeholder='Password' />
             </Form.Item>
           )}
-          <Form.Item<UserInfoType> label='Name' name='name'>
-            <Input />
-          </Form.Item>
           <Form.Item<UserInfoType>
             label='Email'
             name='email'
@@ -176,12 +169,19 @@ export const UserInfoForm = ({
           >
             <Input />
           </Form.Item>
-          <Form.Item<UserInfoType> label='Phone' name='phone'>
-            <Input />
-          </Form.Item>
-          <Form.Item<UserInfoType> label='Birth Day' name={"birthday"}>
-            <DatePicker />
-          </Form.Item>
+          {action !== "create" && (
+            <>
+              <Form.Item<UserInfoType> label='Name' name='name'>
+                <Input />
+              </Form.Item>
+              <Form.Item<UserInfoType> label='Phone' name='phone'>
+                <Input />
+              </Form.Item>
+              <Form.Item<UserInfoType> label='Birth Day' name={"birthday"}>
+                <DatePicker />
+              </Form.Item>
+            </>
+          )}
           {!initValues && (
             <Form.Item<UserInfoType>
               label='Role'

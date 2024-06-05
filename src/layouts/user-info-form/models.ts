@@ -16,10 +16,3 @@ export interface UserFormProp {
   setOpenAcountTab?: (isOpen: boolean) => void;
   action: "create" | "detail" | "update";
 }
-
-export interface CreateUserPartial {
-  username: string;
-  email: string;
-  password: string;
-  role_id: string;
-}
