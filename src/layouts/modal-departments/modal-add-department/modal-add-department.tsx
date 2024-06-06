@@ -16,14 +16,10 @@ import { User } from "src/share/models";
 import "./modal-add-department.css";
 const { TextArea } = Input;
 
-
-
 type ModalAddDepartmentProps = {
   visible: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
 };
-
-
 
 export const ModalAddDepartment = ({
   visible,
@@ -59,7 +55,14 @@ export const ModalAddDepartment = ({
     }
   };
 
-
+  const resetModalState = () => {
+    setCurrent(0);
+    setListStaffs([]);
+    setManager(undefined);
+    setName("");
+    setDescription("");
+    setSelectedItem(null);
+  };
 
   const steps = [
     {
@@ -69,13 +72,13 @@ export const ModalAddDepartment = ({
           <div className="create-departments-step1-title">
             <label>Name</label>
             <div className="input-title">
-                <Input placeholder="Department name" value={name} onChange={e => setName(e.target.value)} />
+              <Input placeholder="Department name" value={name} onChange={e => setName(e.target.value)} />
             </div>
           </div>
           <div className="create-departments-step1-decription">
             <label>Description</label>
             <div className="input-decription">
-              <TextArea rows={4} placeholder="Department decription"  value={description} onChange={e => setDescription(e.target.value)} />
+              <TextArea rows={4} placeholder="Department decription" value={description} onChange={e => setDescription(e.target.value)} />
             </div>
           </div>
         </div>
@@ -103,13 +106,13 @@ export const ModalAddDepartment = ({
                 style={item === selectedItem ? { backgroundColor: '#f0f0f0' } : {}}
               >
                 <List.Item.Meta
-                  avatar={<Avatar size={50}/>}
-                  title={<a href="">{item.username}</a>}
+                  avatar={<Avatar size={50} />}
+                  title={<a href="">{item.name}</a>}
                   description={item.email}
                 />
               </List.Item>
             )}
-            pagination={{ pageSize: 5,}}
+            pagination={{ pageSize: 5, }}
           />
         </>
       ,
@@ -125,9 +128,9 @@ export const ModalAddDepartment = ({
             renderItem={(item, index) => (
               <List.Item>
                 <List.Item.Meta
-                  avatar={<Avatar size={50}/>}
+                  avatar={<Avatar size={50} />}
                   title={
-                    <a href="">{item.username}</a>
+                    <a href="">{item.name}</a>
                   }
                   description="this is staff"
                 />
@@ -142,6 +145,7 @@ export const ModalAddDepartment = ({
       ,
     },
   ];
+
   const next = () => {
     setCurrent(current + 1);
   };
@@ -149,25 +153,29 @@ export const ModalAddDepartment = ({
   const prev = () => {
     setCurrent(current - 1);
   };
+
   const items = steps.map((item) => ({ key: item.title, title: item.title }));
 
   const [addDepartment] = useAddDepartmentMutation();
+
   const handleAddDepartment = async () => {
     try {
       await addDepartment({ name, description, manager_id: manager, list_user_ids: listStaffs });
       message.success("Department added successfully!");
       setVisible(false);
+      resetModalState(); 
     } catch (error) {
       message.error("Failed to add department!");
     }
   };
+
   return (
     <>
       <Modal
         title="Create Department"
         visible={visible}
         onOk={handleAddDepartment}
-        onCancel={() => setVisible(false)}
+        onCancel={() => {setVisible(false); resetModalState();}} 
         okText="Save"
         className="modal-add-department"
         width={600}
@@ -180,14 +188,6 @@ export const ModalAddDepartment = ({
               Next
             </Button>
           )}
-          {current === steps.length - 1 && (
-            <Button
-              type="primary"
-              onClick={() => message.success("Processing complete!")}
-            >
-              Done
-            </Button>
-          )}
           {current > 0 && (
             <Button style={{ margin: "0 8px" }} onClick={() => prev()}>
               Previous
@@ -198,4 +198,3 @@ export const ModalAddDepartment = ({
     </>
   );
 };
-
