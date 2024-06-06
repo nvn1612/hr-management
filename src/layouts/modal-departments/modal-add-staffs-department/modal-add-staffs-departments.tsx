@@ -124,7 +124,7 @@ export const ModalAddStaffsDepartment = ({
                   <List.Item key={item.email}>
                     <List.Item.Meta
                       avatar={<Avatar src={item.avatar} />}
-                      title={<a href="">{item.username}</a>}
+                      title={<a>{item.username}</a>}
                     />
                     <Checkbox
                       className="checkbox-staff"
