@@ -4,13 +4,25 @@ import type { ProjectReportResp } from "src/share/models/projectModels";
 import { Typography, Tag } from "antd";
 
 import type { TimelineItemProps } from "antd";
-import { Activity } from "src/share/models";
+import { User } from "src/share/models";
 
 interface PrepareReports {
   taskDesc?: string;
   projectCode?: string;
   date?: string;
-  activities?: Activity[];
+  activities?: {
+    activity_id?: string;
+    description?: string;
+    createdBy?: string;
+    modifiedBy?: string;
+    createdAt?: string;
+    ActivityProperty?: {
+      activity_property_id?: string;
+      user_property_id?: string;
+      activity_id?: string;
+    };
+    user_information?: User;
+  }[];
 }
 
 export const useHandleReports = (
@@ -28,7 +40,7 @@ export const useHandleReports = (
           const newReport: PrepareReports = {};
           newReport.taskDesc = task.description;
           newReport.date = date;
-          newReport.activities = task.activities[date];
+          (newReport.activities as unknown) = task.activities[date];
           newReportList.push(newReport);
         }
       });
@@ -61,7 +73,8 @@ export const useHandleReports = (
                 return (
                   <>
                     <span style={{ color: "#8c8c8c", fontWeight: 500 }}>
-                      {activity.description}
+                      {`${activity.description}  -`}{" "}
+                      {` by ${activity.user_information?.username}`}
                     </span>
                   </>
                 );
@@ -85,7 +98,7 @@ export const useHandleReports = (
             newReport.projectCode = projectReport.projectCode;
             newReport.taskDesc = task.description;
             newReport.date = date;
-            newReport.activities = task.activities[date];
+            (newReport.activities as unknown) = task.activities[date];
             newReportList.push(newReport);
           }
         });
@@ -124,7 +137,8 @@ export const useHandleReports = (
                   return (
                     <>
                       <span style={{ color: "#8c8c8c", fontWeight: 500 }}>
-                        {activity.description}
+                        {`${activity.description}  -`}{" "}
+                        {` by ${activity.user_information?.username}`}
                       </span>
                     </>
                   );
