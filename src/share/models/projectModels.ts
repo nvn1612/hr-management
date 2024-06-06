@@ -124,6 +124,6 @@ export interface ProjectReportResp {
       task_property_id: string;
       task_id: string;
     };
-    activities: Record<string, Activity[]>;
+    activities: Record<string, Activity[]>[];
   }[];
 }

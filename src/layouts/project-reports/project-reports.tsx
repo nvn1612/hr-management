@@ -1,57 +1,18 @@
 import "./project-reports.css";
 import { Timeline, Spin, Empty } from "antd";
-import dayjs from "dayjs";
-import { ReactNode, useEffect, useState } from "react";
 import { useGetProjectReportsQuery } from "src/share/services";
+import { useHandleReports } from "src/share/hooks";
 
 interface ProjectReportProp {
   projectId?: string;
-}
-
-interface TimelineItem {
-  label: string;
-  children: ReactNode;
 }
 
 export const ProjectReports = ({ projectId }: ProjectReportProp) => {
   const { data, isFetching, isSuccess } = useGetProjectReportsQuery({
     projectId,
   });
-  const [timeline, setTimeline] = useState<TimelineItem[] | undefined>(
-    undefined
-  );
-  const [timelineStatus, setTimelineStatus] = useState<boolean>(false);
 
-  let unsortedTimeline: Record<string, unknown>[] = [];
-
-  const createReport = () => {
-    setTimelineStatus(false);
-    if (data?.tasks) {
-      data.tasks.forEach((task) => {
-        for (const date in task.activities) {
-          const timelineItem: Record<string, unknown> = { activities: [] };
-          timelineItem["date"] = date;
-          timelineItem["taskDescripion"] = task.description;
-          task.activities[date].forEach((activity) => {
-            timelineItem["activities"].push(activity);
-          });
-          unsortedTimeline.push(timelineItem);
-        }
-      });
-    }
-
-    const sortedTimeline = unsortedTimeline.sort(
-      (a, b) =>
-        dayjs(a.date, "YYYY/MM/DD").millisecond -
-        dayjs(b.date, "YYYY/MM/DD").millisecond
-    );
-
-    setTimeline(sortedTimeline);
-  };
-
-  useEffect(() => {
-    createReport();
-  }, [projectId]);
+  const returnedItem = useHandleReports("project", data);
 
   return (
     <Spin spinning={isFetching} size='large'>
@@ -60,7 +21,7 @@ export const ProjectReports = ({ projectId }: ProjectReportProp) => {
           <Timeline
             className='report-timeline'
             mode='alternate'
-
+            items={returnedItem}
             // items={[
             //   {
             //     label: "2024-01-02",
