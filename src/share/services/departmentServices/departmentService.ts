@@ -1,45 +1,58 @@
 import { hrManagementApi } from "src/share/services";
-import {localStorageUtil} from 'src/share/utils'
-import type { Response,getDepartmentsResp,Department } from "src/share/models";
+import { localStorageUtil } from "src/share/utils";
+import type {
+  Response,
+  getDepartmentsResp,
+  Department,
+} from "src/share/models";
 import { AddDepartmentForm } from "src/share/models/departmentModels";
 import { ProjectResp } from "src/share/models/projectModels";
 const accessToken = () => localStorageUtil.get("accessToken");
 
 export const DepartmentServices = hrManagementApi.injectEndpoints({
   endpoints: (build) => ({
-    getDepartments: build.query<getDepartmentsResp,{itemsPerPage?: number | 'ALL', page?: number, search?: string}>({
-      query: ({itemsPerPage, page, search}) => { 
+    getDepartments: build.query<
+      getDepartmentsResp,
+      { itemsPerPage?: number | "ALL"; page?: number; search?: string }
+    >({
+      query: ({ itemsPerPage, page, search }) => {
         return {
           url: `departments/admin/get-All`,
           method: "GET",
-          headers : {
-            authorization: accessToken()
+          headers: {
+            authorization: accessToken(),
           },
           params: {
-            item_per_page: itemsPerPage? itemsPerPage : 5,
-            page: page? page : 1,
-            search: search? search : ""
-          }
+            item_per_page: itemsPerPage ? itemsPerPage : 5,
+            page: page ? page : 1,
+            search: search ? search : "",
+          },
         };
       },
-      transformResponse: (response:Response<getDepartmentsResp>) =>response.data,
-      providesTags: ['department']
+      transformResponse: (response: Response<getDepartmentsResp>) =>
+        response.data,
+      providesTags: ["department"],
     }),
 
-
-    deleteDepartments: build.mutation<Response<Department>, Partial<{departmentId : string}>>({
-      query({departmentId}) {
+    deleteDepartments: build.mutation<
+      Response<Department>,
+      Partial<{ departmentId: string }>
+    >({
+      query({ departmentId }) {
         return {
           url: `departments/admin/delete/${departmentId}`,
           method: "DELETE",
           headers: {
             authorization: accessToken(),
-          }
+          },
         };
       },
-      invalidatesTags : ['department']
+      invalidatesTags: ["department"],
     }),
-    addDepartment: build.mutation<Response<Department>, Partial<AddDepartmentForm>>({
+    addDepartment: build.mutation<
+      Response<Department>,
+      Partial<AddDepartmentForm>
+    >({
       query(body) {
         return {
           url: `departments/admin/create`,
@@ -47,84 +60,100 @@ export const DepartmentServices = hrManagementApi.injectEndpoints({
           headers: {
             authorization: accessToken(),
           },
-          body
+          body,
         };
       },
-      invalidatesTags : ['department']
+      invalidatesTags: ["department"],
     }),
-    updateManagerDepartment: build.mutation<Response<{data:boolean}>, {departmentId?: string, managerId?: string}>({
-      query({departmentId,managerId}) {
+    updateManagerDepartment: build.mutation<
+      Response<{ data: boolean }>,
+      { departmentId?: string; managerId?: string }
+    >({
+      query({ departmentId, managerId }) {
         return {
           url: `departments/admin/update/${departmentId}`,
           method: "PUT",
           headers: {
             authorization: accessToken(),
           },
-          body : {manager_id : managerId}
+          body: { manager_id: managerId },
         };
       },
-      invalidatesTags : ['department','User']
+      invalidatesTags: ["department", "User"],
     }),
-    getReportDepartments: build.query<ProjectResp,{departmentId?: string}>({
-      query: ({departmentId}) => { 
+    getReportDepartments: build.query<ProjectResp, { departmentId?: string }>({
+      query: ({ departmentId }) => {
         return {
-          url: `gateway/api/access/reportForDepartment/${departmentId}`,
+          url: `report/report-for-department/${departmentId}`,
           method: "GET",
-          headers : {
-            authorization: accessToken()
+          headers: {
+            authorization: accessToken(),
           },
         };
       },
-      transformResponse: (response:Response<ProjectResp>) =>response.data,
+      transformResponse: (response: Response<ProjectResp>) => response.data,
     }),
-    getAllProjectDepartment: build.query<ProjectResp,{departmentId?: string}>({
-      query: ({departmentId}) => { 
+    getAllProjectDepartment: build.query<
+      ProjectResp,
+      { departmentId?: string }
+    >({
+      query: ({ departmentId }) => {
         return {
           url: `projects/get-all-project-in-department/${departmentId}`,
           method: "GET",
-          headers : {
-            authorization: accessToken()
+          headers: {
+            authorization: accessToken(),
           },
         };
       },
-      transformResponse: (response:Response<ProjectResp>) =>response.data,
+      transformResponse: (response: Response<ProjectResp>) => response.data,
     }),
-    deleteStaffDepartment: build.mutation<Response<{count : number}>,{departmentId?: string, listStaff?: string[]}>({
-      query({departmentId,listStaff}) {
+    deleteStaffDepartment: build.mutation<
+      Response<{ count: number }>,
+      { departmentId?: string; listStaff?: string[] }
+    >({
+      query({ departmentId, listStaff }) {
         return {
           url: `users/remove-staff-from-department/${departmentId}`,
           method: "POST",
           headers: {
             authorization: accessToken(),
           },
-          body : {
+          body: {
             list_user_ids: listStaff,
-          }
+          },
         };
       },
-      invalidatesTags : ['department','User']
+      invalidatesTags: ["department", "User"],
     }),
-    addStaffDepartment: build.mutation<Response<{count : number}>, {departmentId?: string, listStaff?: (string | undefined)[]}>({
-      query({departmentId,listStaff}) {
+    addStaffDepartment: build.mutation<
+      Response<{ count: number }>,
+      { departmentId?: string; listStaff?: (string | undefined)[] }
+    >({
+      query({ departmentId, listStaff }) {
         return {
           url: `users/add-user-into-department/${departmentId}`,
           method: "POST",
           headers: {
             authorization: accessToken(),
           },
-          body : {
+          body: {
             list_user_ids: listStaff,
-          }
+          },
         };
       },
-      invalidatesTags : ['department']
+      invalidatesTags: ["department"],
     }),
   }),
-  
-  
-  
 });
 
-
-
-export const { useGetDepartmentsQuery, useDeleteDepartmentsMutation,useAddDepartmentMutation,useUpdateManagerDepartmentMutation ,useGetReportDepartmentsQuery,useGetAllProjectDepartmentQuery, useDeleteStaffDepartmentMutation, useAddStaffDepartmentMutation } = DepartmentServices;
+export const {
+  useGetDepartmentsQuery,
+  useDeleteDepartmentsMutation,
+  useAddDepartmentMutation,
+  useUpdateManagerDepartmentMutation,
+  useGetReportDepartmentsQuery,
+  useGetAllProjectDepartmentQuery,
+  useDeleteStaffDepartmentMutation,
+  useAddStaffDepartmentMutation,
+} = DepartmentServices;

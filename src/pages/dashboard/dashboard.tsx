@@ -17,7 +17,8 @@ export const Dashboard = () => {
           <Dashboardsidebar />
           <Layout>
             <Content className='content'>
-              <Navigate to={"/dashboard/user-info"} />
+              {window.location.pathname.replace("/dashboard", "").length <=
+                1 && <Navigate to={"/dashboard/user-info"} />}
               <Outlet />
             </Content>
           </Layout>
