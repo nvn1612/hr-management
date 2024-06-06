@@ -10,10 +10,5 @@
   overflow-y: auto;
   .report-timeline {
     width: 100%;
-    .project-report-detail {
-      .project-reporter {
-        color: var(--gray-color);
-      }
-    }
   }
 }
