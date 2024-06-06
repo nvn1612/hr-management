@@ -1,5 +1,5 @@
 import type { Dayjs } from "dayjs";
-import { Activity, Task } from "src/share/models";
+import { Task, User } from "src/share/models";
 
 export interface Project {
   project_id?: string;
@@ -124,6 +124,21 @@ export interface ProjectReportResp {
       task_property_id: string;
       task_id: string;
     };
-    activities: Record<string, Activity[]>[];
+    activities: Record<
+      string,
+      {
+        activity_id?: string;
+        description?: string;
+        createdBy?: string;
+        modifiedBy?: string;
+        createdAt?: string;
+        ActivityProperty?: {
+          activity_property_id?: string;
+          user_property_id?: string;
+          activity_id?: string;
+        };
+        user_information: User;
+      }[]
+    >[];
   }[];
 }
