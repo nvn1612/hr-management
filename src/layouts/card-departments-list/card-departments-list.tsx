@@ -18,7 +18,9 @@ export const CardDepartments = () => {
   const showAddDepartment = () => {
     setVisibleAddDepartment(true);
   };
-
+  const closeModal = () => {
+    setVisible(false);
+  };
   const { data, isFetching } = useGetDepartmentsQuery(queries);
 
   const onChangePage: PaginationProps["onChange"] = (page) => {
@@ -71,7 +73,7 @@ export const CardDepartments = () => {
                           }}
                           departmentId={department.department_id}
                           title={department.name}
-                          manager={department.information?.manager?.username}
+                          manager={department?.information?.manager?.user_id ? department.information.manager.name : "No Manager"}
                           staffCount={department.information?.total_staff}
                         />
                       </List.Item>
@@ -86,6 +88,8 @@ export const CardDepartments = () => {
         visible={visible}
         setVisible={setVisible}
         department={mainDepartment}
+        closeModal={closeModal}
+
       />
       <ModalAddDepartment
         visible={visibleAddDepartment}

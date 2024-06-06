@@ -2,13 +2,15 @@ import React, { useState } from "react";
 import { Modal, Col, Divider, Row, Avatar, Checkbox } from "antd";
 import "./modal-add-manager.css";
 import { useGetUsersQuery } from "src/share/services";
-import {useUpdateManagerDepartmentMutation} from 'src/share/services/departmentServices'
+import { useUpdateManagerDepartmentMutation } from 'src/share/services/departmentServices';
 import { Department } from "src/share/models";
+
 type ModalAddManagerProps = {
   visible: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
   department?: Department;
 };
+
 export const ModalAddManager = ({
   visible,
   setVisible,
@@ -16,25 +18,32 @@ export const ModalAddManager = ({
 }: ModalAddManagerProps) => {
 
   const [mainManager, setMainManager] = useState<string | undefined>();
-
   const {data} = useGetUsersQuery({role:"MANAGER"});
-  console.log(data);
   const [selectedManager, setSelectedManager] = useState<number | null>(null);
-  
   const [updateManager] = useUpdateManagerDepartmentMutation();
 
-  const handleUpadateManager = async () => {
+  const resetModalState = () => {
+    setMainManager(undefined);
+    setSelectedManager(null);
+  };
+
+  const handleUpdateManager = async () => {
       await updateManager({departmentId: department?.department_id, managerId: mainManager});
       setVisible(false);
-  }
+  };
+
+  const handleCancel = () => {
+    resetModalState(); 
+    setVisible(false);
+  };
 
   return (
     <>
       <Modal
         title="Select Manager"
         visible={visible}
-        onOk={() => handleUpadateManager()}
-        onCancel={() => setVisible(false)}
+        onOk={handleUpdateManager}
+        onCancel={handleCancel}
         width={800}
         className="modal-select-manager"
         okText="Save"
@@ -50,8 +59,10 @@ export const ModalAddManager = ({
             <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
               {data?.users.filter(user => user.UserProperty?.department_id === null).map((manager, index) => (
                 <Col className="gutter-row" span={6} key={index}>
-                  <div className="item-list-manager"onClick={() => setSelectedManager(selectedManager === index ? null : index)}>
-                    <div className="checkbox-select-staff" onClick={() => setMainManager(manager.user_id)}>
+                  <div className="item-list-manager"onClick={() => {setSelectedManager(selectedManager === index ? null : index);
+                    setMainManager(manager.user_id)}
+                  }>
+                    <div className="checkbox-select-staff">
                     <Checkbox 
                       checked={selectedManager === index}
                     />
