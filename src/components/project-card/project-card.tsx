@@ -52,7 +52,7 @@ export const ProjectCard = ({
             type='dashboard'
             steps={6}
             percent={
-              information!.total_task.total_task_is_not_done
+              information?.total_task?.total_task_is_not_done
                 ? calculateProgress()
                 : 0
             }
