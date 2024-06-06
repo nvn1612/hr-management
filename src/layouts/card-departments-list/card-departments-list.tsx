@@ -54,7 +54,7 @@ export const CardDepartments = () => {
             pagination={{
               position: "bottom",
               align: "center",
-              pageSize: 10,
+              pageSize: 9,
               total: data?.total,
               onChange: onChangePage,
             }}
