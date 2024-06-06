@@ -80,7 +80,7 @@ export const DepartmentServices = hrManagementApi.injectEndpoints({
     getAllProjectDepartment: build.query<ProjectResp,{departmentId?: string}>({
       query: ({departmentId}) => { 
         return {
-          url: `projects/getAllProjectInDepartment/${departmentId}`,
+          url: `projects/get-all-project-in-department/${departmentId}`,
           method: "GET",
           headers : {
             authorization: accessToken()
@@ -92,7 +92,7 @@ export const DepartmentServices = hrManagementApi.injectEndpoints({
     deleteStaffDepartment: build.mutation<Response<{count : number}>,{departmentId?: string, listStaff?: string[]}>({
       query({departmentId,listStaff}) {
         return {
-          url: `users/removeStaffFromDepartment/${departmentId}`,
+          url: `users/remove-staff-from-department/${departmentId}`,
           method: "POST",
           headers: {
             authorization: accessToken(),
@@ -107,7 +107,7 @@ export const DepartmentServices = hrManagementApi.injectEndpoints({
     addStaffDepartment: build.mutation<Response<{count : number}>, {departmentId?: string, listStaff?: (string | undefined)[]}>({
       query({departmentId,listStaff}) {
         return {
-          url: `users/addUserIntoDepartment/${departmentId}`,
+          url: `users/add-user-into-department/${departmentId}`,
           method: "POST",
           headers: {
             authorization: accessToken(),
