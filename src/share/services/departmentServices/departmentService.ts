@@ -1,8 +1,7 @@
 import { hrManagementApi } from "src/share/services";
 import {localStorageUtil} from 'src/share/utils'
-import type {User} from 'src/share/models/accountModels'
 import type { Response,getDepartmentsResp,Department } from "src/share/models";
-import type { AddDepartmentForm } from "src/layouts/modal-departments/modal-add-department";
+import { AddDepartmentForm } from "src/share/models/departmentModels";
 import { ProjectResp } from "src/share/models/projectModels";
 const accessToken = () => localStorageUtil.get("accessToken");
 
@@ -11,7 +10,7 @@ export const DepartmentServices = hrManagementApi.injectEndpoints({
     getDepartments: build.query<getDepartmentsResp,{itemsPerPage?: number | 'ALL', page?: number, search?: string}>({
       query: ({itemsPerPage, page, search}) => { 
         return {
-          url: `departments/admin/getAll`,
+          url: `departments/admin/get-All`,
           method: "GET",
           headers : {
             authorization: accessToken()
@@ -94,7 +93,22 @@ export const DepartmentServices = hrManagementApi.injectEndpoints({
       query({departmentId,listStaff}) {
         return {
           url: `users/removeStaffFromDepartment/${departmentId}`,
-          method: "DELETE",
+          method: "POST",
+          headers: {
+            authorization: accessToken(),
+          },
+          body : {
+            list_user_ids: listStaff,
+          }
+        };
+      },
+      invalidatesTags : ['department','User']
+    }),
+    addStaffDepartment: build.mutation<Response<{count : number}>, {departmentId?: string, listStaff?: (string | undefined)[]}>({
+      query({departmentId,listStaff}) {
+        return {
+          url: `users/addUserIntoDepartment/${departmentId}`,
+          method: "POST",
           headers: {
             authorization: accessToken(),
           },
@@ -105,7 +119,6 @@ export const DepartmentServices = hrManagementApi.injectEndpoints({
       },
       invalidatesTags : ['department']
     }),
-    
   }),
   
   
@@ -114,4 +127,4 @@ export const DepartmentServices = hrManagementApi.injectEndpoints({
 
 
 
-export const { useGetDepartmentsQuery, useDeleteDepartmentsMutation,useAddDepartmentMutation,useUpdateManagerDepartmentMutation ,useGetReportDepartmentsQuery,useGetAllProjectDepartmentQuery, useDeleteStaffDepartmentMutation } = DepartmentServices;
+export const { useGetDepartmentsQuery, useDeleteDepartmentsMutation,useAddDepartmentMutation,useUpdateManagerDepartmentMutation ,useGetReportDepartmentsQuery,useGetAllProjectDepartmentQuery, useDeleteStaffDepartmentMutation, useAddStaffDepartmentMutation } = DepartmentServices;
