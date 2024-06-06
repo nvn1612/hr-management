@@ -40,7 +40,7 @@ export const useHandleReports = (
           const newReport: PrepareReports = {};
           newReport.taskDesc = task.description;
           newReport.date = date;
-          newReport.activities = task.activities[date];
+          (newReport.activities as unknown) = task.activities[date];
           newReportList.push(newReport);
         }
       });
@@ -98,7 +98,7 @@ export const useHandleReports = (
             newReport.projectCode = projectReport.projectCode;
             newReport.taskDesc = task.description;
             newReport.date = date;
-            newReport.activities = task.activities[date];
+            (newReport.activities as unknown) = task.activities[date];
             newReportList.push(newReport);
           }
         });
