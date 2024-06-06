@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Modal,
   Tabs,
   Timeline,
-  Tag,
   TabsProps,
   Row,
   Col,
@@ -34,16 +33,22 @@ type ModalDepartmentsProps = {
   visible: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
   department?: Department;
+  closeModal: () => void;
 };
+
+
 
 export const ModalDepartments = ({
   visible,
   setVisible,
   department,
+  closeModal
 }: ModalDepartmentsProps) => {
   const onChange = (key: string) => {
     console.log(key);
   };
+
+
   const [managerModalVisible, setManagerModalVisible] = useState(false);
   const showModal = () => {
     setManagerModalVisible(true);
@@ -51,10 +56,12 @@ export const ModalDepartments = ({
   const [staffModalVisible, setstaffModalVisible] = useState(false);
   const showModalStaff = () => {
     setstaffModalVisible(true);
+    closeModal();
   };
   const [addManagerVisibel, setAddManagerVisible] = useState(false);
   const showAddManager = () => {
     setAddManagerVisible(true);
+    closeModal();
   };
   const [showReportProjectVisibel, setshowReportProjectVisibel] =
     useState(false);
@@ -93,12 +100,11 @@ export const ModalDepartments = ({
                     </div>
                   </Col>
                   <Col span={12}>
-                    <div
-                      className='name-manager-department'
-                      onClick={showModal}
-                    >
-                      <Avatar icon={<UserOutlined />} size={25} />
-                      <p>{department?.information?.manager?.username}</p>
+                    <div className='name-manager-department' onClick={showModal}>
+                      {department?.information?.manager?.user_id ? (
+                        <Avatar icon={<UserOutlined />} size={25} />
+                      ) : null}
+                      <p>{department?.information?.manager?.user_id ? department.information.manager.name : "No Manager"}</p>
                     </div>
                   </Col>
                   <Col span={2} className='edit-manager-icon'>
