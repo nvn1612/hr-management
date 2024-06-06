@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./dashboard-sidebar.css";
 import { Link, useNavigate } from "react-router-dom";
 import { Avatar } from "antd";
@@ -50,6 +50,27 @@ const Dashboardsidebar: React.FC = () => {
     localStorageUtil.delete("refreshToken");
     navigate("/login");
   };
+
+  const setDefaultItem = () => {
+    const currPath = window.location.pathname.replace("/dashboard/", "");
+    switch (currPath) {
+      case "accounts":
+        setSelectItem("1");
+        break;
+      case "departments":
+        setSelectItem("2");
+        break;
+      case "projects":
+        setSelectItem("3");
+        break;
+      default:
+        setSelectItem("0");
+    }
+  };
+
+  useEffect(() => {
+    setDefaultItem();
+  }, []);
 
   return (
     <Layout

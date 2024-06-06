@@ -21,7 +21,7 @@ const projectServices = hrManagementApi.injectEndpoints({
     getAllProject: build.query<ProjectResp, { page: number }>({
       query: ({ page }) => {
         return {
-          url: `projects/admin/getAll`,
+          url: `projects/admin/get-all`,
           method: "GET",
           headers: {
             authorization: accessToken(),
@@ -81,7 +81,7 @@ const projectServices = hrManagementApi.injectEndpoints({
     getClient: build.query<ProjectResp, { page: number }>({
       query: ({ page }) => {
         return {
-          url: `projects/admin/getAll`,
+          url: `projects/admin/get-all`,
           method: "GET",
           headers: {
             authorization: accessToken(),
@@ -97,7 +97,7 @@ const projectServices = hrManagementApi.injectEndpoints({
     getFile: build.mutation<string, Partial<{ filename: string }>>({
       query: (body) => {
         return {
-          url: `projects/getFile`,
+          url: `projects/get-file`,
           method: "POST",
           headers: {
             authorization: accessToken(),
@@ -113,7 +113,7 @@ const projectServices = hrManagementApi.injectEndpoints({
     >({
       query: ({ projectPropertyId }) => {
         return {
-          url: `assignments/getAllUserPropertyFromProject/${projectPropertyId}`,
+          url: `assignments/get-all-user-property-from-project/${projectPropertyId}`,
           method: "GET",
           headers: {
             authorization: accessToken(),
@@ -126,7 +126,7 @@ const projectServices = hrManagementApi.injectEndpoints({
     getTaskProperties: build.query<string[], { projectPropertyId?: string }>({
       query: ({ projectPropertyId }) => {
         return {
-          url: `assignments/getAllTaskPropertyFromProject/${projectPropertyId}`,
+          url: `assignments/get-all-task-property-from-project/${projectPropertyId}`,
           method: "GET",
           headers: {
             authorization: accessToken(),
@@ -145,7 +145,7 @@ const projectServices = hrManagementApi.injectEndpoints({
     >({
       query: ({ values, params }) => {
         return {
-          url: `tasks/getAllTaskByTaskProperty`,
+          url: `tasks/get-all-task-by-task-property`,
           method: "POST",
           headers: {
             authorization: accessToken(),
@@ -210,7 +210,7 @@ const projectServices = hrManagementApi.injectEndpoints({
     >({
       query({ page, search, items_per_page }) {
         return {
-          url: "activities/getAllActivitiesByYourProperty/",
+          url: "activities/get-all-activities-by-your-property/",
           method: "GET",
           headers: {
             authorization: accessToken(),
@@ -235,7 +235,7 @@ const projectServices = hrManagementApi.injectEndpoints({
     >({
       query({ page, search, items_per_page, taskPropertyId }) {
         return {
-          url: `activities/getAllActivitiesFromTask/${taskPropertyId}`,
+          url: `activities/get-all-activities-from-task/${taskPropertyId}`,
           method: "GET",
           headers: {
             authorization: accessToken(),
@@ -273,7 +273,7 @@ const projectServices = hrManagementApi.injectEndpoints({
     getTaskFile: build.mutation<string, Partial<{ filename: string }>>({
       query(body) {
         return {
-          url: "tasks/getFile",
+          url: "tasks/get-file",
           method: "POST",
           headers: {
             authorization: accessToken(),
@@ -294,7 +294,7 @@ const projectServices = hrManagementApi.injectEndpoints({
     >({
       query({ projectPropertyId, page, itemsPerPage, isAssigned }) {
         return {
-          url: `assignments/getAllAssignmentForProject/${projectPropertyId}`,
+          url: `assignments/get-all-assignment-for-project/${projectPropertyId}`,
           method: "GET",
           headers: {
             authorization: accessToken(),
@@ -355,7 +355,7 @@ const projectServices = hrManagementApi.injectEndpoints({
     >({
       query({ projectId }) {
         return {
-          url: `gateway/api/access/reportForProject/${projectId}`,
+          url: `report/report-for-project/${projectId}`,
           method: "GET",
           headers: {
             authorization: accessToken(),

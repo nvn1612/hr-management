@@ -60,7 +60,7 @@ const accountServices = hrManagementApi.injectEndpoints({
     >({
       query: ({ role, page, search }) => {
         return {
-          url: `users/admin/getAll`,
+          url: `users/admin/get-all`,
           method: "GET",
           headers: {
             authorization: accessToken(),
@@ -134,7 +134,7 @@ const accountServices = hrManagementApi.injectEndpoints({
     getRole: build.query<RoleResp[], void>({
       query() {
         return {
-          url: "roles/getAll",
+          url: "roles/get-all",
           method: "GET",
           headers: {
             authorization: accessToken(),
@@ -149,7 +149,7 @@ const accountServices = hrManagementApi.injectEndpoints({
     >({
       query({ values, page }) {
         return {
-          url: `/users/getAllStaffByUserProperty?page=${page ? page : 1}`,
+          url: `/users/get-all-staff-by-user-property?page=${page ? page : 1}`,
           method: "POST",
           headers: {
             authorization: accessToken(),
@@ -169,7 +169,7 @@ const accountServices = hrManagementApi.injectEndpoints({
     >({
       query({ departmentId, page, itemsPerPage }) {
         return {
-          url: `users/admin/getAllStaffInDepartment/${departmentId}`,
+          url: `users/admin/get-all-staff-in-department/${departmentId}`,
           method: "GET",
           headers: {
             authorization: accessToken(),
