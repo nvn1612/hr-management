@@ -39,3 +39,10 @@ export interface UserProperty {
   department_id?: string;
   role?: RoleResp;
 }
+
+export interface AddDepartmentForm {
+  name: string;
+  description: string;
+  manager_id: string;
+  list_user_ids: string[];
+}

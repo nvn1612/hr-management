@@ -47,6 +47,7 @@
     }
   }
   hr {
+    margin-top: 10px;
     height: 5px; 
     border: none;
     background-color: #d4cece; 
@@ -56,6 +57,10 @@
     .checkbox-staff{
             margin-right: 10px;
         }
+    .button-save-staffs{
+      display: flex;
+      justify-content: center;
+    }
   }
 }
 .hidden {
@@ -86,4 +91,12 @@
     font-size: 20px;
     margin-right: 10px;
   }
+}
+.department-staff{
+  width: 200px;
+}
+.button-save-staffs{
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
 }

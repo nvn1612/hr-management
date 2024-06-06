@@ -24,3 +24,45 @@
         align-items: center;    
     }
 }
+.create-departments-step1{
+    display: flex;
+    flex-direction: column;
+   .create-departments-step1-title{
+        padding:10px;
+        height: 100px;
+        display: flex;
+        label{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .input-title{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 450px;
+            margin-left: 20px;
+        }
+   }
+    .create-departments-step1-decription{
+        padding:10px;
+        height: 140px;
+        display: flex;
+        label{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .input-decription{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 450px;
+            margin-left: 20px;
+        }
+        
+   }
+}
+.list-user{
+    padding:10px;
+}

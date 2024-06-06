@@ -30,7 +30,6 @@ export const ModalListStaffDepartment = ({
   const [deleteStaff] = useDeleteStaffDepartmentMutation();
 
   const handleDeleteStaff = async () => {
-    console.log(listStaff);
     await deleteStaff({departmentId:department?.department_id, listStaff: listStaff}).unwrap().then().catch()
   }
 
@@ -97,7 +96,7 @@ export const ModalListStaffDepartment = ({
           />
         )}
         <PlusSquareOutlined className="icon-add-staffs" onClick={showModalAddStaff}/>
-        <ModalAddStaffsDepartment visible={visibleAddStaff} setVisible={setVisibleAddStaff} />
+        <ModalAddStaffsDepartment visible={visibleAddStaff} setVisible={setVisibleAddStaff} department={department} />
       </Modal>
     </>
   );

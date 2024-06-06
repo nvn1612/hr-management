@@ -1,97 +1,85 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Radio, Input, Avatar, List, Checkbox, DatePicker } from "antd";
+import { Modal, Radio, Input, Avatar, List, Checkbox, DatePicker, Pagination, Button } from "antd";
 import VirtualList from "rc-virtual-list";
 import { SearchOutlined, UserOutlined } from "@ant-design/icons";
 import type { RadioChangeEvent } from "antd";
 import { useGetUsersQuery } from "src/share/services";
-import {User} from 'src/share/models/accountModels'
+import { useCreateUserMutation } from "src/share/services";
+import { useAddStaffDepartmentMutation } from "src/share/services";
+import { User } from 'src/share/models/accountModels'
+import { Department } from "src/share/models";
 import "./modal-add-staffs-departments.css";
+
 type ModalAddStaffsDepartmentProps = {
   visible: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  department?: Department;
 };
 
-interface UserItem {
-  email: string;
-  gender: string;
-  name: {
-    first: string;
-    last: string;
-    title: string;
-  };
-  nat: string;
-  picture: {
-    large: string;
-    medium: string;
-    thumbnail: string;
-  };
-}
-const fakeDataUrl =
-  "https://randomuser.me/api/?results=20&inc=name,gender,email,nat,picture&noinfo";
+
+
 const ContainerHeight = 300;
 
 export const ModalAddStaffsDepartment = ({
   visible,
   setVisible,
+  department
 }: ModalAddStaffsDepartmentProps) => {
   const [value, setValue] = useState(1);
+  const [searchValue, setSearchValue] = useState("");
+  const [listStaff, setListStaff] = useState<(string | undefined)[]>([]);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
   const onChange = (e: RadioChangeEvent) => {
     setValue(e.target.value);
   };
-  const [data, setData] = useState<UserItem[]>([]);
-  const handleSelectAll = () => {
-    setCheckedItems(new Array(data.length).fill(true));
-  };
 
-  const handleDeselectAll = () => {
-    setCheckedItems(new Array(data.length).fill(false));
-  };
-  const appendData = () => {
-    fetch(fakeDataUrl)
-      .then((res) => res.json())
-      .then((body) => {
-        setData(data.concat(body.results));
-      });
-  };
-  useEffect(() => {
-    appendData();
-  }, []);
-  const onScroll = (e: React.UIEvent<HTMLElement, UIEvent>) => {
-    if (
-      Math.abs(
-        e.currentTarget.scrollHeight -
-          e.currentTarget.scrollTop -
-          ContainerHeight
-      ) <= 1
-    ) {
-      appendData();
-    }
-  };
+
 
   const [checkedItems, setCheckedItems] = useState<boolean[]>([]);
 
-  useEffect(() => {
-    setCheckedItems(new Array(data.length).fill(false));
-  }, [data]);
-
-  const handleCheckChange = (index: number) => {
+  const handleCheckChange = (index: number, id: string | undefined) => {
     setCheckedItems((prevState) => {
       const newState = [...prevState];
       newState[index] = !newState[index];
+      if (newState[index]) {
+        setListStaff((prevList) => [...prevList, id]);
+      } else {
+        setListStaff((prevList) => prevList.filter((staffId) => staffId !== id));
+      }
+
       return newState;
     });
   };
-  const {data : staffData} = useGetUsersQuery({role:"STAFF"});
-  
+  const { data: staffData } = useGetUsersQuery({ role: "STAFF", search: searchValue });
+  const [addStaffDepartment] = useAddStaffDepartmentMutation();
+  const handleAddStaffDepartment = async () => {
+    const filteredListStaff = listStaff.filter((id) => id !== undefined);
+    await addStaffDepartment({ departmentId: department?.department_id, listStaff: filteredListStaff }).unwrap().then().catch()
+  }
+
+  const [createUserDepartment] = useCreateUserMutation();
+
+  const handleCreateUserDepartment = async () => {
+    await createUserDepartment({ username: username, email: email, password: password, role: "STAFF", department_id: department?.department_id }).unwrap().then().catch()
+  }
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(event.target.value);
+  };
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6;
+
   return (
     <>
       <Modal
         title="Add Staffs To Department"
         open={visible}
-        onOk={() => setVisible(false)}
         onCancel={() => setVisible(false)}
         width={700}
-        okText="Save"
+        footer={null}
       >
         <hr />
         <div className="Change-select-staff-option">
@@ -114,22 +102,23 @@ export const ModalAddStaffsDepartment = ({
             <Input
               size="large"
               placeholder="Search staffs...."
-              prefix={<SearchOutlined />}
+              prefix={
+                <div className="icon-search-staffs" >
+                  <SearchOutlined />
+                </div>
+              }
+              value={searchValue}
+              onChange={handleSearchChange}
             />
-          </div>
-          <div className="option-select">
-            <p onClick={handleSelectAll}>Select All</p>
-            <p onClick={handleDeselectAll}>Deselect All</p>
           </div>
           <hr />
           <div className="list-add-staffs">
             <List>
               <VirtualList
-                data={staffData?.users.filter(user => user.UserProperty?.department_id===null) ?? []}
+                data={staffData?.users.filter(user => user.UserProperty?.department_id === null).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) ?? []}
                 height={ContainerHeight}
                 itemHeight={47}
                 itemKey="email"
-                onScroll={onScroll}
               >
                 {(item: User, index: number) => (
                   <List.Item key={item.email}>
@@ -140,50 +129,67 @@ export const ModalAddStaffsDepartment = ({
                     <Checkbox
                       className="checkbox-staff"
                       checked={checkedItems[index]}
-                      onChange={() => handleCheckChange(index)}
+                      onChange={() => handleCheckChange(index, item.user_id)}
                     />
                   </List.Item>
                 )}
               </VirtualList>
             </List>
+            <Pagination current={currentPage} total={staffData?.users.length} pageSize={itemsPerPage} onChange={setCurrentPage} />
+            <div className="button-save-staffs">
+              <Button type="primary" onClick={
+                async () => {
+                  await handleAddStaffDepartment();
+                  setVisible(false);
+                }
+              }>Save</Button>
+            </div>
           </div>
         </div>
         <div
           className={`select-create-new-staffs ${value === 2 ? "" : "hidden"}`}
         >
           <div className="title-add-staff">
-              <UserOutlined />
-              <h2>Add staff</h2>
+            <UserOutlined />
+            <h2>Add staff</h2>
           </div>
 
           <hr />
           <form action="" className="form-add-staff">
             <div className="input-add-staff">
               <strong>Username</strong>
-              <Input placeholder="diepvt123" />
+              <Input placeholder="diepvt123" value={username} onChange={(e) => setUsername(e.target.value)} />
             </div>
             <div className="input-add-staff">
-              <strong>Staff name</strong>
-              <Input placeholder="Van Diep Tran" />
+              <strong>Password</strong>
+              <Input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
             </div>
 
             <div className="input-add-staff">
               <div className="email-phone-staff">
                 <div className="email-staff">
                   <strong>Email</strong>
-                  <Input placeholder="abc@gmail.com" />
+                  <Input placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
                 </div>
                 <div className="phone-number-staff">
-                  <strong>Number phone</strong>
-                  <Input placeholder="+84 4567789" />
+                  <strong>Role</strong>
+                  <Input placeholder="Staff" disabled />
                 </div>
               </div>
             </div>
             <div className="input-add-staff">
-              <strong>Birthday</strong>
-              <div className="birthday-staff">
-                <DatePicker />
+              <strong>Deparment</strong>
+              <div className="department-staff">
+                <Input placeholder={department?.name} disabled />
               </div>
+            </div>
+            <div className="button-save-staffs">
+              <Button type="primary" onClick={
+                async () => {
+                  await handleCreateUserDepartment();
+                  setVisible(false);
+                }
+              }>Save</Button>
             </div>
           </form>
         </div>
