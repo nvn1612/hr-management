@@ -62,14 +62,6 @@ export const LoginForm = () => {
           <Input.Password placeholder='Password' />
         </Form.Item>
         <Form.Item>
-          <Form.Item name='remember' noStyle>
-            <Checkbox className='remember'>Remember me</Checkbox>
-          </Form.Item>
-          <a className='forgot-password' href=''>
-            Forgot Password
-          </a>
-        </Form.Item>
-        <Form.Item>
           <AntdButton className='login-button' type='primary' htmlType='submit'>
             Login
           </AntdButton>
