@@ -17,7 +17,6 @@ export const Login = () => {
           <div className='login-form-container'>
             <LoginForm />
           </div>
-          <div className='footer-info'>&copy; 2024 Random Incorporated.</div>
         </div>
       )}
     </>
