@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Radio, Input, Avatar, List, Checkbox, DatePicker, Pagination, Button } from "antd";
+import { Modal, Radio, Input, Avatar, List, Checkbox, Pagination, Button } from "antd";
 import VirtualList from "rc-virtual-list";
 import { SearchOutlined, UserOutlined } from "@ant-design/icons";
 import type { RadioChangeEvent } from "antd";
 import { useGetUsersQuery } from "src/share/services";
 import { useCreateUserMutation } from "src/share/services";
 import { useAddStaffDepartmentMutation } from "src/share/services";
-import { User } from 'src/share/models/accountModels'
+import { User } from 'src/share/models/accountModels';
 import { Department } from "src/share/models";
 import "./modal-add-staffs-departments.css";
 
@@ -15,8 +15,6 @@ type ModalAddStaffsDepartmentProps = {
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
   department?: Department;
 };
-
-
 
 const ContainerHeight = 300;
 
@@ -31,13 +29,13 @@ export const ModalAddStaffsDepartment = ({
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
+  const [checkedItems, setCheckedItems] = useState<boolean[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6;
+
   const onChange = (e: RadioChangeEvent) => {
     setValue(e.target.value);
   };
-
-
-
-  const [checkedItems, setCheckedItems] = useState<boolean[]>([]);
 
   const handleCheckChange = (index: number, id: string | undefined) => {
     setCheckedItems((prevState) => {
@@ -48,36 +46,47 @@ export const ModalAddStaffsDepartment = ({
       } else {
         setListStaff((prevList) => prevList.filter((staffId) => staffId !== id));
       }
-
       return newState;
     });
   };
+
   const { data: staffData } = useGetUsersQuery({ role: "STAFF", search: searchValue });
   const [addStaffDepartment] = useAddStaffDepartmentMutation();
-  const handleAddStaffDepartment = async () => {
-    const filteredListStaff = listStaff.filter((id) => id !== undefined);
-    await addStaffDepartment({ departmentId: department?.department_id, listStaff: filteredListStaff }).unwrap().then().catch()
-  }
-
   const [createUserDepartment] = useCreateUserMutation();
 
+  const handleAddStaffDepartment = async () => {
+    const filteredListStaff = listStaff.filter((id) => id !== undefined);
+    await addStaffDepartment({ departmentId: department?.department_id, listStaff: filteredListStaff }).unwrap().then().catch();
+  };
+
   const handleCreateUserDepartment = async () => {
-    await createUserDepartment({ username: username, email: email, password: password, role: "STAFF", department_id: department?.department_id }).unwrap().then().catch()
-  }
+    await createUserDepartment({ username, email, password, role: "STAFF", department_id: department?.department_id }).unwrap().then().catch();
+  };
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(event.target.value);
   };
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 6;
+  const resetState = () => {
+    setValue(1);
+    setSearchValue("");
+    setListStaff([]);
+    setUsername("");
+    setPassword("");
+    setEmail("");
+    setCheckedItems([]);
+    setCurrentPage(1);
+  };
 
   return (
     <>
       <Modal
         title="Add Staffs To Department"
         open={visible}
-        onCancel={() => setVisible(false)}
+        onCancel={() => {
+          setVisible(false);
+          resetState();
+        }}
         width={700}
         footer={null}
       >
@@ -85,7 +94,7 @@ export const ModalAddStaffsDepartment = ({
         <div className="Change-select-staff-option">
           <Radio.Group
             className="group-radio-select-add-staffs"
-            defaultValue={1}
+            value={value}
             onChange={onChange}
           >
             <div className={`select-staffs ${value === 1 ? "active" : ""}`}>
@@ -124,7 +133,7 @@ export const ModalAddStaffsDepartment = ({
                   <List.Item key={item.email}>
                     <List.Item.Meta
                       avatar={<Avatar src={item.avatar} />}
-                      title={<a>{item.username}</a>}
+                      title={<a>{item.name}</a>}
                     />
                     <Checkbox
                       className="checkbox-staff"
@@ -141,6 +150,7 @@ export const ModalAddStaffsDepartment = ({
                 async () => {
                   await handleAddStaffDepartment();
                   setVisible(false);
+                  resetState();
                 }
               }>Save</Button>
             </div>
@@ -188,6 +198,7 @@ export const ModalAddStaffsDepartment = ({
                 async () => {
                   await handleCreateUserDepartment();
                   setVisible(false);
+                  resetState();
                 }
               }>Save</Button>
             </div>
