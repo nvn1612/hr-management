@@ -2,6 +2,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+
   .department-manager {
     width: 600px;
     border: 1px solid #ccc;
@@ -89,5 +90,11 @@
   font-size: 15px;
   &:hover {
     color: #001529;
+  }
+}
+.description-department{
+  display: flex;
+  p{
+    padding-left: 10px;
   }
 }
