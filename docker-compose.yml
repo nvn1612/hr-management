@@ -1,9 +1,9 @@
 services:
-   projectmanagermentwebui:
+   projectmanagementwebui:
     build: 
       dockerfile: Dockerfile
     platform: linux/amd64
-    image: nambndpx000/projectmanagermentwebui
+    image: nambndpx000/projectmanagementwebui
     ports:
       - "3000:3000"
     environment:
