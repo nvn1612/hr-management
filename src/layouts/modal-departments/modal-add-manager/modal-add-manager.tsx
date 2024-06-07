@@ -4,6 +4,7 @@ import "./modal-add-manager.css";
 import { useGetUsersQuery } from "src/share/services";
 import { useUpdateManagerDepartmentMutation } from "src/share/services/departmentServices";
 import { Department } from "src/share/models";
+import { randAvaBg } from "src/share/utils";
 
 type ModalAddManagerProps = {
   visible: boolean;
@@ -87,7 +88,17 @@ export const ModalAddManager = ({
                         <Checkbox checked={selectedManager === index} />
                       </div>
                       <div className="avatar-manager">
-                        <Avatar size={64} src={manager.avatar} />
+                      <Avatar
+                          {...(!manager?.avatar && {
+                            style: { background: randAvaBg(), fontSize: "25px" },
+                          })}
+                          size={50}
+                        >
+                          {!manager?.avatar &&
+                            manager?.username
+                              ?.substring(0, 1)
+                              .toUpperCase()}
+                        </Avatar>
                       </div>
                       <div className="name-manager">{manager.name}</div>
                     </div>
