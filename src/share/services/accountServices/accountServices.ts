@@ -19,10 +19,20 @@ const accountServices = hrManagementApi.injectEndpoints({
         return {
           url: "gateway/api/access/login",
           method: "POST",
+          body,
+        };
+      },
+    }),
+    claimPassword: build.mutation<
+      Response<LoginResp>,
+      Partial<{ email: string }>
+    >({
+      query(body) {
+        return {
+          url: "users/forget-password",
+          method: "POST",
           headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Headers":
-              "Origin, X-Requested-With, Content-Type, Accept",
+            authorization: accessToken(),
           },
           body,
         };
@@ -198,4 +208,5 @@ export const {
   useChangePasswordMutation,
   useGetUsersByPropertiesMutation,
   useGetDepartmentStaffsQuery,
+  useClaimPasswordMutation,
 } = accountServices;
