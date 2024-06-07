@@ -36,18 +36,15 @@ type ModalDepartmentsProps = {
   closeModal: () => void;
 };
 
-
-
 export const ModalDepartments = ({
   visible,
   setVisible,
   department,
-  closeModal
+  closeModal,
 }: ModalDepartmentsProps) => {
   const onChange = (key: string) => {
     console.log(key);
   };
-
 
   const [managerModalVisible, setManagerModalVisible] = useState(false);
   const showModal = () => {
@@ -100,11 +97,18 @@ export const ModalDepartments = ({
                     </div>
                   </Col>
                   <Col span={12}>
-                    <div className='name-manager-department' onClick={showModal}>
+                    <div
+                      className='name-manager-department'
+                      onClick={showModal}
+                    >
                       {department?.information?.manager?.user_id ? (
                         <Avatar icon={<UserOutlined />} size={25} />
                       ) : null}
-                      <p>{department?.information?.manager?.user_id ? department.information.manager.name : "No Manager"}</p>
+                      <p>
+                        {department?.information?.manager?.user_id
+                          ? department.information.manager.name
+                          : "No Manager"}
+                      </p>
                     </div>
                   </Col>
                   <Col span={2} className='edit-manager-icon'>
@@ -164,7 +168,7 @@ export const ModalDepartments = ({
     {
       key: "3",
       label: "Report",
-      children: <Timeline mode={"alternate"} items={reportTimelineItem} />,
+      children: <Timeline mode={"left"} items={reportTimelineItem} />,
     },
   ];
   return (

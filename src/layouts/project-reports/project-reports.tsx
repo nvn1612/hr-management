@@ -20,7 +20,7 @@ export const ProjectReports = ({ projectId }: ProjectReportProp) => {
         {isSuccess && data.tasks ? (
           <Timeline
             className='report-timeline'
-            mode='alternate'
+            mode='left'
             items={returnedItem}
           />
         ) : (
