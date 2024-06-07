@@ -98,6 +98,19 @@ const accountServices = hrManagementApi.injectEndpoints({
       },
       invalidatesTags: ["User"],
     }),
+    getAvatar: build.mutation<string, Partial<{ avatar: string }>>({
+      query(body) {
+        return {
+          url: "users/get-avatar",
+          method: "POST",
+          headers: {
+            authorization: accessToken(),
+          },
+          body,
+        };
+      },
+      transformResponse: (reponse: Response<string>) => reponse.data,
+    }),
     updateUser: build.mutation<
       Response<boolean>,
       Partial<{ values: User; userId: string }>
@@ -105,7 +118,7 @@ const accountServices = hrManagementApi.injectEndpoints({
       query(body) {
         return {
           url: `users/admin/update/${body.userId}`,
-          method: "PUT",
+          method: "POST",
           headers: {
             authorization: accessToken(),
           },
@@ -209,4 +222,5 @@ export const {
   useGetUsersByPropertiesMutation,
   useGetDepartmentStaffsQuery,
   useClaimPasswordMutation,
+  useGetAvatarMutation,
 } = accountServices;
