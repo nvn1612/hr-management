@@ -130,7 +130,7 @@ export const ModalAddDepartment = ({
                 <List.Item.Meta
                   avatar={<Avatar size={50} />}
                   title={
-                    <a href="">{item.name}</a>
+                    <p>{item.name}</p>
                   }
                   description="this is staff"
                 />

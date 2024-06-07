@@ -14,6 +14,7 @@ import {
   EditOutlined,
   DeleteOutlined,
   QuestionCircleOutlined,
+  BookOutlined,
 } from "@ant-design/icons";
 import { ModalDepartmentManager } from "src/layouts/modal-departments/modal-department-manager";
 import { ModalListStaffDepartment } from "src/layouts/modal-departments/modal-list-staff-department";
@@ -87,7 +88,10 @@ export const ModalDepartments = ({
       children: (
         <>
           <div className='information-departments'>
-            <p>{department?.description}</p>
+            <div className="description-department">
+              <BookOutlined />
+              <p>{department?.description}</p>
+            </div>
             <div className='info-department-wrapper'>
               <div className='department-manager'>
                 <Row>

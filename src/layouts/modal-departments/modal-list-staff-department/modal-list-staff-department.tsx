@@ -26,11 +26,13 @@ export const ModalListStaffDepartment = ({
   const showModalAddStaff = () => {
     setVisibleAddStaff(true);
   }
-  const {data,isFetching} = useGetDepartmentStaffsQuery({departmentId:department?.department_id});
+  const {data,isFetching,refetch} = useGetDepartmentStaffsQuery({departmentId:department?.department_id});
   const [deleteStaff] = useDeleteStaffDepartmentMutation();
 
   const handleDeleteStaff = async () => {
     await deleteStaff({departmentId:department?.department_id, listStaff: listStaff}).unwrap().then().catch()
+    setListStaff([]); 
+    refetch(); 
   }
 
   const handleCheckboxChange = (staffId: string, checked: boolean) => {
@@ -72,7 +74,7 @@ export const ModalListStaffDepartment = ({
   return (
     <>
       <Modal
-        title="List Staffs Department"
+        title={`List Staffs of ${department?.name} Department`}
         open={visible}
         onOk={async () => {
           await handleDeleteStaff();
