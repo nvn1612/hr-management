@@ -9,6 +9,7 @@ import { useAddStaffDepartmentMutation } from "src/share/services";
 import { User } from 'src/share/models/accountModels';
 import { Department } from "src/share/models";
 import "./modal-add-staffs-departments.css";
+import { randAvaBg } from "src/share/utils";
 
 type ModalAddStaffsDepartmentProps = {
   visible: boolean;
@@ -132,7 +133,17 @@ export const ModalAddStaffsDepartment = ({
                 {(item: User, index: number) => (
                   <List.Item key={item.email}>
                     <List.Item.Meta
-                      avatar={<Avatar src={item.avatar} />}
+                      avatar={<Avatar
+                        {...(!item?.avatar && {
+                          style: { background: randAvaBg() },
+                        })}
+                        size={25}
+                      >
+                        {!item?.avatar &&
+                          item?.username
+                            ?.substring(0, 1)
+                            .toUpperCase()}
+                      </Avatar>}
                       title={<a>{item.name}</a>}
                     />
                     <Checkbox

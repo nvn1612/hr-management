@@ -1,9 +1,9 @@
-import React,{useState} from "react";
-import { Modal, Table, Checkbox,Spin } from "antd";
+import React, { useState } from "react";
+import { Modal, Table, Checkbox, Spin } from "antd";
 import { PlusSquareOutlined } from '@ant-design/icons';
 import { ModalAddStaffsDepartment } from "src/layouts/modal-departments/modal-add-staffs-department";
 import "./modal-list-staff-department.css";
-import {Department} from "src/share/models/departmentModels";
+import { Department } from "src/share/models/departmentModels";
 import { useGetDepartmentStaffsQuery } from "src/share/services";
 import { useDeleteStaffDepartmentMutation } from "src/share/services";
 
@@ -13,9 +13,6 @@ type ModalDepartmentListStaffProps = {
   department?: Department;
 };
 
-
-
-
 export const ModalListStaffDepartment = ({
   visible,
   setVisible,
@@ -23,26 +20,38 @@ export const ModalListStaffDepartment = ({
 }: ModalDepartmentListStaffProps) => {
   const [visibleAddStaff, setVisibleAddStaff] = useState(false);
   const [listStaff, setListStaff] = useState<string[]>([]);
+  const [checkedStaff, setCheckedStaff] = useState<{ [key: string]: boolean }>({});
+  
   const showModalAddStaff = () => {
     setVisibleAddStaff(true);
   }
-  const {data,isFetching,refetch} = useGetDepartmentStaffsQuery({departmentId:department?.department_id});
+
+  const { data, isFetching, refetch } = useGetDepartmentStaffsQuery({ departmentId: department?.department_id });
   const [deleteStaff] = useDeleteStaffDepartmentMutation();
 
   const handleDeleteStaff = async () => {
-    await deleteStaff({departmentId:department?.department_id, listStaff: listStaff}).unwrap().then().catch()
-    setListStaff([]); 
-    refetch(); 
+    await deleteStaff({ departmentId: department?.department_id, listStaff }).unwrap().then(() => {
+      setListStaff([]); 
+      setCheckedStaff({}); 
+      refetch(); 
+    }).catch(err => console.error(err));
   }
 
   const handleCheckboxChange = (staffId: string, checked: boolean) => {
+    setCheckedStaff(prevState => ({ ...prevState, [staffId]: checked }));
     if (checked) {
       setListStaff(prevState => [...prevState, staffId]);
     } else {
       setListStaff(prevState => prevState.filter(id => id !== staffId));
     }
   }
-  
+
+  const handleCancel = () => {
+    setListStaff([]); 
+    setCheckedStaff({}); 
+    setVisible(false);
+  }
+
   const columns = [
     {
       title: "Name",
@@ -63,14 +72,14 @@ export const ModalListStaffDepartment = ({
       title: "Delete",
       key: "delete",
       render: (text: string, record: { key: string }) => (
-        <Checkbox onChange={(e) => handleCheckboxChange(record.key, e.target.checked)} />
+        <Checkbox 
+          checked={!!checkedStaff[record.key]} 
+          onChange={(e) => handleCheckboxChange(record.key, e.target.checked)} 
+        />
       ),
     },
   ];
 
-
-
-  
   return (
     <>
       <Modal
@@ -80,7 +89,7 @@ export const ModalListStaffDepartment = ({
           await handleDeleteStaff();
           setVisible(false);
         }}
-        onCancel={() => setVisible(false)}
+        onCancel={handleCancel}
         width={900}
       >
         {isFetching ? (
@@ -97,7 +106,7 @@ export const ModalListStaffDepartment = ({
             pagination={{ pageSize: 4 }}
           />
         )}
-        <PlusSquareOutlined className="icon-add-staffs" onClick={showModalAddStaff}/>
+        <PlusSquareOutlined className="icon-add-staffs" onClick={showModalAddStaff} />
         <ModalAddStaffsDepartment visible={visibleAddStaff} setVisible={setVisibleAddStaff} department={department} />
       </Modal>
     </>

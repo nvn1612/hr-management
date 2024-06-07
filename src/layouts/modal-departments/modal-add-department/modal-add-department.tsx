@@ -14,6 +14,7 @@ import { useAddDepartmentMutation } from "src/share/services";
 import { useGetUsersQuery } from "src/share/services";
 import { User } from "src/share/models";
 import "./modal-add-department.css";
+import { randAvaBg } from "src/share/utils";
 const { TextArea } = Input;
 
 type ModalAddDepartmentProps = {
@@ -106,7 +107,17 @@ export const ModalAddDepartment = ({
                 style={item === selectedItem ? { backgroundColor: '#f0f0f0' } : {}}
               >
                 <List.Item.Meta
-                  avatar={<Avatar size={50} />}
+                  avatar={<Avatar
+                    {...(item?.avatar && {
+                      style: { background: randAvaBg(), fontSize: '25px' },
+                    })}
+                    size={50}
+                  >
+                    {!item?.avatar &&
+                      item?.username
+                        ?.substring(0, 1)
+                        .toUpperCase()}
+                  </Avatar>}
                   title={<a href="">{item.name}</a>}
                   description={item.email}
                 />
@@ -128,7 +139,17 @@ export const ModalAddDepartment = ({
             renderItem={(item, index) => (
               <List.Item>
                 <List.Item.Meta
-                  avatar={<Avatar size={50} />}
+                  avatar={<Avatar
+                    {...(item?.avatar && {
+                      style: { background: randAvaBg(), fontSize: "25px"},
+                    })}
+                    size={50}
+                  >
+                    {!item?.avatar &&
+                      item?.username
+                        ?.substring(0, 1)
+                        .toUpperCase()}
+                  </Avatar>}
                   title={
                     <p>{item.name}</p>
                   }
