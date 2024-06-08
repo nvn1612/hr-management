@@ -10,6 +10,7 @@ import type {
   TaskProperty,
   ProjectReportResp,
   ActivityResp,
+  GetUserResp,
 } from "src/share/models";
 import { hrManagementApi } from "src/share/services";
 import { localStorageUtil } from "src/share/utils";
@@ -365,6 +366,29 @@ const projectServices = hrManagementApi.injectEndpoints({
       transformResponse: (response: Response<ProjectReportResp>) =>
         response.data,
     }),
+    getProjectStaffs: build.query<
+      GetUserResp,
+      {
+        projectPropertyId?: string;
+        page?: number;
+        items_per_page?: number | "ALL";
+      }
+    >({
+      query({ projectPropertyId, page, items_per_page }) {
+        return {
+          url: `/users/get-all-staff-in-project/${projectPropertyId}`,
+          method: "GET",
+          headers: {
+            authorization: accessToken(),
+          },
+          params: {
+            page: page || "1",
+            items_per_page: items_per_page || "10",
+          },
+        };
+      },
+      transformResponse: (response: Response<GetUserResp>) => response.data,
+    }),
     deleteAssignment: build.mutation<
       Response<boolean>,
       Partial<{
@@ -423,4 +447,5 @@ export const {
   useUpdateAssignmentMutation,
   useDeleteAssignmentMutation,
   useDeleteTaskMutation,
+  useGetProjectStaffsQuery,
 } = projectServices;

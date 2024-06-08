@@ -9,11 +9,15 @@ import { MngPageHeader } from "src/layouts/mng-page-header";
 import {
   useGetAllProjectQuery,
   useDeleteProjectMutation,
+  useGetUserDetailQuery,
+  useGetAllProjectDepartmentQuery,
 } from "src/share/services";
 
 import type { TabsProps, PaginationProps } from "antd";
-import type { Project } from "src/share/models";
+import { OUserRole, type Project } from "src/share/models";
+import { localStorageUtil } from "src/share/utils";
 
+const role = localStorageUtil.get("role");
 export const Projects = () => {
   const [openProjectTab, setOpenProjectTab] = useState<boolean>(false);
   const [selectedProject, setSelectedProject] = useState<Project | undefined>();
@@ -23,7 +27,14 @@ export const Projects = () => {
   }>({ page: 1 });
   const [messageApi, contextHolder] = message.useMessage();
 
-  const { data, isFetching } = useGetAllProjectQuery({ ...queries });
+  const { data: allProject, isFetching } = useGetAllProjectQuery(
+    { ...queries },
+    { skip: role !== OUserRole.Admin }
+  );
+  const { data: userDetail } = useGetUserDetailQuery();
+  const { data: departmentProject } = useGetAllProjectDepartmentQuery({
+    departmentId: userDetail?.UserProperty?.department_id,
+  });
   const [deleteProject] = useDeleteProjectMutation();
 
   const tabsProps: TabsProps["items"] = [
@@ -68,7 +79,11 @@ export const Projects = () => {
         <MngPageHeader
           title='Projects'
           addBtnContent='Create Project'
-          itemCount={data?.total}
+          itemCount={
+            role === OUserRole.Admin
+              ? allProject?.total
+              : departmentProject?.total
+          }
           addBtnOnClick={() => {
             setIsCreate(true);
             setOpenProjectTab(true);
@@ -89,12 +104,19 @@ export const Projects = () => {
               position: "bottom",
               align: "center",
               pageSize: 10,
-              total: data?.total,
+              total:
+                role === OUserRole.Admin
+                  ? allProject?.total
+                  : departmentProject?.total,
               onChange: onChangePage,
             }}
-            dataSource={data?.data}
+            dataSource={
+              role === OUserRole.Admin
+                ? allProject?.data
+                : departmentProject?.data
+            }
             renderItem={
-              data
+              allProject?.data || departmentProject?.data
                 ? (project) => {
                     return (
                       <List.Item>
@@ -124,7 +146,8 @@ export const Projects = () => {
           setOpenProjectTab(false);
         }}
         footer={
-          !isCreate && [
+          !isCreate ||
+          (role === OUserRole.Admin && [
             <Popconfirm
               title='Delete Project'
               description='Are you sure to delete this Project?'
@@ -146,7 +169,7 @@ export const Projects = () => {
                 Delete Project
               </Button>
             </Popconfirm>,
-          ]
+          ])
         }
       >
         <Tabs
