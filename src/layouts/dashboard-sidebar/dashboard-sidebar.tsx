@@ -62,26 +62,16 @@ const Dashboardsidebar: React.FC = () => {
 
   const setDefaultItem = () => {
     const currPath = window.location.pathname.replace("/dashboard/", "");
-<<<<<<< HEAD
-=======
     const isAdmin = localStorageUtil.get("role") === "ADMIN";
->>>>>>> main
     switch (currPath) {
       case "accounts":
         setSelectItem("1");
         break;
       case "departments":
-<<<<<<< HEAD
-        setSelectItem("2");
-        break;
-      case "projects":
-        setSelectItem("3");
-=======
         setSelectItem(isAdmin ? "2" : "1");
         break;
       case "projects":
         setSelectItem(isAdmin ? "3" : "2");
->>>>>>> main
         break;
       default:
         setSelectItem("0");

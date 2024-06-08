@@ -1,14 +1,4 @@
 import "./user-info.css";
-<<<<<<< HEAD
-import { Avatar, Spin } from "antd";
-import { UserInfoForm } from "src/layouts/";
-import { useGetUserDetailQuery } from "src/share/services";
-import { localStorageUtil, randAvaBg } from "src/share/utils";
-
-export const UserInfo = () => {
-  const { data, isLoading } = useGetUserDetailQuery();
-  const role = localStorageUtil.get("role");
-=======
 import { Avatar, Button, Spin, Upload, message } from "antd";
 import { UserInfoForm } from "src/layouts/";
 import {
@@ -54,16 +44,10 @@ export const UserInfo = () => {
     }
   }, [data, avatar]);
 
->>>>>>> main
   return (
     <Spin size='large' tip='Loading User Detail' spinning={isLoading}>
       <div className='user-info-container'>
         <div className='first-section'>
-<<<<<<< HEAD
-          <Avatar size={128} style={{ background: randAvaBg(), fontSize: 64 }}>
-            {data?.username?.substring(0, 1).toLocaleUpperCase()}
-          </Avatar>
-=======
           <Avatar
             size={128}
             style={{ fontSize: 64 }}
@@ -77,7 +61,6 @@ export const UserInfo = () => {
           <Upload className='upload-sec' {...avaFileProps}>
             <Button icon={<CameraOutlined />}>Upload your avatar</Button>
           </Upload>
->>>>>>> main
           <h3>{data?.username}</h3>
           <h3>{role}</h3>
         </div>

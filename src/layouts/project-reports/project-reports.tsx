@@ -20,11 +20,7 @@ export const ProjectReports = ({ projectId }: ProjectReportProp) => {
         {isSuccess && data.tasks ? (
           <Timeline
             className='report-timeline'
-<<<<<<< HEAD
-            mode='alternate'
-=======
             mode='left'
->>>>>>> main
             items={returnedItem}
           />
         ) : (

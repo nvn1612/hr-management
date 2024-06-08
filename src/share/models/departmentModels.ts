@@ -1,6 +1,6 @@
 import { RoleResp } from "../models/accountModels";
-export interface getDepartmentsResp{
-  total?:number;
+export interface getDepartmentsResp {
+  total?: number;
   nextPage?: boolean;
   peviousPage?: boolean;
   currentPage?: number;
@@ -16,26 +16,22 @@ export interface Department {
   manager_id?: string;
   information?: information;
 }
-export interface information{
-    total_staff?: number;
-    manager?: manager;
+export interface information {
+  total_staff?: number;
+  manager?: manager;
 }
-export interface manager{
-    user_id?: string;
-    username?: string;
-    email?: string;
-    phone?: string;
-<<<<<<< HEAD
-    avartar?: string;
-=======
-    avatar?: string;
->>>>>>> main
-    name?: string;
-    birthday?: string;
-    createdAt?: string;
-    createBy?: string;
-    deletedMark?: boolean;
-    userProperty?: UserProperty;
+export interface manager {
+  user_id?: string;
+  username?: string;
+  email?: string;
+  phone?: string;
+  avatar?: string;
+  name?: string;
+  birthday?: string;
+  createdAt?: string;
+  createBy?: string;
+  deletedMark?: boolean;
+  userProperty?: UserProperty;
 }
 
 export interface UserProperty {

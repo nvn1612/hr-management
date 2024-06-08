@@ -2,10 +2,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-<<<<<<< HEAD
-=======
-
->>>>>>> main
   .department-manager {
     width: 600px;
     border: 1px solid #ccc;
@@ -95,12 +91,9 @@
     color: #001529;
   }
 }
-<<<<<<< HEAD
-=======
-.description-department{
+.description-department {
   display: flex;
-  p{
+  p {
     padding-left: 10px;
   }
 }
->>>>>>> main

@@ -12,12 +12,13 @@ import type { PaginationProps } from "antd";
 
 export const CardDepartments = () => {
   const [visible, setVisible] = useState(false);
-<<<<<<< HEAD
-  const [queries, setQueries] = useState<{ page: number, itemsPerPage: number }>({ page: 1, itemsPerPage: 5 });
-=======
-  const [queries, setQueries] = useState<{ page: number, itemsPerPage: number }>({ page: 1, itemsPerPage: 10 });
->>>>>>> main
-  const [mainDepartment, setMainDepartment] = useState<Department | undefined>();
+  const [queries, setQueries] = useState<{
+    page: number;
+    itemsPerPage: number;
+  }>({ page: 1, itemsPerPage: 10 });
+  const [mainDepartment, setMainDepartment] = useState<
+    Department | undefined
+  >();
   const [visibleAddDepartment, setVisibleAddDepartment] = useState(false);
   const showAddDepartment = () => {
     setVisibleAddDepartment(true);
@@ -35,18 +36,18 @@ export const CardDepartments = () => {
     <>
       <Spin
         spinning={isFetching}
-        tip="Loading Departments"
-        className="department-card-loading"
-        size="large"
+        tip='Loading Departments'
+        className='department-card-loading'
+        size='large'
       >
         <MngPageHeader
-          title="Departments"
-          addBtnContent="Create Department"
+          title='Departments'
+          addBtnContent='Create Department'
           addBtnOnClick={showAddDepartment}
           itemCount={data?.total}
           filters={[]}
         />
-        <div className="department-card-container">
+        <div className='department-card-container'>
           <List
             grid={{
               gutter: 16,
@@ -60,11 +61,7 @@ export const CardDepartments = () => {
             pagination={{
               position: "bottom",
               align: "center",
-<<<<<<< HEAD
-              pageSize: 9,
-=======
               pageSize: 10,
->>>>>>> main
               total: data?.total,
               onChange: onChangePage,
             }}
@@ -81,7 +78,11 @@ export const CardDepartments = () => {
                           }}
                           departmentId={department.department_id}
                           title={department.name}
-                          manager={department?.information?.manager?.user_id ? department.information.manager.name : "No Manager"}
+                          manager={
+                            department?.information?.manager?.user_id
+                              ? department.information.manager.name
+                              : "No Manager"
+                          }
                           staffCount={department.information?.total_staff}
                         />
                       </List.Item>
@@ -97,7 +98,6 @@ export const CardDepartments = () => {
         setVisible={setVisible}
         department={mainDepartment}
         closeModal={closeModal}
-
       />
       <ModalAddDepartment
         visible={visibleAddDepartment}

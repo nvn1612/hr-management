@@ -14,10 +14,7 @@ import { useAddDepartmentMutation } from "src/share/services";
 import { useGetUsersQuery } from "src/share/services";
 import { User } from "src/share/models";
 import "./modal-add-department.css";
-<<<<<<< HEAD
-=======
 import { randAvaBg } from "src/share/utils";
->>>>>>> main
 const { TextArea } = Input;
 
 type ModalAddDepartmentProps = {
@@ -49,12 +46,17 @@ export const ModalAddDepartment = ({
   const { data: managerData } = useGetUsersQuery({ role: "MANAGER" });
   const { data: staffData } = useGetUsersQuery({ role: "STAFF" });
 
-  const handleCheckChangeStaff = (checked: boolean, userId: string | undefined) => {
+  const handleCheckChangeStaff = (
+    checked: boolean,
+    userId: string | undefined
+  ) => {
     if (userId) {
       if (checked) {
-        setListStaffs(prevStaffs => [...prevStaffs, userId]);
+        setListStaffs((prevStaffs) => [...prevStaffs, userId]);
       } else {
-        setListStaffs(prevStaffs => prevStaffs.filter(user => user !== userId));
+        setListStaffs((prevStaffs) =>
+          prevStaffs.filter((user) => user !== userId)
+        );
       }
     }
   };
@@ -71,31 +73,44 @@ export const ModalAddDepartment = ({
   const steps = [
     {
       title: "First",
-      content:
-        <div className="create-departments-step1">
-          <div className="create-departments-step1-title">
+      content: (
+        <div className='create-departments-step1'>
+          <div className='create-departments-step1-title'>
             <label>Name</label>
-            <div className="input-title">
-              <Input placeholder="Department name" value={name} onChange={e => setName(e.target.value)} />
+            <div className='input-title'>
+              <Input
+                placeholder='Department name'
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
             </div>
           </div>
-          <div className="create-departments-step1-decription">
+          <div className='create-departments-step1-decription'>
             <label>Description</label>
-            <div className="input-decription">
-              <TextArea rows={4} placeholder="Department decription" value={description} onChange={e => setDescription(e.target.value)} />
+            <div className='input-decription'>
+              <TextArea
+                rows={4}
+                placeholder='Department decription'
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
             </div>
           </div>
         </div>
-      ,
+      ),
     },
     {
       title: "Second",
-      content:
+      content: (
         <>
           <List
-            className="list-user"
-            itemLayout="horizontal"
-            dataSource={managerData?.users.filter(user => user.UserProperty?.department_id === null) ?? []}
+            className='list-user'
+            itemLayout='horizontal'
+            dataSource={
+              managerData?.users.filter(
+                (user) => user.UserProperty?.department_id === null
+              ) ?? []
+            }
             renderItem={(item, index) => (
               <List.Item
                 onClick={() => {
@@ -107,76 +122,73 @@ export const ModalAddDepartment = ({
                     setManager(item.user_id);
                   }
                 }}
-                style={item === selectedItem ? { backgroundColor: '#f0f0f0' } : {}}
+                style={
+                  item === selectedItem ? { backgroundColor: "#f0f0f0" } : {}
+                }
               >
                 <List.Item.Meta
-<<<<<<< HEAD
-                  avatar={<Avatar size={50} />}
-=======
-                  avatar={<Avatar
-                    {...(item?.avatar && {
-                      style: { background: randAvaBg(), fontSize: '25px' },
-                    })}
-                    size={50}
-                  >
-                    {!item?.avatar &&
-                      item?.username
-                        ?.substring(0, 1)
-                        .toUpperCase()}
-                  </Avatar>}
->>>>>>> main
-                  title={<a href="">{item.name}</a>}
+                  avatar={
+                    <Avatar
+                      {...(item?.avatar && {
+                        style: { background: randAvaBg(), fontSize: "25px" },
+                      })}
+                      size={50}
+                    >
+                      {!item?.avatar &&
+                        item?.username?.substring(0, 1).toUpperCase()}
+                    </Avatar>
+                  }
+                  title={<a href=''>{item.name}</a>}
                   description={item.email}
                 />
-              </List.Item>
-            )}
-            pagination={{ pageSize: 5, }}
-          />
-        </>
-      ,
-    },
-    {
-      title: "Last",
-      content:
-        <>
-          <List
-            className="list-user"
-            itemLayout="horizontal"
-            dataSource={staffData?.users.filter(user => user.UserProperty?.department_id === null) ?? []}
-            renderItem={(item, index) => (
-              <List.Item>
-                <List.Item.Meta
-<<<<<<< HEAD
-                  avatar={<Avatar size={50} />}
-                  title={
-                    <a href="">{item.name}</a>
-=======
-                  avatar={<Avatar
-                    {...(item?.avatar && {
-                      style: { background: randAvaBg(), fontSize: "25px"},
-                    })}
-                    size={50}
-                  >
-                    {!item?.avatar &&
-                      item?.username
-                        ?.substring(0, 1)
-                        .toUpperCase()}
-                  </Avatar>}
-                  title={
-                    <p>{item.name}</p>
->>>>>>> main
-                  }
-                  description="this is staff"
-                />
-
-                <Checkbox
-                  onChange={(e) => handleCheckChangeStaff(e.target.checked, item.user_id)} />
               </List.Item>
             )}
             pagination={{ pageSize: 5 }}
           />
         </>
-      ,
+      ),
+    },
+    {
+      title: "Last",
+      content: (
+        <>
+          <List
+            className='list-user'
+            itemLayout='horizontal'
+            dataSource={
+              staffData?.users.filter(
+                (user) => user.UserProperty?.department_id === null
+              ) ?? []
+            }
+            renderItem={(item, index) => (
+              <List.Item>
+                <List.Item.Meta
+                  avatar={
+                    <Avatar
+                      {...(item?.avatar && {
+                        style: { background: randAvaBg(), fontSize: "25px" },
+                      })}
+                      size={50}
+                    >
+                      {!item?.avatar &&
+                        item?.username?.substring(0, 1).toUpperCase()}
+                    </Avatar>
+                  }
+                  title={<p>{item.name}</p>}
+                  description='this is staff'
+                />
+
+                <Checkbox
+                  onChange={(e) =>
+                    handleCheckChangeStaff(e.target.checked, item.user_id)
+                  }
+                />
+              </List.Item>
+            )}
+            pagination={{ pageSize: 5 }}
+          />
+        </>
+      ),
     },
   ];
 
@@ -194,10 +206,15 @@ export const ModalAddDepartment = ({
 
   const handleAddDepartment = async () => {
     try {
-      await addDepartment({ name, description, manager_id: manager, list_user_ids: listStaffs });
+      await addDepartment({
+        name,
+        description,
+        manager_id: manager,
+        list_user_ids: listStaffs,
+      });
       message.success("Department added successfully!");
       setVisible(false);
-      resetModalState(); 
+      resetModalState();
     } catch (error) {
       message.error("Failed to add department!");
     }
@@ -206,19 +223,22 @@ export const ModalAddDepartment = ({
   return (
     <>
       <Modal
-        title="Create Department"
+        title='Create Department'
         visible={visible}
         onOk={handleAddDepartment}
-        onCancel={() => {setVisible(false); resetModalState();}} 
-        okText="Save"
-        className="modal-add-department"
+        onCancel={() => {
+          setVisible(false);
+          resetModalState();
+        }}
+        okText='Save'
+        className='modal-add-department'
         width={600}
       >
         <Steps current={current} items={items} />
         <div style={contentStyle}>{steps[current].content}</div>
         <div style={{ marginTop: 24 }}>
           {current < steps.length - 1 && (
-            <Button type="primary" onClick={() => next()}>
+            <Button type='primary' onClick={() => next()}>
               Next
             </Button>
           )}

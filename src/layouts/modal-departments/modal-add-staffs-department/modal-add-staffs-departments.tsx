@@ -1,18 +1,24 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Radio, Input, Avatar, List, Checkbox, Pagination, Button } from "antd";
+import {
+  Modal,
+  Radio,
+  Input,
+  Avatar,
+  List,
+  Checkbox,
+  Pagination,
+  Button,
+} from "antd";
 import VirtualList from "rc-virtual-list";
 import { SearchOutlined, UserOutlined } from "@ant-design/icons";
 import type { RadioChangeEvent } from "antd";
 import { useGetUsersQuery } from "src/share/services";
 import { useCreateUserMutation } from "src/share/services";
 import { useAddStaffDepartmentMutation } from "src/share/services";
-import { User } from 'src/share/models/accountModels';
+import { User } from "src/share/models/accountModels";
 import { Department } from "src/share/models";
 import "./modal-add-staffs-departments.css";
-<<<<<<< HEAD
-=======
 import { randAvaBg } from "src/share/utils";
->>>>>>> main
 
 type ModalAddStaffsDepartmentProps = {
   visible: boolean;
@@ -25,14 +31,14 @@ const ContainerHeight = 300;
 export const ModalAddStaffsDepartment = ({
   visible,
   setVisible,
-  department
+  department,
 }: ModalAddStaffsDepartmentProps) => {
   const [value, setValue] = useState(1);
   const [searchValue, setSearchValue] = useState("");
   const [listStaff, setListStaff] = useState<(string | undefined)[]>([]);
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
   const [checkedItems, setCheckedItems] = useState<boolean[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
@@ -48,23 +54,43 @@ export const ModalAddStaffsDepartment = ({
       if (newState[index]) {
         setListStaff((prevList) => [...prevList, id]);
       } else {
-        setListStaff((prevList) => prevList.filter((staffId) => staffId !== id));
+        setListStaff((prevList) =>
+          prevList.filter((staffId) => staffId !== id)
+        );
       }
       return newState;
     });
   };
 
-  const { data: staffData } = useGetUsersQuery({ role: "STAFF", search: searchValue });
+  const { data: staffData } = useGetUsersQuery({
+    role: "STAFF",
+    search: searchValue,
+  });
   const [addStaffDepartment] = useAddStaffDepartmentMutation();
   const [createUserDepartment] = useCreateUserMutation();
 
   const handleAddStaffDepartment = async () => {
     const filteredListStaff = listStaff.filter((id) => id !== undefined);
-    await addStaffDepartment({ departmentId: department?.department_id, listStaff: filteredListStaff }).unwrap().then().catch();
+    await addStaffDepartment({
+      departmentId: department?.department_id,
+      listStaff: filteredListStaff,
+    })
+      .unwrap()
+      .then()
+      .catch();
   };
 
   const handleCreateUserDepartment = async () => {
-    await createUserDepartment({ username, email, password, role: "STAFF", department_id: department?.department_id }).unwrap().then().catch();
+    await createUserDepartment({
+      username,
+      email,
+      password,
+      role: "STAFF",
+      department_id: department?.department_id,
+    })
+      .unwrap()
+      .then()
+      .catch();
   };
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -85,7 +111,7 @@ export const ModalAddStaffsDepartment = ({
   return (
     <>
       <Modal
-        title="Add Staffs To Department"
+        title='Add Staffs To Department'
         open={visible}
         onCancel={() => {
           setVisible(false);
@@ -95,9 +121,9 @@ export const ModalAddStaffsDepartment = ({
         footer={null}
       >
         <hr />
-        <div className="Change-select-staff-option">
+        <div className='Change-select-staff-option'>
           <Radio.Group
-            className="group-radio-select-add-staffs"
+            className='group-radio-select-add-staffs'
             value={value}
             onChange={onChange}
           >
@@ -111,12 +137,12 @@ export const ModalAddStaffsDepartment = ({
         </div>
         <div className={`select-staffs-content ${value === 2 ? "hidden" : ""}`}>
           <p>Choose who can join this department</p>
-          <div className="searchbar-staffs ">
+          <div className='searchbar-staffs '>
             <Input
-              size="large"
-              placeholder="Search staffs...."
+              size='large'
+              placeholder='Search staffs....'
               prefix={
-                <div className="icon-search-staffs" >
+                <div className='icon-search-staffs'>
                   <SearchOutlined />
                 </div>
               }
@@ -125,36 +151,39 @@ export const ModalAddStaffsDepartment = ({
             />
           </div>
           <hr />
-          <div className="list-add-staffs">
+          <div className='list-add-staffs'>
             <List>
               <VirtualList
-                data={staffData?.users.filter(user => user.UserProperty?.department_id === null).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) ?? []}
+                data={
+                  staffData?.users
+                    .filter((user) => user.UserProperty?.department_id === null)
+                    .slice(
+                      (currentPage - 1) * itemsPerPage,
+                      currentPage * itemsPerPage
+                    ) ?? []
+                }
                 height={ContainerHeight}
                 itemHeight={47}
-                itemKey="email"
+                itemKey='email'
               >
                 {(item: User, index: number) => (
                   <List.Item key={item.email}>
                     <List.Item.Meta
-<<<<<<< HEAD
-                      avatar={<Avatar src={item.avatar} />}
-=======
-                      avatar={<Avatar
-                        {...(!item?.avatar && {
-                          style: { background: randAvaBg() },
-                        })}
-                        size={25}
-                      >
-                        {!item?.avatar &&
-                          item?.username
-                            ?.substring(0, 1)
-                            .toUpperCase()}
-                      </Avatar>}
->>>>>>> main
+                      avatar={
+                        <Avatar
+                          {...(!item?.avatar && {
+                            style: { background: randAvaBg() },
+                          })}
+                          size={25}
+                        >
+                          {!item?.avatar &&
+                            item?.username?.substring(0, 1).toUpperCase()}
+                        </Avatar>
+                      }
                       title={<a>{item.name}</a>}
                     />
                     <Checkbox
-                      className="checkbox-staff"
+                      className='checkbox-staff'
                       checked={checkedItems[index]}
                       onChange={() => handleCheckChange(index, item.user_id)}
                     />
@@ -162,63 +191,87 @@ export const ModalAddStaffsDepartment = ({
                 )}
               </VirtualList>
             </List>
-            <Pagination current={currentPage} total={staffData?.users.length} pageSize={itemsPerPage} onChange={setCurrentPage} />
-            <div className="button-save-staffs">
-              <Button type="primary" onClick={
-                async () => {
+            <Pagination
+              current={currentPage}
+              total={staffData?.users.length}
+              pageSize={itemsPerPage}
+              onChange={setCurrentPage}
+            />
+            <div className='button-save-staffs'>
+              <Button
+                type='primary'
+                onClick={async () => {
                   await handleAddStaffDepartment();
                   setVisible(false);
                   resetState();
-                }
-              }>Save</Button>
+                }}
+              >
+                Save
+              </Button>
             </div>
           </div>
         </div>
         <div
           className={`select-create-new-staffs ${value === 2 ? "" : "hidden"}`}
         >
-          <div className="title-add-staff">
+          <div className='title-add-staff'>
             <UserOutlined />
             <h2>Add staff</h2>
           </div>
 
           <hr />
-          <form action="" className="form-add-staff">
-            <div className="input-add-staff">
+          <form action='' className='form-add-staff'>
+            <div className='input-add-staff'>
               <strong>Username</strong>
-              <Input placeholder="diepvt123" value={username} onChange={(e) => setUsername(e.target.value)} />
+              <Input
+                placeholder='diepvt123'
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
             </div>
-            <div className="input-add-staff">
+            <div className='input-add-staff'>
               <strong>Password</strong>
-              <Input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+              <Input
+                type='password'
+                placeholder='Password'
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
             </div>
 
-            <div className="input-add-staff">
-              <div className="email-phone-staff">
-                <div className="email-staff">
+            <div className='input-add-staff'>
+              <div className='email-phone-staff'>
+                <div className='email-staff'>
                   <strong>Email</strong>
-                  <Input placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                  <Input
+                    placeholder='Email'
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
                 </div>
-                <div className="phone-number-staff">
+                <div className='phone-number-staff'>
                   <strong>Role</strong>
-                  <Input placeholder="Staff" disabled />
+                  <Input placeholder='Staff' disabled />
                 </div>
               </div>
             </div>
-            <div className="input-add-staff">
+            <div className='input-add-staff'>
               <strong>Deparment</strong>
-              <div className="department-staff">
+              <div className='department-staff'>
                 <Input placeholder={department?.name} disabled />
               </div>
             </div>
-            <div className="button-save-staffs">
-              <Button type="primary" onClick={
-                async () => {
+            <div className='button-save-staffs'>
+              <Button
+                type='primary'
+                onClick={async () => {
                   await handleCreateUserDepartment();
                   setVisible(false);
                   resetState();
-                }
-              }>Save</Button>
+                }}
+              >
+                Save
+              </Button>
             </div>
           </form>
         </div>

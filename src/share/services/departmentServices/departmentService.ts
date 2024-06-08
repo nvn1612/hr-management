@@ -4,10 +4,7 @@ import type {
   Response,
   getDepartmentsResp,
   Department,
-<<<<<<< HEAD
-=======
   ProjectReportResp,
->>>>>>> main
 } from "src/share/models";
 import { AddDepartmentForm } from "src/share/models/departmentModels";
 import { ProjectResp } from "src/share/models/projectModels";
@@ -21,21 +18,13 @@ export const DepartmentServices = hrManagementApi.injectEndpoints({
     >({
       query: ({ itemsPerPage, page, search }) => {
         return {
-<<<<<<< HEAD
-          url: `departments/admin/get-All`,
-=======
           url: `departments/admin/get-all`,
->>>>>>> main
           method: "GET",
           headers: {
             authorization: accessToken(),
           },
           params: {
-<<<<<<< HEAD
-            item_per_page: itemsPerPage ? itemsPerPage : 5,
-=======
             items_per_page: itemsPerPage ? itemsPerPage : 10,
->>>>>>> main
             page: page ? page : 1,
             search: search ? search : "",
           },
@@ -93,11 +82,10 @@ export const DepartmentServices = hrManagementApi.injectEndpoints({
       },
       invalidatesTags: ["department", "User"],
     }),
-<<<<<<< HEAD
-    getReportDepartments: build.query<ProjectResp, { departmentId?: string }>({
-=======
-    getReportDepartments: build.query<ProjectReportResp[], { departmentId?: string }>({
->>>>>>> main
+    getReportDepartments: build.query<
+      ProjectReportResp[],
+      { departmentId?: string }
+    >({
       query: ({ departmentId }) => {
         return {
           url: `report/report-for-department/${departmentId}`,
@@ -107,11 +95,8 @@ export const DepartmentServices = hrManagementApi.injectEndpoints({
           },
         };
       },
-<<<<<<< HEAD
-      transformResponse: (response: Response<ProjectResp>) => response.data,
-=======
-      transformResponse: (response: Response<ProjectReportResp[]>) => response.data,
->>>>>>> main
+      transformResponse: (response: Response<ProjectReportResp[]>) =>
+        response.data,
     }),
     getAllProjectDepartment: build.query<
       ProjectResp,
@@ -162,11 +147,7 @@ export const DepartmentServices = hrManagementApi.injectEndpoints({
           },
         };
       },
-<<<<<<< HEAD
-      invalidatesTags: ["department"],
-=======
-      invalidatesTags: ["department","User"],
->>>>>>> main
+      invalidatesTags: ["department", "User"],
     }),
   }),
 });
