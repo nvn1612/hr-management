@@ -46,9 +46,13 @@ export const useHandleReports = (
       });
 
       const sortedList = newReportList.sort(
+<<<<<<< HEAD
         (a, b) =>
           dayjs(b.date as string).millisecond() -
           dayjs(a.date as string).millisecond()
+=======
+        (a, b) => dayjs(b.date).valueOf() - dayjs(a.date).valueOf()
+>>>>>>> main
       );
 
       const finalTimeline: TimelineItemProps[] = [];
@@ -73,8 +77,14 @@ export const useHandleReports = (
                 return (
                   <>
                     <span style={{ color: "#8c8c8c", fontWeight: 500 }}>
+<<<<<<< HEAD
                       {`${activity.description}  -`}{" "}
                       {` by ${activity.user_information?.username}`}
+=======
+                      {`${activity.description}  `}{" "}
+                      {activity.user_information &&
+                        `- by ${activity.user_information.username}`}
+>>>>>>> main
                     </span>
                   </>
                 );
@@ -104,9 +114,13 @@ export const useHandleReports = (
         });
 
         const sortedList = newReportList.sort(
+<<<<<<< HEAD
           (a, b) =>
             dayjs(b.date as string).millisecond() -
             dayjs(a.date as string).millisecond()
+=======
+          (a, b) => dayjs(b.date).valueOf() - dayjs(a.date).valueOf()
+>>>>>>> main
         );
 
         let timeItem: TimelineItemProps = {};
@@ -137,8 +151,14 @@ export const useHandleReports = (
                   return (
                     <>
                       <span style={{ color: "#8c8c8c", fontWeight: 500 }}>
+<<<<<<< HEAD
                         {`${activity.description}  -`}{" "}
                         {` by ${activity.user_information?.username}`}
+=======
+                        {`${activity.description}  `}{" "}
+                        {activity.user_information &&
+                          `- by ${activity.user_information.username}`}
+>>>>>>> main
                       </span>
                     </>
                   );

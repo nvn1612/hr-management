@@ -12,7 +12,11 @@ import type { PaginationProps } from "antd";
 
 export const CardDepartments = () => {
   const [visible, setVisible] = useState(false);
+<<<<<<< HEAD
   const [queries, setQueries] = useState<{ page: number, itemsPerPage: number }>({ page: 1, itemsPerPage: 5 });
+=======
+  const [queries, setQueries] = useState<{ page: number, itemsPerPage: number }>({ page: 1, itemsPerPage: 10 });
+>>>>>>> main
   const [mainDepartment, setMainDepartment] = useState<Department | undefined>();
   const [visibleAddDepartment, setVisibleAddDepartment] = useState(false);
   const showAddDepartment = () => {
@@ -56,7 +60,11 @@ export const CardDepartments = () => {
             pagination={{
               position: "bottom",
               align: "center",
+<<<<<<< HEAD
               pageSize: 9,
+=======
+              pageSize: 10,
+>>>>>>> main
               total: data?.total,
               onChange: onChangePage,
             }}

@@ -19,15 +19,50 @@ const accountServices = hrManagementApi.injectEndpoints({
         return {
           url: "gateway/api/access/login",
           method: "POST",
+<<<<<<< HEAD
           headers: {
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Headers":
               "Origin, X-Requested-With, Content-Type, Accept",
           },
+=======
+>>>>>>> main
           body,
         };
       },
     }),
+<<<<<<< HEAD
+=======
+    claimPassword: build.mutation<Response<string>, Partial<{ email: string }>>(
+      {
+        query(body) {
+          return {
+            url: "users/forget-password",
+            method: "POST",
+            headers: {
+              authorization: accessToken(),
+            },
+            body,
+          };
+        },
+      }
+    ),
+    verifyOtp: build.mutation<
+      Response<{ email: string }>,
+      Partial<{ email: string; token: string }>
+    >({
+      query(body) {
+        return {
+          url: "email/verify-token",
+          method: "POST",
+          headers: {
+            authorization: accessToken(),
+          },
+          body,
+        };
+      },
+    }),
+>>>>>>> main
     getUserDetail: build.query<User, void>({
       query: () => {
         return {
@@ -88,6 +123,22 @@ const accountServices = hrManagementApi.injectEndpoints({
       },
       invalidatesTags: ["User"],
     }),
+<<<<<<< HEAD
+=======
+    getAvatar: build.mutation<string, Partial<{ avatar: string }>>({
+      query(body) {
+        return {
+          url: "users/get-avatar",
+          method: "POST",
+          headers: {
+            authorization: accessToken(),
+          },
+          body,
+        };
+      },
+      transformResponse: (reponse: Response<string>) => reponse.data,
+    }),
+>>>>>>> main
     updateUser: build.mutation<
       Response<boolean>,
       Partial<{ values: User; userId: string }>
@@ -95,7 +146,11 @@ const accountServices = hrManagementApi.injectEndpoints({
       query(body) {
         return {
           url: `users/admin/update/${body.userId}`,
+<<<<<<< HEAD
           method: "PUT",
+=======
+          method: "POST",
+>>>>>>> main
           headers: {
             authorization: accessToken(),
           },
@@ -198,4 +253,10 @@ export const {
   useChangePasswordMutation,
   useGetUsersByPropertiesMutation,
   useGetDepartmentStaffsQuery,
+<<<<<<< HEAD
+=======
+  useClaimPasswordMutation,
+  useGetAvatarMutation,
+  useVerifyOtpMutation,
+>>>>>>> main
 } = accountServices;

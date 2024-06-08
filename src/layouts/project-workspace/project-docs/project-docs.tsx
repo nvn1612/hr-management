@@ -8,6 +8,11 @@ import { useEffect, useState } from "react";
 import type { UploadProps } from "antd";
 import { Project } from "src/share/models";
 
+<<<<<<< HEAD
+=======
+const baseApi = import.meta.env.VITE_REQUEST_API_URL;
+
+>>>>>>> main
 export const ProjectDocs = ({ project }: { project?: Project }) => {
   const [getFile] = useGetFileMutation();
   const [fileLinks, setFileLinks] = useState<string[]>([]);
@@ -30,7 +35,11 @@ export const ProjectDocs = ({ project }: { project?: Project }) => {
   }, [project]);
 
   const uploadProps: UploadProps = {
+<<<<<<< HEAD
     action: `http://localhost:3050/projects/uploadFileFromLocal/${project?.project_id}`,
+=======
+    action: `${baseApi}projects/upload-file-from-local/${project?.project_id}`,
+>>>>>>> main
     headers: {
       authorization: localStorageUtil.get("accessToken")!,
     },

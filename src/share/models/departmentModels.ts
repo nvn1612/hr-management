@@ -25,7 +25,11 @@ export interface manager{
     username?: string;
     email?: string;
     phone?: string;
+<<<<<<< HEAD
     avartar?: string;
+=======
+    avatar?: string;
+>>>>>>> main
     name?: string;
     birthday?: string;
     createdAt?: string;

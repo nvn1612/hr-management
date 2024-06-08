@@ -4,6 +4,10 @@ import { UserOutlined } from "@ant-design/icons";
 import "./modal-department-manager.css";
 import dayjs from "dayjs";
 import { Department } from "src/share/models";
+<<<<<<< HEAD
+=======
+import { randAvaBg } from "src/share/utils";
+>>>>>>> main
 type ModalDepartmentManagerProps = {
   visible: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
@@ -34,11 +38,25 @@ export const ModalDepartmentManager = ({
           <div className="main-layout">
             <div className="layout-1">
               <Form.Item className="avatar-manager-department">
+<<<<<<< HEAD
                 <Avatar
                   // src={managerInfo.avatar}
                   icon={<UserOutlined />}
                   size={200}
                 />
+=======
+              <Avatar
+                          {...(!department?.information?.manager?.avatar && {
+                            style: { background: randAvaBg(), fontSize: "80px" },
+                          })}
+                          size={160}
+                        >
+                          {!department?.information?.manager?.avatar &&
+                            department?.information?.manager?.username
+                              ?.substring(0, 1)
+                              .toUpperCase()}
+                        </Avatar>
+>>>>>>> main
               </Form.Item>
               <Form.Item label="Role">
                 <Input value="manager" readOnly />
