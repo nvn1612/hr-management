@@ -1,62 +1,44 @@
 import "./project-tasks.css";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Modal, Button, Popconfirm, List, Spin, message } from "antd";
 import { TaskForm } from "src/layouts";
 import {
-  useGetTaskByPropertiesMutation,
-  useGetTaskPropertiesQuery,
   useGetProjectAssignmentsQuery,
   useDeleteAssignmentMutation,
   useDeleteTaskMutation,
+  useGetProjectTasksQuery,
 } from "src/share/services";
 import { ClockCircleOutlined, CheckCircleOutlined } from "@ant-design/icons";
 
-import { Assignment, Project, Task } from "src/share/models";
+import { Assignment, OUserRole, Project, Task } from "src/share/models";
+import { localStorageUtil } from "src/share/utils";
 
 interface ProjectTasksProp {
   project: Project;
 }
 
+const role = localStorageUtil.get("role");
+
 export const ProjectTasks = ({ project }: ProjectTasksProp) => {
   const [showTaskForm, setShowTaskForm] = useState<boolean>(false);
 
-  const [taskList, setTaskList] = useState<Task[]>();
+  const [page, setPage] = useState<number>(1);
+  const [formAction, setFormAction] = useState<"create" | "update">("create");
   const [selectedTask, setSelectedTask] = useState<Task | undefined>(undefined);
   const [selectedAssignment, setSelectedAssignment] = useState<
     Assignment | undefined
   >(undefined);
-  const [page, setPage] = useState<number>(1);
-  const [formAction, setFormAction] = useState<"create" | "update">("create");
 
-  const { data } = useGetTaskPropertiesQuery({
+  const { data: taskList, isFetching: taskFetch } = useGetProjectTasksQuery({
     projectPropertyId: project.ProjectProperty?.project_property_id,
+    page,
   });
   const projectAssignments = useGetProjectAssignmentsQuery({
     projectPropertyId: project.ProjectProperty?.project_property_id,
     itemsPerPage: 5,
   });
-  const [getTaskByProperties, { isLoading: taskLoading }] =
-    useGetTaskByPropertiesMutation();
   const [deleteAssignment] = useDeleteAssignmentMutation();
   const [deleteTask] = useDeleteTaskMutation();
-
-  const fetchTask = async () => {
-    await getTaskByProperties({
-      values: { task_property_ids: data || [] },
-      params: {
-        page,
-      },
-    })
-      .unwrap()
-      .then((values) => {
-        setTaskList(values.data);
-      })
-      .catch(() => {});
-  };
-
-  useEffect(() => {
-    fetchTask();
-  }, [project, page, projectAssignments]);
 
   return (
     <div className='task-section'>
@@ -65,7 +47,7 @@ export const ProjectTasks = ({ project }: ProjectTasksProp) => {
       </div>
       <div className='task-card-container'>
         <Spin
-          spinning={projectAssignments.isFetching || taskLoading}
+          spinning={projectAssignments.isFetching || taskFetch}
           tip='Getting Tasks'
         >
           <List
@@ -73,11 +55,13 @@ export const ProjectTasks = ({ project }: ProjectTasksProp) => {
               onChange: (selectedPage) => {
                 setPage(selectedPage);
               },
+              total: taskList?.total,
+              pageSize: 5,
             }}
             dataSource={projectAssignments.data?.assignments}
             renderItem={(assignment) => {
               if (assignment.task_property_id) {
-                const matchedTask = taskList?.find(
+                const matchedTask = taskList?.data?.find(
                   (task) =>
                     task.TaskProperty.task_property_id ===
                     assignment.task_property_id
@@ -110,16 +94,18 @@ export const ProjectTasks = ({ project }: ProjectTasksProp) => {
             }}
           />
         </Spin>
-        <Button
-          className='create-task-btn'
-          type='default'
-          onClick={() => {
-            setShowTaskForm(true);
-            setFormAction("create");
-          }}
-        >
-          Create new Task
-        </Button>
+        {!(role === OUserRole.Staff) && (
+          <Button
+            className='create-task-btn'
+            type='default'
+            onClick={() => {
+              setShowTaskForm(true);
+              setFormAction("create");
+            }}
+          >
+            Create new Task
+          </Button>
+        )}
       </div>
       <Modal
         title={formAction === "update" ? "Task Details" : "Create Task"}
@@ -156,7 +142,6 @@ export const ProjectTasks = ({ project }: ProjectTasksProp) => {
         <TaskForm
           project={project}
           action={formAction}
-          refetch={fetchTask}
           assignment={selectedAssignment}
           task={selectedTask}
         />

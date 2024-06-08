@@ -25,8 +25,14 @@ import {
   useUpdateAssignmentMutation,
 } from "src/share/services";
 
-import type { Task, Assignment, Project } from "src/share/models";
+import {
+  type Task,
+  type Assignment,
+  type Project,
+  OUserRole,
+} from "src/share/models";
 import type { FormProps } from "antd";
+import { localStorageUtil } from "src/share/utils";
 
 interface TaskFormFields {
   description: string;
@@ -41,14 +47,14 @@ interface TaskFormProps {
   task?: Task;
   action: "create" | "update";
   project: Project;
-  refetch: () => void;
 }
+
+const role = localStorageUtil.get("role")!;
 
 export const TaskForm = ({
   assignment,
   action,
   project,
-  refetch,
   task,
 }: TaskFormProps) => {
   const [form] = Form.useForm();
@@ -88,7 +94,6 @@ export const TaskForm = ({
           .unwrap()
           .then(() => {
             message.success("successful create task");
-            refetch && refetch();
           })
           .catch((e) => message.error(e));
 
@@ -157,16 +162,18 @@ export const TaskForm = ({
           <Form.Item<TaskFormFields> label='Description' name={"description"}>
             <Input.TextArea />
           </Form.Item>
-          <Form.Item name={"assignedStaff"} label='Assigned'>
-            <Select
-              options={departmentStaff?.users.map((staff) => {
-                return {
-                  label: <Text>{staff.username}</Text>,
-                  value: staff.UserProperty?.user_property_id,
-                };
-              })}
-            />
-          </Form.Item>
+          {!(role == OUserRole.Staff) && (
+            <Form.Item name={"assignedStaff"} label='Assigned'>
+              <Select
+                options={departmentStaff?.users.map((staff) => {
+                  return {
+                    label: <Text>{staff.username}</Text>,
+                    value: staff.UserProperty?.user_property_id,
+                  };
+                })}
+              />
+            </Form.Item>
+          )}
           {action === "update" && (
             <>
               <Form.Item<TaskFormFields> label='Deadline' name={"deadline"}>

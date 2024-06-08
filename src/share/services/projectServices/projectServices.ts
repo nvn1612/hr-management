@@ -124,19 +124,6 @@ const projectServices = hrManagementApi.injectEndpoints({
       transformResponse: (response: Response<string[]>) => response.data,
       providesTags: ["assignment"],
     }),
-    getTaskProperties: build.query<string[], { projectPropertyId?: string }>({
-      query: ({ projectPropertyId }) => {
-        return {
-          url: `assignments/get-all-task-property-from-project/${projectPropertyId}`,
-          method: "GET",
-          headers: {
-            authorization: accessToken(),
-          },
-        };
-      },
-      transformResponse: (response: Response<string[]>) => response.data,
-      providesTags: ["assignment"],
-    }),
     getTaskByProperties: build.mutation<
       TaskResp,
       Partial<{
@@ -389,6 +376,33 @@ const projectServices = hrManagementApi.injectEndpoints({
       },
       transformResponse: (response: Response<GetUserResp>) => response.data,
     }),
+    getAssignments: build.query<
+      GetUserResp,
+      {
+        items_per_page?: number;
+        page?: number;
+        target?: string;
+        status?: boolean;
+        isAssignment?: boolean;
+      }
+    >({
+      query({ items_per_page, page, target, isAssignment }) {
+        return {
+          url: `/assignments/get-all-assignment/`,
+          method: "GET",
+          headers: {
+            authorization: accessToken(),
+          },
+          params: {
+            page: page || "1",
+            items_per_page: items_per_page || "10",
+            target: target || "",
+            isAssignment: isAssignment || false,
+          },
+        };
+      },
+      transformResponse: (response: Response<GetUserResp>) => response.data,
+    }),
     deleteAssignment: build.mutation<
       Response<boolean>,
       Partial<{
@@ -423,6 +437,44 @@ const projectServices = hrManagementApi.injectEndpoints({
       },
       invalidatesTags: ["task"],
     }),
+    getUse: build.mutation<
+      Response<boolean>,
+      Partial<{
+        taskId?: string;
+      }>
+    >({
+      query({ taskId }) {
+        return {
+          url: `tasks/admin/delete/${taskId}`,
+          method: "DELETE",
+          headers: {
+            authorization: accessToken(),
+          },
+        };
+      },
+      invalidatesTags: ["task"],
+    }),
+    getProjectTasks: build.query<
+      TaskResp,
+      {
+        projectPropertyId?: string;
+        page: number;
+      }
+    >({
+      query({ projectPropertyId, page }) {
+        return {
+          url: `tasks/get-all-task-in-project/${projectPropertyId}`,
+          method: "GET",
+          headers: {
+            authorization: accessToken(),
+          },
+          params: {
+            page,
+          },
+        };
+      },
+      transformResponse: (response: Response<TaskResp>) => response.data,
+    }),
   }),
 });
 
@@ -434,7 +486,6 @@ export const {
   useUpdateProjectMutation,
   useGetProjectUserPropertiesQuery,
   useGetTaskByPropertiesMutation,
-  useGetTaskPropertiesQuery,
   useCreateAssigmentMutation,
   useCreateTaskMutation,
   useGetTaskActivityQuery,
@@ -448,4 +499,6 @@ export const {
   useDeleteAssignmentMutation,
   useDeleteTaskMutation,
   useGetProjectStaffsQuery,
+  useGetAssignmentsQuery,
+  useGetProjectTasksQuery,
 } = projectServices;

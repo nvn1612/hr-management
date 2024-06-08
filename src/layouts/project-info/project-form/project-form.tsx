@@ -16,12 +16,15 @@ import {
 } from "src/share/services";
 import dayjs from "dayjs";
 
-import type { Project } from "src/share/models";
+import { OUserRole, type Project } from "src/share/models";
 import type { FormProps } from "antd";
+import { localStorageUtil } from "src/share/utils";
 
 interface ProjectFormProps {
   project?: Project;
 }
+
+const role = localStorageUtil.get("role");
 
 export const ProjectForm = ({ project }: ProjectFormProps) => {
   const [form] = Form.useForm();
@@ -83,7 +86,7 @@ export const ProjectForm = ({ project }: ProjectFormProps) => {
   return (
     <>
       {contextHolder}
-      {project && (
+      {project && role !== OUserRole.Staff && (
         <Checkbox
           checked={editableForm}
           onChange={() => setEditableForm(!editableForm)}
@@ -110,16 +113,18 @@ export const ProjectForm = ({ project }: ProjectFormProps) => {
         <Form.Item<Project> name={"description"} label='Description'>
           <Input.TextArea />
         </Form.Item>
-        <Form.Item<Project> name={"department_id"} label='Department'>
-          <Select
-            options={departmentData?.departments?.map((department) => {
-              return {
-                label: <Text>{department.name}</Text>,
-                value: department.department_id,
-              };
-            })}
-          />
-        </Form.Item>
+        {role === OUserRole.Admin && (
+          <Form.Item<Project> name={"department_id"} label='Department'>
+            <Select
+              options={departmentData?.departments?.map((department) => {
+                return {
+                  label: <Text>{department.name}</Text>,
+                  value: department.department_id,
+                };
+              })}
+            />
+          </Form.Item>
+        )}
         {project && (
           <>
             <Form.Item<Project> name={"startAt"} label='Start'>
