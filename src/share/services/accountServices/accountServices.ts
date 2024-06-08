@@ -23,6 +23,7 @@ const accountServices = hrManagementApi.injectEndpoints({
         };
       },
     }),
+<<<<<<< HEAD
     claimPassword: build.mutation<
       Response<LoginResp>,
       Partial<{ email: string }>
@@ -30,6 +31,29 @@ const accountServices = hrManagementApi.injectEndpoints({
       query(body) {
         return {
           url: "users/forget-password",
+=======
+    claimPassword: build.mutation<Response<string>, Partial<{ email: string }>>(
+      {
+        query(body) {
+          return {
+            url: "users/forget-password",
+            method: "POST",
+            headers: {
+              authorization: accessToken(),
+            },
+            body,
+          };
+        },
+      }
+    ),
+    verifyOtp: build.mutation<
+      Response<{ email: string }>,
+      Partial<{ email: string; token: string }>
+    >({
+      query(body) {
+        return {
+          url: "email/verify-token",
+>>>>>>> main
           method: "POST",
           headers: {
             authorization: accessToken(),
@@ -223,4 +247,8 @@ export const {
   useGetDepartmentStaffsQuery,
   useClaimPasswordMutation,
   useGetAvatarMutation,
+<<<<<<< HEAD
+=======
+  useVerifyOtpMutation,
+>>>>>>> main
 } = accountServices;
