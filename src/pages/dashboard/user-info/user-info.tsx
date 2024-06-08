@@ -50,10 +50,9 @@ export const UserInfo = () => {
         <div className='first-section'>
           <Avatar
             size={128}
-            style={{ fontSize: 64 }}
             {...(data?.avatar
               ? { src: `${avatar}` }
-              : { style: { background: randAvaBg() } })}
+              : { style: { background: randAvaBg(), fontSize: 64 } })}
           >
             {!data?.avatar &&
               data?.username!.substring(0, 1).toLocaleUpperCase()}
