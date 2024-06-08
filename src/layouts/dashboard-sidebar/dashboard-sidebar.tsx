@@ -40,6 +40,15 @@ const menuItems = [
   },
 ];
 
+const authorizedMenuItem = () => {
+  return menuItems.filter((item) => {
+    return (
+      item.label !== "Accounts" ||
+      (localStorageUtil.get("role") === "ADMIN" && item.label === "Accounts")
+    );
+  });
+};
+
 const Dashboardsidebar: React.FC = () => {
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const [selectItem, setSelectItem] = useState<string>("0");
@@ -53,15 +62,16 @@ const Dashboardsidebar: React.FC = () => {
 
   const setDefaultItem = () => {
     const currPath = window.location.pathname.replace("/dashboard/", "");
+    const isAdmin = localStorageUtil.get("role") === "ADMIN";
     switch (currPath) {
       case "accounts":
         setSelectItem("1");
         break;
       case "departments":
-        setSelectItem("2");
+        setSelectItem(isAdmin ? "2" : "1");
         break;
       case "projects":
-        setSelectItem("3");
+        setSelectItem(isAdmin ? "3" : "2");
         break;
       default:
         setSelectItem("0");
@@ -101,9 +111,9 @@ const Dashboardsidebar: React.FC = () => {
           </div>
         </Link>
         <Menu theme='dark' mode='inline' selectedKeys={[selectItem]}>
-          {menuItems.map((item, index) => (
+          {authorizedMenuItem().map((item, index) => (
             <Menu.Item
-              key={item.key}
+              key={index + 1}
               icon={item.icon}
               onClick={() => {
                 setSelectItem((index + 1).toString());
