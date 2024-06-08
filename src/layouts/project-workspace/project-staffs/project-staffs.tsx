@@ -1,15 +1,14 @@
 import "./project-staffs.css";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { List, Avatar, Popconfirm, Spin } from "antd";
 import {
-  useGetProjectUserPropertiesQuery,
-  useGetUsersByPropertiesMutation,
   useGetDepartmentStaffsQuery,
+  useGetProjectStaffsQuery,
 } from "src/share/services";
 
 import { randAvaBg } from "src/share/utils";
 
-import { GetUserResp, Project } from "src/share/models";
+import { Project } from "src/share/models";
 
 interface ProjectStaffsProps {
   project?: Project;
@@ -17,44 +16,28 @@ interface ProjectStaffsProps {
 
 export const ProjectStaffs = ({ project }: ProjectStaffsProps) => {
   const [page, setPage] = useState<number>(1);
-  const [projectStaffs, setProjectStaffs] = useState<GetUserResp | undefined>();
 
-  const [getProjectStaff, { isLoading: staffLoading }] =
-    useGetUsersByPropertiesMutation();
-  const userPropertyIds = useGetProjectUserPropertiesQuery({
-    projectPropertyId: project?.ProjectProperty!.project_property_id,
-  });
+  const { data: projectStaffs, isFetching: projectStaffFetch } =
+    useGetProjectStaffsQuery({
+      projectPropertyId: project?.ProjectProperty?.project_property_id,
+      page,
+      items_per_page: 5,
+    });
+
   const departmentStaffs = useGetDepartmentStaffsQuery({
     departmentId: project?.ProjectProperty!.department_id,
   });
 
-  const fetchStaffList = async () => {
-    await getProjectStaff({
-      values: { user_property_ids: userPropertyIds.data || [] }, //
-      page,
-    })
-      .unwrap()
-      .then((result) => {
-        setProjectStaffs(result);
-      })
-      .catch(() => {});
-  };
-
-  useEffect(() => {
-    fetchStaffList();
-  }, [project, userPropertyIds.data]);
-
   return (
     <div className='project-staffs'>
       <p className='project-section-title'>Staffs</p>
-      <Spin spinning={departmentStaffs.isFetching || staffLoading}>
+      <Spin spinning={departmentStaffs.isFetching || projectStaffFetch}>
         <List
           pagination={{
             total: projectStaffs?.total,
             pageSize: 5,
             onChange: (currPage) => {
               setPage(currPage);
-              fetchStaffList();
             },
           }}
           dataSource={projectStaffs?.users}
