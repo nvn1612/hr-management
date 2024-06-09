@@ -38,11 +38,13 @@ export const MngPageHeader = ({
           <Title>{title}</Title>
           <Badge count={itemCount ? itemCount : 0} showZero color='#1677ff' />
         </div>
-        {isAdmin && (
+        {isAdmin || title === "Projects" ? (
           <Button type='primary' onClick={addBtnOnClick}>
             <PlusOutlined />
             {addBtnContent}
           </Button>
+        ) : (
+          ""
         )}
       </div>
       <div className='page-header-row-2'>

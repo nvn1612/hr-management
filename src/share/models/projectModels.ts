@@ -58,8 +58,8 @@ export interface Assignment {
   user_property_id?: string;
   project_property_id?: string;
   task_property_id?: string;
-  startAt?: string;
-  endAt?: string;
+  startAt?: string | Dayjs;
+  endAt?: string | Dayjs;
   status?: boolean;
   createdBy?: string;
   createdAt?: string;

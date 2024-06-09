@@ -5,8 +5,8 @@ import { ProjectForm } from "src/layouts/project-info/project-form";
 
 interface ProjectInfoProp {
   project?: Project;
-  departFetch: boolean;
-  allFetch: boolean;
+  departFetch?: boolean;
+  allFetch?: boolean;
 }
 
 export const ProjectInfo = ({

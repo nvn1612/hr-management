@@ -186,7 +186,7 @@ const projectServices = hrManagementApi.injectEndpoints({
       transformResponse: (
         response: Response<{ task: Task; task_property: TaskProperty }>
       ) => response.data,
-      invalidatesTags: ["task"],
+      invalidatesTags: ["task", "assignment"],
     }),
     getUserActivity: build.query<
       Activity[],

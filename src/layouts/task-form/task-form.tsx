@@ -12,7 +12,7 @@ import {
   Spin,
   Select,
 } from "antd";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { useEffect, useState } from "react";
 import { UploadOutlined } from "@ant-design/icons";
 import {
@@ -38,7 +38,7 @@ import { localStorageUtil } from "src/share/utils";
 interface TaskFormFields {
   description: string;
   start: string;
-  deadline: string;
+  deadline: string | Dayjs;
   status: boolean;
   assignedStaff: string;
 }
@@ -98,15 +98,25 @@ export const TaskForm = ({
   };
 
   const onFinish: FormProps<TaskFormFields>["onFinish"] = async (values) => {
+    values.deadline = (values.deadline as Dayjs).add(1, "day");
     switch (action) {
       case "create": {
         const newTask = await createTask({
           description: values.description,
         }).unwrap();
         await createAssignment({
-          project_property_id: project.ProjectProperty?.project_property_id,
-          task_property_id: newTask.task_property.task_property_id,
-          user_property_id: values.assignedStaff,
+          ...(values.assignedStaff
+            ? {
+                project_property_id:
+                  project.ProjectProperty?.project_property_id,
+                task_property_id: newTask.task_property.task_property_id,
+                user_property_id: values.assignedStaff,
+              }
+            : {
+                project_property_id:
+                  project.ProjectProperty?.project_property_id,
+                task_property_id: newTask.task_property.task_property_id,
+              }),
         })
           .unwrap()
           .then(() => {
