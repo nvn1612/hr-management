@@ -15,7 +15,7 @@ import {
   useUpdateProjectMutation,
   useGetDepartmentsQuery,
 } from "src/share/services";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 
 import { OUserRole, type Project } from "src/share/models";
 import type { FormProps } from "antd";
@@ -46,6 +46,8 @@ export const ProjectForm = ({
   const { Text } = Typography;
 
   const onFinish: FormProps<Project>["onFinish"] = async (values) => {
+    values.endAt = (values.endAt as Dayjs).add(1, "day");
+    values.startAt = (values.startAt as Dayjs).add(1, "day");
     if (!project) {
       await createProject(values)
         .unwrap()

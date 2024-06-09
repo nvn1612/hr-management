@@ -6,8 +6,8 @@ export interface Project {
   name?: string;
   projectCode?: string;
   description?: string;
-  startAt?: string | Dayjs | unknown;
-  endAt?: string | Dayjs | unknown;
+  startAt?: string | Dayjs;
+  endAt?: string | Dayjs;
   turnover?: string;
   document?: string[];
   investor?: string;
