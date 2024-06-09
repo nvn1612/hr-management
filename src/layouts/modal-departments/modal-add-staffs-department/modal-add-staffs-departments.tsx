@@ -194,7 +194,8 @@ export const ModalAddStaffsDepartment = ({
                               item?.username?.substring(0, 1).toUpperCase()}
                           </Avatar>
                         }
-                        title={<a>{item.name}</a>}
+                        title={item.username}
+                        description={item.name}
                       />
                       <Checkbox
                         className="checkbox-staff"
@@ -234,7 +235,8 @@ export const ModalAddStaffsDepartment = ({
                               item?.username?.substring(0, 1).toUpperCase()}
                           </Avatar>
                         }
-                        title={<a>{item.name}</a>}
+                        title={item.username}
+                        description={item.name}
                       />
                       <Checkbox
                         className="checkbox-staff"

@@ -91,7 +91,7 @@ export const ModalDepartments = ({
                   <Col span={12}>
                     <div
                       className="name-manager-department"
-                      onClick={showModal}
+                      onClick={role==="MANAGER"? showModal : department?.information?.manager?.user_id ? showModal : undefined}
                     >
                     {department?.information?.manager?.user_id ? (
                         <Avatar
