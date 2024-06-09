@@ -9,7 +9,7 @@ import {
   Spin,
   message,
 } from "antd";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { useEffect, useState } from "react";
 import { userRoleOptions } from "src/share/utils";
 import {
@@ -38,6 +38,7 @@ export const UserInfoForm = ({
 
   const onFinish: FormProps<UserInfoType>["onFinish"] = async (values) => {
     setIsLoading(true);
+    values.birthday = (values.birthday as Dayjs).add(1, "day");
     switch (action) {
       case "detail": {
         const sentValues = {
@@ -112,7 +113,7 @@ export const UserInfoForm = ({
             ...initValues,
             birthday: dayjs(
               initValues.birthday
-                ? initValues.birthday.substring(0, 10)
+                ? (initValues.birthday as string).substring(0, 10)
                 : new Date()
             ),
           }

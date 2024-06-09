@@ -132,7 +132,7 @@ const accountServices = hrManagementApi.injectEndpoints({
       query(body) {
         return {
           url: `users/admin/update/${body.userId}`,
-          method: "POST",
+          method: "PUT",
           headers: {
             authorization: accessToken(),
           },

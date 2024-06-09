@@ -1,3 +1,5 @@
+import { Dayjs } from "dayjs";
+
 export const OUserRole = {
   All: "ALL",
   Admin: "ADMIN",
@@ -14,7 +16,7 @@ export interface User {
   phone?: string;
   avatar?: string;
   name?: string;
-  birthday?: string;
+  birthday?: string | Dayjs;
   createdAt?: string;
   createBy?: string;
   role?: UserRole;

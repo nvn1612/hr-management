@@ -1,3 +1,4 @@
+import { Dayjs } from "dayjs";
 import type { User, UserRole } from "src/share/models";
 
 export interface UserInfoType {
@@ -7,7 +8,7 @@ export interface UserInfoType {
   name: string;
   email: string;
   phone: string;
-  birthday: string;
+  birthday: string | Dayjs;
   role?: UserRole;
 }
 
