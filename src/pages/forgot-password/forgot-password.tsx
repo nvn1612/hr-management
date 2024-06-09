@@ -1,11 +1,7 @@
 import "./forgot-password.css";
 import { Navigate } from "react-router-dom";
 import { localStorageUtil } from "src/share/utils";
-import {
-  ChangePasswordForm,
-  ForgotPasswordForm,
-  VerifyOtpForm,
-} from "src/layouts";
+import { ChangePasswordForm, ForgotPasswordForm, OtpForm } from "src/layouts";
 import { Steps } from "antd";
 import { useState } from "react";
 
@@ -28,7 +24,7 @@ export const ForgotPassword = () => {
     },
     {
       title: "Verify OTP",
-      content: <VerifyOtpForm email={email} />,
+      content: <OtpForm email={email} />,
     },
     {
       title: "Change Password",
