@@ -10,6 +10,8 @@ import {
   LogoutOutlined,
 } from "@ant-design/icons";
 import { localStorageUtil } from "src/share/utils";
+import { useDispatch } from "react-redux";
+import { hrManagementApi } from "src/share/services";
 
 import { Layout, Menu } from "antd";
 const { Sider } = Layout;
@@ -53,10 +55,12 @@ const Dashboardsidebar: React.FC = () => {
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const [selectItem, setSelectItem] = useState<string>("0");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const logout = (): void => {
     localStorageUtil.delete("accessToken");
     localStorageUtil.delete("refreshToken");
+    dispatch(hrManagementApi.util.resetApiState());
     navigate("/login");
   };
 

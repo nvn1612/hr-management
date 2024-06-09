@@ -13,34 +13,39 @@ import { useEffect, useState } from "react";
 
 const baseApi = import.meta.env.VITE_REQUEST_API_URL;
 
-const avaFileProps: UploadProps = {
-  name: "Avatar",
-  action: `${baseApi}users/upload-avatar-from-local`,
-  headers: {
-    authorization: localStorageUtil.get("accessToken")!,
-  },
-
-  onChange(info) {
-    if (info.file.status === "done") {
-      message.success(`Avatar upload successfully`);
-    } else if (info.file.status === "error") {
-      message.error(`Avatar upload failed.`);
-    }
-  },
-};
-
 export const UserInfo = () => {
   const [avatar, setAvatar] = useState<string>();
 
-  const { data, isLoading } = useGetUserDetailQuery();
+  const { data, isLoading, refetch } = useGetUserDetailQuery();
   const [getAvatar] = useGetAvatarMutation();
   const role = localStorageUtil.get("role");
 
+  const avaFileProps: UploadProps = {
+    name: "file",
+    action: `${baseApi}users/upload-avatar-from-local`,
+    headers: {
+      authorization: localStorageUtil.get("accessToken")!,
+    },
+
+    onChange(info) {
+      if (info.file.status === "done") {
+        message.success(`Avatar upload successfully`);
+        refetch();
+      } else if (info.file.status === "error") {
+        message.error(`Avatar upload failed.`);
+      }
+    },
+  };
+
+  const fetchAvatar = async () => {
+    await getAvatar({ avatar: data?.avatar })
+      .unwrap()
+      .then((link) => setAvatar(link));
+  };
+
   useEffect(() => {
-    if (!avatar) {
-      getAvatar({ avatar: data?.avatar })
-        .unwrap()
-        .then((link) => setAvatar(link));
+    if (data?.avatar) {
+      fetchAvatar();
     }
   }, [data, avatar]);
 
@@ -50,10 +55,9 @@ export const UserInfo = () => {
         <div className='first-section'>
           <Avatar
             size={128}
-            style={{ fontSize: 64 }}
             {...(data?.avatar
               ? { src: `${avatar}` }
-              : { style: { background: randAvaBg() } })}
+              : { style: { background: randAvaBg(), fontSize: 64 } })}
           >
             {!data?.avatar &&
               data?.username!.substring(0, 1).toLocaleUpperCase()}

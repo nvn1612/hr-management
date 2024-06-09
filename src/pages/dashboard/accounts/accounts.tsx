@@ -1,6 +1,6 @@
 import "./accounts.css";
 import { useEffect, useState } from "react";
-import { Spin, List, Typography } from "antd";
+import { Spin, List } from "antd";
 import { UserCard } from "src/components/user-card";
 import { AccountModal } from "src/layouts";
 import { MngPageHeader } from "src/layouts/mng-page-header";
