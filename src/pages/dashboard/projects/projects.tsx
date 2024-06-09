@@ -1,5 +1,5 @@
 import "./projects.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Tabs, Modal, Popconfirm, Button, List, message, Spin } from "antd";
 import { ProjectInfo } from "src/layouts/project-info";
 import { ProjectReports } from "src/layouts/project-reports";
@@ -38,11 +38,30 @@ export const Projects = () => {
     });
   const [deleteProject] = useDeleteProjectMutation();
 
+  const subRefetch = () => {
+    setSelectedProject((oldState) => {
+      if (role === OUserRole.Admin) {
+        return allProject?.data.find(
+          (newState) => newState.project_id === oldState?.project_id
+        );
+      }
+      return departmentProject?.data.find(
+        (newState) => newState.project_id === oldState?.project_id
+      );
+    });
+  };
+
   const tabsProps: TabsProps["items"] = [
     {
       key: "1",
       label: "General",
-      children: <ProjectInfo project={selectedProject} />,
+      children: (
+        <ProjectInfo
+          project={selectedProject}
+          departFetch={departProjectFetch}
+          allFetch={isFetching}
+        />
+      ),
     },
     {
       key: "2",
@@ -67,6 +86,10 @@ export const Projects = () => {
   const onChangePage: PaginationProps["onChange"] = (page) => {
     setQueries({ ...queries, page });
   };
+
+  useEffect(() => {
+    subRefetch();
+  }, [departmentProject, allProject]);
 
   return (
     <>

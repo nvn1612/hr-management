@@ -8,6 +8,7 @@ import {
   message,
   Select,
   Typography,
+  Spin,
 } from "antd";
 import {
   useCreateProjectMutation,
@@ -22,11 +23,17 @@ import { localStorageUtil } from "src/share/utils";
 
 interface ProjectFormProps {
   project?: Project;
+  departFetch?: boolean;
+  allFetch?: boolean;
 }
 
 const role = localStorageUtil.get("role");
 
-export const ProjectForm = ({ project }: ProjectFormProps) => {
+export const ProjectForm = ({
+  project,
+  departFetch,
+  allFetch,
+}: ProjectFormProps) => {
   const [form] = Form.useForm();
   const [editableForm, setEditableForm] = useState<boolean>(false);
   const [createProject] = useCreateProjectMutation();
@@ -47,7 +54,9 @@ export const ProjectForm = ({ project }: ProjectFormProps) => {
     } else if (project) {
       await updateProject({ values, projectId: project.project_id })
         .unwrap()
-        .then(() => messageApi.success("Success update project"))
+        .then(() => {
+          messageApi.success("Success update project");
+        })
         .catch(() => messageApi.error("There was an error"));
     }
   };
@@ -86,61 +95,67 @@ export const ProjectForm = ({ project }: ProjectFormProps) => {
   return (
     <>
       {contextHolder}
-      {project && role !== OUserRole.Staff && (
-        <Checkbox
-          checked={editableForm}
-          onChange={() => setEditableForm(!editableForm)}
-        >
-          Edit information
-        </Checkbox>
-      )}
-      <Form
-        form={form}
-        disabled={project ? !editableForm : false}
-        onFinish={onFinish}
-        labelCol={{ span: 4 }}
-        wrapperCol={{ span: 16 }}
+      <Spin
+        spinning={departFetch || allFetch}
+        size='large'
+        tip='Take your time'
       >
-        <Form.Item<Project> name={"name"} label='Project name'>
-          <Input />
-        </Form.Item>
-        <Form.Item<Project> name={"projectCode"} label='Project Code'>
-          <Input />
-        </Form.Item>
-        <Form.Item<Project> name={"investor"} label='Investor'>
-          <Input />
-        </Form.Item>
-        <Form.Item<Project> name={"description"} label='Description'>
-          <Input.TextArea />
-        </Form.Item>
-        {role === OUserRole.Admin && (
-          <Form.Item<Project> name={"department_id"} label='Department'>
-            <Select
-              options={departmentData?.departments?.map((department) => {
-                return {
-                  label: <Text>{department.name}</Text>,
-                  value: department.department_id,
-                };
-              })}
-            />
+        {project && role !== OUserRole.Staff && (
+          <Checkbox
+            checked={editableForm}
+            onChange={() => setEditableForm(!editableForm)}
+          >
+            Edit information
+          </Checkbox>
+        )}
+        <Form
+          form={form}
+          disabled={project ? !editableForm : false}
+          onFinish={onFinish}
+          labelCol={{ span: 4 }}
+          wrapperCol={{ span: 16 }}
+        >
+          <Form.Item<Project> name={"name"} label='Project name'>
+            <Input />
           </Form.Item>
-        )}
-        {project && (
-          <>
-            <Form.Item<Project> name={"startAt"} label='Start'>
-              <DatePicker />
+          <Form.Item<Project> name={"projectCode"} label='Project Code'>
+            <Input />
+          </Form.Item>
+          <Form.Item<Project> name={"investor"} label='Investor'>
+            <Input />
+          </Form.Item>
+          <Form.Item<Project> name={"description"} label='Description'>
+            <Input.TextArea />
+          </Form.Item>
+          {role === OUserRole.Admin && (
+            <Form.Item<Project> name={"department_id"} label='Department'>
+              <Select
+                options={departmentData?.departments?.map((department) => {
+                  return {
+                    label: <Text>{department.name}</Text>,
+                    value: department.department_id,
+                  };
+                })}
+              />
             </Form.Item>
-          </>
-        )}
-        <Form.Item<Project> name={"endAt"} label='End'>
-          <DatePicker />
-        </Form.Item>
-        <Form.Item wrapperCol={{ offset: 4 }}>
-          <Button type='primary' htmlType='submit'>
-            {project ? "Save Changes" : "Create project"}
-          </Button>
-        </Form.Item>
-      </Form>
+          )}
+          {project && (
+            <>
+              <Form.Item<Project> name={"startAt"} label='Start'>
+                <DatePicker />
+              </Form.Item>
+            </>
+          )}
+          <Form.Item<Project> name={"endAt"} label='End'>
+            <DatePicker />
+          </Form.Item>
+          <Form.Item wrapperCol={{ offset: 4 }}>
+            <Button type='primary' htmlType='submit'>
+              {project ? "Save Changes" : "Create project"}
+            </Button>
+          </Form.Item>
+        </Form>
+      </Spin>
     </>
   );
 };
