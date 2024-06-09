@@ -38,15 +38,6 @@ export const Accounts = () => {
         },
       },
     },
-    {
-      items: {
-        label: "Department",
-        selector: {
-          defaultValue: "all",
-          options: [{ label: <Text>All</Text>, value: "all" }],
-        },
-      },
-    },
   ];
 
   const onChangePage: PaginationProps["onChange"] = (page) => {
