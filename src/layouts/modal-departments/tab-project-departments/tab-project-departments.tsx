@@ -8,18 +8,18 @@ import { ProjectCard } from "src/components/project-card";
 import { ProjectWorkspace } from "src/layouts/project-workspace";
 import { ProjectInfo } from "src/layouts/project-info";
 import { ProjectReports } from "src/layouts/project-reports";
-
+import "./tab-project-departments.css";
 import type { TabsProps } from "antd";
 import { Project } from "src/share/models";
 
 export const TabProjectDepartment = ({
   department_id,
 }: {
-    department_id?: string;
+  department_id?: string;
 }) => {
-    const [openProjectTab, setOpenProjectTab] = useState<boolean>(false);
-    const [selectedProject, setSelectedProject] = useState<Project | undefined>();
-    
+  const [openProjectTab, setOpenProjectTab] = useState<boolean>(false);
+  const [selectedProject, setSelectedProject] = useState<Project | undefined>();
+
   const tabsProps: TabsProps["items"] = [
     {
       key: "1",
@@ -39,7 +39,7 @@ export const TabProjectDepartment = ({
   ];
 
   const { data: projectData, isFetching } = useGetAllProjectDepartmentQuery({
-    departmentId : department_id,
+    departmentId: department_id,
   });
   const [deleteProject] = useDeleteProjectMutation();
   return (
@@ -47,16 +47,18 @@ export const TabProjectDepartment = ({
       <Spin spinning={isFetching}>
         <div className="projects-tab-content">
           {projectData?.data.map((project: Project) => (
-            <ProjectCard
-              key={project.project_id}
-              onClick={() => {
-                setOpenProjectTab(true);
-                setSelectedProject(project);
-              }}
-              projectName={project.name}
-              description={project.description}
-              information={project.information}
-            />
+            <div className="project-card-department">
+              <ProjectCard
+                key={project.project_id}
+                onClick={() => {
+                  setOpenProjectTab(true);
+                  setSelectedProject(project);
+                }}
+                projectName={project.name}
+                description={project.description}
+                information={project.information}
+              />
+            </div>
           ))}
         </div>
       </Spin>

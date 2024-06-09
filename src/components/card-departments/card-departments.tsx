@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Popconfirm } from "antd";
+import { Card, Popconfirm,message} from "antd";
 import {
   TeamOutlined,
   UserOutlined,
@@ -9,12 +9,14 @@ import {
 import "./card-departments.css";
 import { useDeleteDepartmentsMutation } from "src/share/services";
 
+
 type CardDepartmentssProps = {
   title?: string;
   manager?: string;
   onClick?: () => void;
   departmentId?: string;
   staffCount?: number;
+  role?: string;
 };
 
 export const CardDepartmentss: React.FC<CardDepartmentssProps> = ({
@@ -22,7 +24,8 @@ export const CardDepartmentss: React.FC<CardDepartmentssProps> = ({
   manager,
   onClick,
   departmentId,
-  staffCount
+  staffCount,
+  role
 }) => {
   const [deleteDepartment] = useDeleteDepartmentsMutation();
 
@@ -33,22 +36,27 @@ export const CardDepartmentss: React.FC<CardDepartmentssProps> = ({
   const deleteDapartment = async () => {
     await deleteDepartment({departmentId}).unwrap().then().catch()
   }
+  
   return (
     <>
       <Card
         title={
-          <span>
-            {title}
+          <span className="card-department-title">
+          {title}
+          {role !== "MANAGER" ? (
             <div className="icon-delete-department" onClick={handleDeleteClick}>
               <Popconfirm
                 title="Are you sure to delete this department?"
                 icon={<QuestionCircleOutlined style={{ color: "red" }} />}
-                onConfirm={() => deleteDapartment()} 
+                onConfirm={deleteDapartment}
               >
                 <DeleteOutlined />
               </Popconfirm>
             </div>
-          </span>
+          ) : (
+            ""
+          )}
+        </span>
         }
         bordered={false}
         className="card-department"

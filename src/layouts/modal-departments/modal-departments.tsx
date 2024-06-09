@@ -1,18 +1,6 @@
 import React, { useState } from "react";
-import {
-  Modal,
-  Tabs,
-  Timeline,
-  TabsProps,
-  Row,
-  Col,
-  Avatar,
-  Popconfirm,
-  Button,
-  message,
-  Spin,
-} from "antd";
-import { UserOutlined, UnorderedListOutlined } from "@ant-design/icons";
+import { Modal, Tabs, TabsProps, Row, Col, Avatar, Popconfirm } from "antd";
+import { UnorderedListOutlined } from "@ant-design/icons";
 import {
   EditOutlined,
   DeleteOutlined,
@@ -23,24 +11,20 @@ import { ModalDepartmentManager } from "src/layouts/modal-departments/modal-depa
 import { ModalListStaffDepartment } from "src/layouts/modal-departments/modal-list-staff-department";
 import { ModalAddManager } from "src/layouts/modal-departments/modal-add-manager";
 import { ModalReportProjectDepartment } from "src/layouts/modal-departments/modal-report-project-department";
-import { Department } from "src/share/models/departmentModels";
-import { Project } from "src/share/models/projectModels";
-import {
-  useDeleteDepartmentsMutation,
-  useDeleteProjectMutation,
-} from "src/share/services";
-import { useGetReportDepartmentsQuery } from "src/share/services/departmentServices";
-import { useGetAllProjectDepartmentQuery } from "src/share/services/departmentServices";
+import { Department, Department2 } from "src/share/models/departmentModels";
+import { useDeleteDepartmentsMutation } from "src/share/services";
 import "./modal-departments.css";
-import { useHandleReports } from "src/share/hooks";
 import { TabProjectDepartment } from "./tab-project-departments";
 import { randAvaBg } from "src/share/utils";
+import { TabReportDepartment } from "./tab-report-department";
 
 type ModalDepartmentsProps = {
   visible: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
   department?: Department;
+  departmentDetail?: Department2;
   closeModal: () => void;
+  role?: string;
 };
 
 export const ModalDepartments = ({
@@ -48,6 +32,8 @@ export const ModalDepartments = ({
   setVisible,
   department,
   closeModal,
+  departmentDetail,
+  role,
 }: ModalDepartmentsProps) => {
   const onChange = (key: string) => {
     console.log(key);
@@ -78,11 +64,6 @@ export const ModalDepartments = ({
       .then()
       .catch();
   };
-  const { data: reportData } = useGetReportDepartmentsQuery({
-    departmentId: department?.department_id,
-  });
-
-  const reportTimelineItem = useHandleReports("department", reportData);
 
   const items: TabsProps["items"] = [
     {
@@ -93,7 +74,11 @@ export const ModalDepartments = ({
           <div className="information-departments">
             <div className="description-department">
               <BookOutlined />
-              <p>{department?.description}</p>
+              <p>
+                {role === "MANAGER"
+                  ? departmentDetail?.description
+                  : department?.description}
+              </p>
             </div>
             <div className="info-department-wrapper">
               <div className="department-manager">
@@ -108,7 +93,7 @@ export const ModalDepartments = ({
                       className="name-manager-department"
                       onClick={showModal}
                     >
-                      {department?.information?.manager?.user_id ? (
+                    {department?.information?.manager?.user_id ? (
                         <Avatar
                           {...(!department?.information?.manager?.avatar && {
                             style: { background: randAvaBg() },
@@ -121,17 +106,16 @@ export const ModalDepartments = ({
                               .toUpperCase()}
                         </Avatar>
                       ) : null}
-                      <p>
-                        {department?.information?.manager?.user_id
-                          ? department.information.manager.name
-                          : "No Manager"}
-                      </p>
+                        <p>{role === "MANAGER" ? departmentDetail?.information?.[0].manager?.name : department?.information?.manager?.user_id ? department.information?.manager?.name : "No Manager"  }</p>
+                     
                     </div>
                   </Col>
                   <Col span={2} className="edit-manager-icon">
-                    <div onClick={showAddManager}>
-                      <EditOutlined />
-                    </div>
+                    {role !== "MANAGER" ? (
+                      <div onClick={showAddManager}>
+                        <EditOutlined />
+                      </div>
+                    ) : null}
                   </Col>
                 </Row>
               </div>
@@ -146,7 +130,11 @@ export const ModalDepartments = ({
                   </Col>
                   <Col span={12}>
                     <div className="number-staff-department">
-                      <p>{department?.information?.total_staff}</p>
+                      <p>
+                        {role === "MANAGER"
+                          ? departmentDetail?.information?.[0].total_staff
+                          : department?.information?.total_staff}
+                      </p>
                     </div>
                   </Col>
                   <Col span={2} className="icon-list-staff-department">
@@ -155,19 +143,21 @@ export const ModalDepartments = ({
                 </Row>
               </div>
             </div>
-            <div className="delete-icon">
-              <Popconfirm
-                title="Are you sure to delete this department?"
-                icon={<QuestionCircleOutlined style={{ color: "red" }} />}
-                onConfirm={() => {
-                  handleDeleteDepartment().then(() => {
-                    setVisible(false);
-                  });
-                }}
-              >
-                <DeleteOutlined />
-              </Popconfirm>
-            </div>
+            {role !== "MANAGER" ? (
+              <div className="delete-icon">
+                <Popconfirm
+                  title="Are you sure to delete this department?"
+                  icon={<QuestionCircleOutlined style={{ color: "red" }} />}
+                  onConfirm={() => {
+                    handleDeleteDepartment().then(() => {
+                      setVisible(false);
+                    });
+                  }}
+                >
+                  <DeleteOutlined />
+                </Popconfirm>
+              </div>
+            ) : null}
           </div>
         </>
       ),
@@ -176,13 +166,15 @@ export const ModalDepartments = ({
       key: "2",
       label: "Projects",
       children: (
-        <TabProjectDepartment department_id={department?.department_id} />
+        <TabProjectDepartment department_id={role==="MANAGER" ? departmentDetail?.department_id : department?.department_id} />
       ),
     },
     {
       key: "3",
       label: "Report",
-      children: <Timeline mode={"left"} items={reportTimelineItem} />,
+      children: (
+        <TabReportDepartment department_id={role==="MANAGER" ? departmentDetail?.department_id : department?.department_id} />
+      ),
     },
   ];
 
@@ -201,11 +193,15 @@ export const ModalDepartments = ({
         visible={managerModalVisible}
         setVisible={setManagerModalVisible}
         department={department}
+        detailDepartment={departmentDetail}
+        role={role}
       />
       <ModalListStaffDepartment
         visible={staffModalVisible}
         setVisible={setstaffModalVisible}
         department={department}
+        detailDepartment={departmentDetail}
+        role={role}
       />
       <ModalAddManager
         visible={addManagerVisibel}

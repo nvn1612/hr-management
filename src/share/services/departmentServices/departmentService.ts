@@ -4,10 +4,12 @@ import type {
   Response,
   getDepartmentsResp,
   Department,
+  Department2,
   ProjectReportResp,
 } from "src/share/models";
 import { AddDepartmentForm } from "src/share/models/departmentModels";
 import { ProjectResp } from "src/share/models/projectModels";
+import { GetUserResp } from "src/share/models";
 const accessToken = () => localStorageUtil.get("accessToken");
 
 export const DepartmentServices = hrManagementApi.injectEndpoints({
@@ -82,7 +84,10 @@ export const DepartmentServices = hrManagementApi.injectEndpoints({
       },
       invalidatesTags: ["department", "User"],
     }),
-    getReportDepartments: build.query<ProjectReportResp[], { departmentId?: string }>({
+    getReportDepartments: build.query<
+      ProjectReportResp[],
+      { departmentId?: string }
+    >({
       query: ({ departmentId }) => {
         return {
           url: `report/report-for-department/${departmentId}`,
@@ -92,7 +97,8 @@ export const DepartmentServices = hrManagementApi.injectEndpoints({
           },
         };
       },
-      transformResponse: (response: Response<ProjectReportResp[]>) => response.data,
+      transformResponse: (response: Response<ProjectReportResp[]>) =>
+        response.data,
     }),
     getAllProjectDepartment: build.query<
       ProjectResp,
@@ -143,7 +149,57 @@ export const DepartmentServices = hrManagementApi.injectEndpoints({
           },
         };
       },
-      invalidatesTags: ["department","User"],
+      invalidatesTags: ["department", "User"],
+    }),
+    getDetailDepartment: build.query<Department2, { departmentId?: string }>({
+      query: ({ departmentId }) => {
+        return {
+          url: `departments/detail/${departmentId}`,
+          method: "GET",
+          headers: {
+            authorization: accessToken(),
+          },
+        };
+      },
+      transformResponse: (response: Response<Department2>) => response.data,
+    }),
+    managerGetAllStaffDepartment: build.query<
+      GetUserResp,
+      { departmentId?: string; managerId?: string }
+    >({
+      query: ({ departmentId, managerId }) => {
+        return {
+          url: `users/get-All-Staff-In-Department`,
+          method: "POST",
+          headers: {
+            authorization: accessToken(),
+          },
+          body: {
+            department_id: departmentId,
+            manager_id: managerId,
+          },
+        };
+      },
+      transformResponse: (response: Response<GetUserResp>) => response.data,
+      providesTags: ["User"],
+    }),
+
+    ManagerGetStaffNoDepartment: build.query<GetUserResp,
+    { search?: string }>({
+      query: ({search}) => {
+        return {
+          url: "/users/get-a-list-of-staff-do-do-not-have-departments",
+          method: "GET",
+          headers: {
+            authorization: accessToken(),
+          },
+          params: {
+            search: search || ""
+          },
+        };
+      },
+      transformResponse: (response: Response<GetUserResp>) => response.data,
+      providesTags: ["User"],
     }),
   }),
 });
@@ -157,4 +213,7 @@ export const {
   useGetAllProjectDepartmentQuery,
   useDeleteStaffDepartmentMutation,
   useAddStaffDepartmentMutation,
+  useGetDetailDepartmentQuery,
+  useManagerGetAllStaffDepartmentQuery,
+  useManagerGetStaffNoDepartmentQuery
 } = DepartmentServices;

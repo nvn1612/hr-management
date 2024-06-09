@@ -1,27 +1,24 @@
 import React from "react";
 import { Modal, Form, Input, Avatar, DatePicker } from "antd";
-import { UserOutlined } from "@ant-design/icons";
 import "./modal-department-manager.css";
-import dayjs from "dayjs";
-import { Department } from "src/share/models";
+import { Department, Department2 } from "src/share/models";
 import { randAvaBg } from "src/share/utils";
 type ModalDepartmentManagerProps = {
   visible: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
-  manager?:string
-  department?: Department
+  manager?: string;
+  department?: Department;
+  detailDepartment?: Department2;
+  role?: string;
 };
 
 export const ModalDepartmentManager = ({
   visible,
   setVisible,
-  department
+  department,
+  detailDepartment,
+  role,
 }: ModalDepartmentManagerProps) => {
- 
-
- 
-
-
   return (
     <>
       <Modal
@@ -35,17 +32,17 @@ export const ModalDepartmentManager = ({
           <div className="main-layout">
             <div className="layout-1">
               <Form.Item className="avatar-manager-department">
-              <Avatar
-                          {...(!department?.information?.manager?.avatar && {
-                            style: { background: randAvaBg(), fontSize: "80px" },
-                          })}
-                          size={160}
-                        >
-                          {!department?.information?.manager?.avatar &&
-                            department?.information?.manager?.username
-                              ?.substring(0, 1)
-                              .toUpperCase()}
-                        </Avatar>
+                <Avatar
+                  {...(!department?.information?.manager?.avatar && {
+                    style: { background: randAvaBg(), fontSize: "80px" },
+                  })}
+                  size={160}
+                >
+                  {!department?.information?.manager?.avatar &&
+                    department?.information?.manager?.username
+                      ?.substring(0, 1)
+                      .toUpperCase()}
+                </Avatar>
               </Form.Item>
               <Form.Item label="Role">
                 <Input value="manager" readOnly />
@@ -53,22 +50,58 @@ export const ModalDepartmentManager = ({
             </div>
             <div className="layout-2">
               <Form.Item label="Username">
-                <Input value={department?.information?.manager?.username} readOnly />
+                <Input
+                  value={
+                    role === "MANAGER"
+                      ? detailDepartment?.information?.[0]?.manager?.username
+                      : department?.information?.manager?.username
+                  }
+                  readOnly
+                />
               </Form.Item>
               <Form.Item label="Name">
-                <Input value={department?.information?.manager?.name} readOnly />
+                <Input
+                  value={
+                    role === "MANAGER"
+                      ? detailDepartment?.information?.[0]?.manager?.name
+                      : department?.information?.manager?.name
+                  }
+                  readOnly
+                />
               </Form.Item>
             </div>
             <div className="layout-3">
-                <Form.Item label="Email">
-                  <Input value={department?.information?.manager?.email} readOnly />
-                </Form.Item>
-                <Form.Item label="Phone">
-                  <Input value={department?.information?.manager?.phone} readOnly />
-                </Form.Item>
-                <Form.Item label="birthday">
-                  <DatePicker value={department?.information?.manager?.birthday} format="DD/MM/YYYY" disabled />
-                </Form.Item>
+              <Form.Item label="Email">
+                <Input
+                  value={
+                    role === "MANAGER"
+                      ? detailDepartment?.information?.[0]?.manager?.email
+                      : department?.information?.manager?.email
+                  }
+                  readOnly
+                />
+              </Form.Item>
+              <Form.Item label="Phone">
+                <Input
+                  value={
+                    role === "MANAGER"
+                      ? detailDepartment?.information?.[0]?.manager?.phone
+                      : department?.information?.manager?.phone
+                  }
+                  readOnly
+                />
+              </Form.Item>
+              <Form.Item label="birthday">
+                <DatePicker
+                  value={
+                    role === "MANAGER"
+                      ? detailDepartment?.information?.[0]?.manager?.birthday
+                      : department?.information?.manager?.birthday
+                  }
+                  format="DD/MM/YYYY"
+                  disabled
+                />
+              </Form.Item>
             </div>
           </div>
         </Form>
