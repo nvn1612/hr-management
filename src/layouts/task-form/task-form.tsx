@@ -90,7 +90,7 @@ export const TaskForm = ({
     },
     onChange(info) {
       if (info.file.status === "done") {
-        message.success(`${info.file.name} file uploaded successfully`);
+        message.success(`file uploaded successfully`);
       } else if (info.file.status === "error") {
         message.error(`file too large or bad internet`);
       }
