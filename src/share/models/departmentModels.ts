@@ -7,6 +7,38 @@ export interface getDepartmentsResp{
   itemsPerPage?: number;
   departments?: Department[];
 }
+
+
+export interface Department2 {
+  department_id?: string;
+  name?: string;
+  description?: string;
+  createdBy?: string;
+  createdAt?: string;
+  manager_id?: string;
+  information?: Information[];
+}
+
+export interface Information{
+  total_staff?: number;
+  manager?: Manager;
+}
+
+export interface Manager{
+  user_id?: string;
+  username?: string;
+  email?: string;
+  phone?: string;
+  avatar?: string;
+  name?: string;
+  birthday?: string;
+  createdAt?: string;
+  createBy?: string;
+  deletedMark?: boolean;
+  userProperty?: UserProperty;
+}
+
+
 export interface Department {
   department_id?: string;
   name?: string;
@@ -16,6 +48,7 @@ export interface Department {
   manager_id?: string;
   information?: information;
 }
+
 export interface information{
     total_staff?: number;
     manager?: manager;

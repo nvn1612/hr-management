@@ -1,19 +1,22 @@
 import { useState } from "react";
-import { List, Spin } from "antd";
+import { List, Spin,message } from "antd";
 import { ModalDepartments } from "src/layouts/modal-departments";
 import { CardDepartmentss } from "src/components/card-departments";
 import { ModalAddDepartment } from "../modal-departments/modal-add-department";
 import { MngPageHeader } from "../mng-page-header";
 import { useGetDepartmentsQuery } from "src/share/services";
 import "./card-departments-list.css";
-import { Department } from "src/share/models";
+import { Department,Department2 } from "src/share/models";
 
 import type { PaginationProps } from "antd";
+import { useGetUserDetailQuery } from "src/share/services";
+import { useGetDetailDepartmentQuery } from "src/share/services";
 
 export const CardDepartments = () => {
   const [visible, setVisible] = useState(false);
-  const [queries, setQueries] = useState<{ page: number, itemsPerPage: number }>({ page: 1, itemsPerPage: 10 });
+  const [queries, setQueries] = useState<{ page: number, itemsPerPage: number }>({ page: 1, itemsPerPage: 9 });
   const [mainDepartment, setMainDepartment] = useState<Department | undefined>();
+  const [detailDepartment, setDetailDepartment] = useState<Department2 | undefined>();
   const [visibleAddDepartment, setVisibleAddDepartment] = useState(false);
   const showAddDepartment = () => {
     setVisibleAddDepartment(true);
@@ -22,9 +25,15 @@ export const CardDepartments = () => {
     setVisible(false);
   };
   const { data, isFetching } = useGetDepartmentsQuery(queries);
+  const {data : userDetail} = useGetUserDetailQuery();
+  
+  const {data : departmentDetail } = useGetDetailDepartmentQuery({departmentId : userDetail?.UserProperty?.department_id});
 
   const onChangePage: PaginationProps["onChange"] = (page) => {
     setQueries({ ...queries, page });
+  };
+  const info = () => {
+    message.info('You do not have permission to perform this action');
   };
 
   return (
@@ -38,12 +47,29 @@ export const CardDepartments = () => {
         <MngPageHeader
           title="Departments"
           addBtnContent="Create Department"
-          addBtnOnClick={showAddDepartment}
-          itemCount={data?.total}
+          addBtnOnClick={userDetail?.UserProperty?.role?.name === "MANAGER" ? info : showAddDepartment}
+          
+          itemCount={userDetail?.UserProperty?.role?.name==="MANAGER" ? 1 : data?.total}
+  
           filters={[]}
         />
         <div className="department-card-container">
-          <List
+          { userDetail?.UserProperty?.role?.name==="MANAGER" ?
+              (
+                  <CardDepartmentss
+                  onClick={() => {
+                  setVisible(true);
+                  setDetailDepartment(departmentDetail);
+                }}
+                role = {userDetail?.UserProperty?.role?.name}
+                title={departmentDetail?.name}
+                manager={departmentDetail?.information?.[0]?.manager?.name}
+                staffCount={departmentDetail?.information?.[0]?.total_staff}
+              />
+
+          ) : userDetail?.UserProperty?.role?.name==="ADMIN" ?
+          (
+            <List
             grid={{
               gutter: 16,
               xs: 1,
@@ -56,7 +82,7 @@ export const CardDepartments = () => {
             pagination={{
               position: "bottom",
               align: "center",
-              pageSize: 10,
+              pageSize: 9,
               total: data?.total,
               onChange: onChangePage,
             }}
@@ -82,14 +108,19 @@ export const CardDepartments = () => {
                 : undefined
             }
           />
-        </div>
+          ): null
+        }
+        
+      </div>
+      
       </Spin>
       <ModalDepartments
         visible={visible}
         setVisible={setVisible}
         department={mainDepartment}
         closeModal={closeModal}
-
+        departmentDetail={detailDepartment}
+        role={userDetail?.UserProperty?.role?.name}
       />
       <ModalAddDepartment
         visible={visibleAddDepartment}
