@@ -43,7 +43,7 @@ export const ChangePasswordForm = ({ email }: { email: string }) => {
         >
           <Form.Item<ChangePasswordFormType>
             name='newPassword'
-            rules={[{ required: true, message: "OTP code is required" }]}
+            rules={[{ required: true, message: "New password is required" }]}
           >
             <Input.Password placeholder='New Password' />
           </Form.Item>

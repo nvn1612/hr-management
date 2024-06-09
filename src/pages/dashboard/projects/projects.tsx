@@ -32,9 +32,10 @@ export const Projects = () => {
     { skip: role !== OUserRole.Admin }
   );
   const { data: userDetail } = useGetUserDetailQuery();
-  const { data: departmentProject } = useGetAllProjectDepartmentQuery({
-    departmentId: userDetail?.UserProperty?.department_id,
-  });
+  const { data: departmentProject, isFetching: departProjectFetch } =
+    useGetAllProjectDepartmentQuery({
+      departmentId: userDetail?.UserProperty?.department_id,
+    });
   const [deleteProject] = useDeleteProjectMutation();
 
   const tabsProps: TabsProps["items"] = [
@@ -71,7 +72,7 @@ export const Projects = () => {
     <>
       {contextHolder}
       <Spin
-        spinning={isFetching}
+        spinning={isFetching || departProjectFetch}
         tip='Loading Projects'
         className='project-card-loading'
         size='large'

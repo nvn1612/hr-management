@@ -13,7 +13,7 @@ import {
   Select,
 } from "antd";
 import dayjs from "dayjs";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { UploadOutlined } from "@ant-design/icons";
 import {
   useCreateTaskMutation,
@@ -23,6 +23,7 @@ import {
   useUpdateTaskMutation,
   useGetDepartmentStaffsQuery,
   useUpdateAssignmentMutation,
+  useGetTaskFileMutation,
 } from "src/share/services";
 
 import {
@@ -31,7 +32,7 @@ import {
   type Project,
   OUserRole,
 } from "src/share/models";
-import type { FormProps } from "antd";
+import type { FormProps, UploadProps } from "antd";
 import { localStorageUtil } from "src/share/utils";
 
 interface TaskFormFields {
@@ -50,6 +51,7 @@ interface TaskFormProps {
 }
 
 const role = localStorageUtil.get("role")!;
+const isStaff = role === OUserRole.Staff;
 
 export const TaskForm = ({
   assignment,
@@ -76,9 +78,24 @@ export const TaskForm = ({
     itemsPerPage: "ALL",
     departmentId: project.ProjectProperty?.department_id,
   });
-
-  const documents: string[] = [];
+  const [getFile] = useGetTaskFileMutation();
+  const [fileLinks, setFileLinks] = useState<string[]>([]);
   const { Text } = Typography;
+  const baseApi = import.meta.env.VITE_REQUEST_API_URL;
+
+  const uploadProps: UploadProps = {
+    action: `${baseApi}tasks/upload-file-from-local/${task?.task_id}`,
+    headers: {
+      authorization: localStorageUtil.get("accessToken")!,
+    },
+    onChange(info) {
+      if (info.file.status === "done") {
+        message.success(`${info.file.name} file uploaded successfully`);
+      } else if (info.file.status === "error") {
+        message.error(`file too large or bad internet`);
+      }
+    },
+  };
 
   const onFinish: FormProps<TaskFormFields>["onFinish"] = async (values) => {
     switch (action) {
@@ -121,6 +138,17 @@ export const TaskForm = ({
     }
   };
 
+  const getLinks = () => {
+    setFileLinks([]);
+    return task?.document?.map((filename) =>
+      getFile({ filename })
+        .unwrap()
+        .then((link) => {
+          setFileLinks([...fileLinks, link]);
+        })
+    );
+  };
+
   useEffect(() => {
     if (task && assignment) {
       form.setFieldsValue({
@@ -136,6 +164,9 @@ export const TaskForm = ({
         description: "",
         assignedStaff: "",
       });
+    }
+    if (task) {
+      getLinks();
     }
   }, [assignment, project, task, actitvityData, action]);
 
@@ -160,9 +191,9 @@ export const TaskForm = ({
           className='task-form'
         >
           <Form.Item<TaskFormFields> label='Description' name={"description"}>
-            <Input.TextArea />
+            <Input.TextArea disabled={isStaff} />
           </Form.Item>
-          {!(role == OUserRole.Staff) && (
+          {!isStaff && (
             <Form.Item name={"assignedStaff"} label='Assigned'>
               <Select
                 options={departmentStaff?.users.map((staff) => {
@@ -174,39 +205,52 @@ export const TaskForm = ({
               />
             </Form.Item>
           )}
+
           {action === "update" && (
             <>
               <Form.Item<TaskFormFields> label='Deadline' name={"deadline"}>
-                <DatePicker />
+                <DatePicker disabled={isStaff} />
               </Form.Item>
               <Form.Item<TaskFormFields>
                 label='Completed'
                 name={"status"}
                 valuePropName='checked'
               >
-                <Checkbox />
+                <Checkbox disabled={isStaff} />
               </Form.Item>
             </>
           )}
-          <Form.Item wrapperCol={{ offset: 4 }}>
-            <Button type='primary' htmlType='submit'>
-              {action === "update" ? "Save Changes" : "Create"}
-            </Button>
-          </Form.Item>
+          {!isStaff && (
+            <Form.Item wrapperCol={{ offset: 4 }}>
+              <Button type='primary' htmlType='submit'>
+                {action === "update" ? "Save Changes" : "Create"}
+              </Button>
+            </Form.Item>
+          )}
           {action === "update" && (
             <>
               <Form.Item label='Documents'>
                 <List
-                  dataSource={documents || []}
-                  renderItem={(document) => (
-                    <List.Item>
-                      <List.Item.Meta description={document} />
-                    </List.Item>
-                  )}
+                  dataSource={
+                    task !== undefined && task.document!.length >= 1
+                      ? fileLinks
+                      : []
+                  }
+                  renderItem={(link) => {
+                    return (
+                      <List.Item>
+                        <a href={link}>{link}</a>
+                      </List.Item>
+                    );
+                  }}
                 />
-                <Upload>
-                  <Button icon={<UploadOutlined />}>Upload new Document</Button>
-                </Upload>
+                {!isStaff && (
+                  <Upload {...uploadProps}>
+                    <Button icon={<UploadOutlined />}>
+                      Upload new Document
+                    </Button>
+                  </Upload>
+                )}
               </Form.Item>
               <Form.Item label='Activities'>
                 <List

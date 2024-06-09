@@ -271,32 +271,6 @@ const projectServices = hrManagementApi.injectEndpoints({
       },
       transformResponse: (response: Response<string>) => response.data,
     }),
-    getProjectAssignments: build.query<
-      AssignmentResp,
-      {
-        projectPropertyId?: string;
-        page?: number;
-        itemsPerPage: number | "ALL";
-        isAssigned?: boolean;
-      }
-    >({
-      query({ projectPropertyId, page, itemsPerPage, isAssigned }) {
-        return {
-          url: `assignments/get-all-assignment-for-project/${projectPropertyId}`,
-          method: "GET",
-          headers: {
-            authorization: accessToken(),
-          },
-          params: {
-            isAssignment: isAssigned || "",
-            page,
-            items_per_page: itemsPerPage,
-          },
-        };
-      },
-      transformResponse: (response: Response<AssignmentResp>) => response.data,
-      providesTags: ["assignment"],
-    }),
     updateTask: build.mutation<
       Response<boolean>,
       {
@@ -377,31 +351,32 @@ const projectServices = hrManagementApi.injectEndpoints({
       transformResponse: (response: Response<GetUserResp>) => response.data,
     }),
     getAssignments: build.query<
-      GetUserResp,
+      AssignmentResp,
       {
-        items_per_page?: number;
+        items_per_page?: number | "ALL";
         page?: number;
-        target?: string;
+        target?: "user" | "project" | "task";
         status?: boolean;
         isAssignment?: boolean;
+        targetPropertyId: string;
       }
     >({
-      query({ items_per_page, page, target, isAssignment }) {
+      query({ items_per_page, page, target, isAssignment, targetPropertyId }) {
         return {
-          url: `/assignments/get-all-assignment/`,
+          url: `/assignments/get-all-assignment/${targetPropertyId}`,
           method: "GET",
           headers: {
             authorization: accessToken(),
           },
           params: {
-            page: page || "1",
-            items_per_page: items_per_page || "10",
+            page: page || 1,
+            items_per_page: items_per_page || 10,
             target: target || "",
             isAssignment: isAssignment || false,
           },
         };
       },
-      transformResponse: (response: Response<GetUserResp>) => response.data,
+      transformResponse: (response: Response<AssignmentResp>) => response.data,
     }),
     deleteAssignment: build.mutation<
       Response<boolean>,
@@ -459,6 +434,7 @@ const projectServices = hrManagementApi.injectEndpoints({
       {
         projectPropertyId?: string;
         page: number;
+        items_per_page: number | "ALL";
       }
     >({
       query({ projectPropertyId, page }) {
@@ -491,7 +467,6 @@ export const {
   useGetTaskActivityQuery,
   useGetUserActivityQuery,
   useGetTaskFileMutation,
-  useGetProjectAssignmentsQuery,
   useGetProjectReportsQuery,
   useCreateActivityMutation,
   useUpdateTaskMutation,

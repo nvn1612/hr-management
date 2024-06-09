@@ -3,10 +3,10 @@ import { useState } from "react";
 import { Modal, Button, Popconfirm, List, Spin, message } from "antd";
 import { TaskForm } from "src/layouts";
 import {
-  useGetProjectAssignmentsQuery,
   useDeleteAssignmentMutation,
   useDeleteTaskMutation,
   useGetProjectTasksQuery,
+  useGetAssignmentsQuery,
 } from "src/share/services";
 import { ClockCircleOutlined, CheckCircleOutlined } from "@ant-design/icons";
 
@@ -32,11 +32,15 @@ export const ProjectTasks = ({ project }: ProjectTasksProp) => {
   const { data: taskList, isFetching: taskFetch } = useGetProjectTasksQuery({
     projectPropertyId: project.ProjectProperty?.project_property_id,
     page,
+    items_per_page: 5,
   });
-  const projectAssignments = useGetProjectAssignmentsQuery({
-    projectPropertyId: project.ProjectProperty?.project_property_id,
-    itemsPerPage: 5,
-  });
+  const { data: assigments, isFetching: assignmentFetch } =
+    useGetAssignmentsQuery({
+      targetPropertyId: project.ProjectProperty!.project_property_id,
+      items_per_page: 5,
+      target: "project",
+    });
+
   const [deleteAssignment] = useDeleteAssignmentMutation();
   const [deleteTask] = useDeleteTaskMutation();
 
@@ -46,10 +50,7 @@ export const ProjectTasks = ({ project }: ProjectTasksProp) => {
         <p className='project-section-title'>Tasks</p>
       </div>
       <div className='task-card-container'>
-        <Spin
-          spinning={projectAssignments.isFetching || taskFetch}
-          tip='Getting Tasks'
-        >
+        <Spin spinning={assignmentFetch || taskFetch} tip='Getting Tasks'>
           <List
             pagination={{
               onChange: (selectedPage) => {
@@ -58,7 +59,7 @@ export const ProjectTasks = ({ project }: ProjectTasksProp) => {
               total: taskList?.total,
               pageSize: 5,
             }}
-            dataSource={projectAssignments.data?.assignments}
+            dataSource={assigments?.assignments}
             renderItem={(assignment) => {
               if (assignment.task_property_id) {
                 const matchedTask = taskList?.data?.find(
