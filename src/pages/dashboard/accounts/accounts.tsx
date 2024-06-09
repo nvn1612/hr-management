@@ -1,5 +1,5 @@
 import "./accounts.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Spin, List, Typography } from "antd";
 import { UserCard } from "src/components/user-card";
 import { AccountModal } from "src/layouts";
@@ -14,7 +14,7 @@ import type { PageFilter } from "src/layouts/mng-page-header";
 
 export const Accounts = () => {
   const [openAccTab, setOpenAccTab] = useState<boolean>(false);
-  const [selectedAcc, setSelectedAcc] = useState<User | null>(null);
+  const [selectedAcc, setSelectedAcc] = useState<User | undefined>(undefined);
   const [formAction, setFormAction] = useState<"create" | "update">("create");
   const [queries, setQueries] = useState<{
     role: UserRole;
@@ -55,6 +55,20 @@ export const Accounts = () => {
 
   const { data, isLoading } = useGetUsersQuery(queries);
 
+  const subRefetch = () => {
+    if (selectedAcc) {
+      setSelectedAcc((oldState) => {
+        return data?.users.find(
+          (newState) => newState.user_id === oldState!.user_id
+        );
+      });
+    }
+  };
+
+  useEffect(() => {
+    subRefetch();
+  }, [data]);
+
   return (
     <>
       <Spin
@@ -68,7 +82,7 @@ export const Accounts = () => {
           itemCount={data ? data.total : 0}
           addBtnContent='Create User'
           addBtnOnClick={() => {
-            setSelectedAcc(null);
+            setSelectedAcc(undefined);
             setOpenAccTab(true);
             setFormAction("create");
           }}
