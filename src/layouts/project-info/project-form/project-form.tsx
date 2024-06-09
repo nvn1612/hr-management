@@ -14,20 +14,18 @@ import {
   useCreateProjectMutation,
   useUpdateProjectMutation,
   useGetDepartmentsQuery,
+  useGetUserDetailQuery,
 } from "src/share/services";
 import dayjs, { Dayjs } from "dayjs";
 
 import { OUserRole, type Project } from "src/share/models";
 import type { FormProps } from "antd";
-import { localStorageUtil } from "src/share/utils";
 
 interface ProjectFormProps {
   project?: Project;
   departFetch?: boolean;
   allFetch?: boolean;
 }
-
-const role = localStorageUtil.get("role");
 
 export const ProjectForm = ({
   project,
@@ -41,13 +39,19 @@ export const ProjectForm = ({
   const { data: departmentData } = useGetDepartmentsQuery({
     itemsPerPage: "ALL",
   });
+  const { data: userDetail } = useGetUserDetailQuery();
 
   const [messageApi, contextHolder] = message.useMessage();
   const { Text } = Typography;
 
   const onFinish: FormProps<Project>["onFinish"] = async (values) => {
     values.endAt = (values.endAt as Dayjs).add(1, "day");
-    values.startAt = (values.startAt as Dayjs).add(1, "day");
+    if (values.startAt) {
+      values.startAt = (values.startAt as Dayjs).add(1, "day");
+    }
+    if (userDetail?.UserProperty?.role?.name === OUserRole.Manager) {
+      values.department_id = userDetail.UserProperty.department_id;
+    }
     if (!project) {
       await createProject(values)
         .unwrap()
@@ -102,14 +106,15 @@ export const ProjectForm = ({
         size='large'
         tip='Take your time'
       >
-        {project && role !== OUserRole.Staff && (
-          <Checkbox
-            checked={editableForm}
-            onChange={() => setEditableForm(!editableForm)}
-          >
-            Edit information
-          </Checkbox>
-        )}
+        {project &&
+          userDetail?.UserProperty?.role?.name !== OUserRole.Staff && (
+            <Checkbox
+              checked={editableForm}
+              onChange={() => setEditableForm(!editableForm)}
+            >
+              Edit information
+            </Checkbox>
+          )}
         <Form
           form={form}
           disabled={project ? !editableForm : false}
@@ -129,7 +134,7 @@ export const ProjectForm = ({
           <Form.Item<Project> name={"description"} label='Description'>
             <Input.TextArea />
           </Form.Item>
-          {role === OUserRole.Admin && (
+          {userDetail?.UserProperty?.role?.name === OUserRole.Admin && (
             <Form.Item<Project> name={"department_id"} label='Department'>
               <Select
                 options={departmentData?.departments?.map((department) => {

@@ -176,31 +176,31 @@ export const Projects = () => {
           setOpenProjectTab(false);
         }}
         footer={
-          role === OUserRole.Admin ||
-          (role === OUserRole.Manager &&
-            !isCreate && [
-              <Popconfirm
-                title='Delete Project'
-                description='Are you sure to delete this Project?'
-                okText='Yes'
-                onConfirm={async () => {
-                  await deleteProject(selectedProject!.project_id!)
-                    .unwrap()
-                    .then(() => {
-                      messageApi.success("Project deleted");
-                      setOpenProjectTab(false);
-                    })
-                    .catch(() => {
-                      messageApi.error("Failed to delete project");
-                    });
-                }}
-                cancelText='No'
-              >
-                <Button type='primary' danger>
-                  Delete Project
-                </Button>
-              </Popconfirm>,
-            ])
+          !(role === OUserRole.Staff) && !isCreate
+            ? [
+                <Popconfirm
+                  title='Delete Project'
+                  description='Are you sure to delete this Project?'
+                  okText='Yes'
+                  onConfirm={async () => {
+                    await deleteProject(selectedProject!.project_id!)
+                      .unwrap()
+                      .then(() => {
+                        messageApi.success("Project deleted");
+                        setOpenProjectTab(false);
+                      })
+                      .catch(() => {
+                        messageApi.error("Failed to delete project");
+                      });
+                  }}
+                  cancelText='No'
+                >
+                  <Button type='primary' danger>
+                    Delete Project
+                  </Button>
+                </Popconfirm>,
+              ]
+            : []
         }
       >
         <Tabs

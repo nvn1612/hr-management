@@ -114,6 +114,7 @@ export const DepartmentServices = hrManagementApi.injectEndpoints({
         };
       },
       transformResponse: (response: Response<ProjectResp>) => response.data,
+      providesTags: ["project"],
     }),
     deleteStaffDepartment: build.mutation<
       Response<{ count: number }>,
@@ -184,9 +185,8 @@ export const DepartmentServices = hrManagementApi.injectEndpoints({
       providesTags: ["User"],
     }),
 
-    ManagerGetStaffNoDepartment: build.query<GetUserResp,
-    { search?: string }>({
-      query: ({search}) => {
+    ManagerGetStaffNoDepartment: build.query<GetUserResp, { search?: string }>({
+      query: ({ search }) => {
         return {
           url: "/users/get-a-list-of-staff-do-do-not-have-departments",
           method: "GET",
@@ -194,7 +194,7 @@ export const DepartmentServices = hrManagementApi.injectEndpoints({
             authorization: accessToken(),
           },
           params: {
-            search: search || ""
+            search: search || "",
           },
         };
       },
@@ -215,5 +215,5 @@ export const {
   useAddStaffDepartmentMutation,
   useGetDetailDepartmentQuery,
   useManagerGetAllStaffDepartmentQuery,
-  useManagerGetStaffNoDepartmentQuery
+  useManagerGetStaffNoDepartmentQuery,
 } = DepartmentServices;

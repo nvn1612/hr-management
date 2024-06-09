@@ -70,6 +70,7 @@ export const useHandleReports = (
               report.activities.map((activity) => {
                 return (
                   <>
+                    <br />
                     <span style={{ color: "#8c8c8c", fontWeight: 500 }}>
                       {`${activity.description}  `}{" "}
                       {activity.user_information &&
@@ -128,11 +129,13 @@ export const useHandleReports = (
               ) : (
                 ""
               )}
+              <br />
               <Text style={{ fontWeight: 700 }}>{report.taskDesc}</Text>
               {report.activities &&
                 report.activities.map((activity) => {
                   return (
                     <>
+                      <br />
                       <span style={{ color: "#8c8c8c", fontWeight: 500 }}>
                         {`${activity.description}  `}{" "}
                         {activity.user_information &&
