@@ -20,7 +20,6 @@ export const Accounts = () => {
     role: UserRole;
     page: number | undefined;
   }>({ role: OUserRole.All, page: 1 });
-  const { Text } = Typography;
 
   const filters: PageFilter[] = [
     {
