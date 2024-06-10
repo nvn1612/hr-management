@@ -1,6 +1,6 @@
 services:
-   projectmanagementwebui:
-    build: 
+  projectmanagementwebui:
+    build:
       dockerfile: Dockerfile
     platform: linux/amd64
     image: nambndpx000/projectmanagementwebui

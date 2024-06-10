@@ -98,7 +98,7 @@ const accountServices = hrManagementApi.injectEndpoints({
             role: role === OUserRole.All ? "" : role,
             page: page ? page : 1,
             search: search || "",
-            items_per_page: items_per_page || "ALL",
+            items_per_page: items_per_page || 10,
           },
         };
       },
