@@ -37,7 +37,7 @@ export const ProjectTasks = ({ project }: ProjectTasksProp) => {
   const { data: assigments, isFetching: assignmentFetch } =
     useGetAssignmentsQuery({
       targetPropertyId: project.ProjectProperty!.project_property_id,
-      items_per_page: 5,
+      items_per_page: "ALL",
       target: "project",
     });
 
@@ -59,11 +59,12 @@ export const ProjectTasks = ({ project }: ProjectTasksProp) => {
               total: taskList?.total,
               pageSize: 5,
             }}
-            dataSource={assigments?.assignments}
-            renderItem={(assignment) => {
-              if (assignment.task_property_id) {
-                const matchedTask = taskList?.data?.find(
-                  (task) =>
+            dataSource={taskList?.data}
+            renderItem={(task) => {
+              let matchedAssignment: Assignment | undefined;
+              if (task.TaskProperty.task_property_id) {
+                matchedAssignment = assigments?.assignments?.find(
+                  (assignment) =>
                     task.TaskProperty.task_property_id ===
                     assignment.task_property_id
                 );
@@ -75,20 +76,20 @@ export const ProjectTasks = ({ project }: ProjectTasksProp) => {
                         onClick={() => {
                           setShowTaskForm(true);
                           setFormAction("update");
-                          setSelectedTask(matchedTask);
-                          setSelectedAssignment(assignment);
+                          setSelectedTask(a);
+                          setSelectedAssignment(matchedAssignment);
                         }}
                       >
                         View detail
                       </Button>,
-                      assignment.status ? (
+                      matchedAssignment?.status ? (
                         <CheckCircleOutlined className='task-done-icon' />
                       ) : (
                         <ClockCircleOutlined className='task-in-progress-icon' />
                       ),
                     ]}
                   >
-                    <List.Item.Meta title={matchedTask?.description} />
+                    <List.Item.Meta title={task?.description} />
                   </List.Item>
                 );
               }
