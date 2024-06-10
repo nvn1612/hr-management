@@ -24,7 +24,13 @@ export const TabProjectDepartment = ({
     {
       key: "1",
       label: "General",
-      children: <ProjectInfo project={selectedProject} />,
+      children: (
+        <ProjectInfo
+          project={selectedProject}
+          allFetch={false}
+          departFetch={false}
+        />
+      ),
     },
     {
       key: "2",
@@ -45,9 +51,9 @@ export const TabProjectDepartment = ({
   return (
     <>
       <Spin spinning={isFetching}>
-        <div className="projects-tab-content">
+        <div className='projects-tab-content'>
           {projectData?.data.map((project: Project) => (
-            <div className="project-card-department">
+            <div className='project-card-department'>
               <ProjectCard
                 key={project.project_id}
                 onClick={() => {
@@ -64,16 +70,16 @@ export const TabProjectDepartment = ({
       </Spin>
       <Modal
         title={"Project Details"}
-        className="project-detail-modal"
+        className='project-detail-modal'
         open={openProjectTab}
         onCancel={() => {
           setOpenProjectTab(false);
         }}
         footer={[
           <Popconfirm
-            title="Delete Project"
-            description="Are you sure to delete this Project?"
-            okText="Yes"
+            title='Delete Project'
+            description='Are you sure to delete this Project?'
+            okText='Yes'
             onConfirm={async () => {
               await deleteProject(selectedProject!.project_id!)
                 .unwrap()
@@ -85,15 +91,15 @@ export const TabProjectDepartment = ({
                   message.error("Failed to delete project");
                 });
             }}
-            cancelText="No"
+            cancelText='No'
           >
-            <Button type="primary" danger>
+            <Button type='primary' danger>
               Delete Project
             </Button>
           </Popconfirm>,
         ]}
       >
-        <Tabs items={tabsProps} className="project-tabs" />
+        <Tabs items={tabsProps} className='project-tabs' />
       </Modal>
     </>
   );
