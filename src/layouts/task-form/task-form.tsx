@@ -98,25 +98,20 @@ export const TaskForm = ({
   };
 
   const onFinish: FormProps<TaskFormFields>["onFinish"] = async (values) => {
-    values.deadline = (values.deadline as Dayjs).add(1, "day");
+    if (values.deadline) {
+      values.deadline = (values.deadline as Dayjs).add(1, "day");
+    }
     switch (action) {
       case "create": {
         const newTask = await createTask({
           description: values.description,
         }).unwrap();
         await createAssignment({
-          ...(values.assignedStaff
-            ? {
-                project_property_id:
-                  project.ProjectProperty?.project_property_id,
-                task_property_id: newTask.task_property.task_property_id,
-                user_property_id: values.assignedStaff,
-              }
-            : {
-                project_property_id:
-                  project.ProjectProperty?.project_property_id,
-                task_property_id: newTask.task_property.task_property_id,
-              }),
+          ...{
+            project_property_id: project.ProjectProperty?.project_property_id,
+            task_property_id: newTask.task_property.task_property_id,
+            user_property_id: values.assignedStaff,
+          },
         })
           .unwrap()
           .then(() => {
@@ -164,7 +159,7 @@ export const TaskForm = ({
       form.setFieldsValue({
         description: task.description,
         deadline: assignment.endAt
-          ? dayjs(assignment.endAt.substring(0, 10), "YYYY/MM/DD")
+          ? dayjs((assignment.endAt as string).substring(0, 10), "YYYY/MM/DD")
           : undefined,
         assignedStaff: assignment.user_property_id || "",
         status: assignment?.status,

@@ -1,3 +1,4 @@
+import { Dayjs } from "dayjs";
 import type {
   ProjectResp,
   Response,
@@ -154,14 +155,18 @@ const projectServices = hrManagementApi.injectEndpoints({
         task_property_id?: string;
       }>
     >({
-      query(body) {
+      query({ user_property_id, project_property_id, task_property_id }) {
         return {
           url: "assignments/create",
           method: "POST",
           headers: {
             authorization: accessToken(),
           },
-          body,
+          body: {
+            project_property_id,
+            task_property_id,
+            user_property_id: user_property_id ? user_property_id : null,
+          },
         };
       },
       transformErrorResponse: (response: Response<Assignment>) => response.data,
@@ -293,7 +298,11 @@ const projectServices = hrManagementApi.injectEndpoints({
     updateAssignment: build.mutation<
       Response<boolean>,
       {
-        value: { status?: boolean; endAt?: string; user_property_id?: string };
+        value: {
+          status?: boolean;
+          endAt?: string | Dayjs;
+          user_property_id?: string;
+        };
         assigmentId: string;
       }
     >({
@@ -304,7 +313,13 @@ const projectServices = hrManagementApi.injectEndpoints({
           headers: {
             authorization: accessToken(),
           },
-          body: value,
+          body: {
+            status: value.status,
+            endAt: value.endAt ? value.endAt : null,
+            user_property_id: value.user_property_id
+              ? value.user_property_id
+              : null,
+          },
         };
       },
       invalidatesTags: ["assignment", "project"],
@@ -326,6 +341,7 @@ const projectServices = hrManagementApi.injectEndpoints({
       },
       transformResponse: (response: Response<ProjectReportResp>) =>
         response.data,
+      providesTags: ["activity"],
     }),
     getProjectStaffs: build.query<
       GetUserResp,
@@ -377,6 +393,7 @@ const projectServices = hrManagementApi.injectEndpoints({
         };
       },
       transformResponse: (response: Response<AssignmentResp>) => response.data,
+      providesTags: ["assignment"],
     }),
     deleteAssignment: build.mutation<
       Response<boolean>,
@@ -437,7 +454,7 @@ const projectServices = hrManagementApi.injectEndpoints({
         items_per_page: number | "ALL";
       }
     >({
-      query({ projectPropertyId, page }) {
+      query({ projectPropertyId, page, items_per_page }) {
         return {
           url: `tasks/get-all-task-in-project/${projectPropertyId}`,
           method: "GET",
@@ -446,10 +463,12 @@ const projectServices = hrManagementApi.injectEndpoints({
           },
           params: {
             page,
+            items_per_page,
           },
         };
       },
       transformResponse: (response: Response<TaskResp>) => response.data,
+      providesTags: ["task"],
     }),
   }),
 });

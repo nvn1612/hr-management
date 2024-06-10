@@ -45,7 +45,9 @@ export const ProjectForm = ({
   const { Text } = Typography;
 
   const onFinish: FormProps<Project>["onFinish"] = async (values) => {
-    values.endAt = (values.endAt as Dayjs).add(1, "day");
+    if (values.endAt) {
+      values.endAt = (values.endAt as Dayjs).add(1, "day");
+    }
     if (values.startAt) {
       values.startAt = (values.startAt as Dayjs).add(1, "day");
     }
