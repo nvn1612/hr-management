@@ -38,7 +38,9 @@ export const UserInfoForm = ({
 
   const onFinish: FormProps<UserInfoType>["onFinish"] = async (values) => {
     setIsLoading(true);
-    values.birthday = (values.birthday as Dayjs).add(1, "day");
+    if (values.birthday) {
+      values.birthday = (values.birthday as Dayjs).add(1, "day");
+    }
     switch (action) {
       case "detail": {
         const sentValues = {

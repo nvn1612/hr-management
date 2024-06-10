@@ -80,9 +80,14 @@ const accountServices = hrManagementApi.injectEndpoints({
     }),
     getUsers: build.query<
       GetUserResp,
-      { role: UserRole; page?: number; search?: string }
+      {
+        role: UserRole;
+        page?: number;
+        search?: string;
+        items_per_page?: number | "ALL";
+      }
     >({
-      query: ({ role, page, search }) => {
+      query: ({ role, page, search, items_per_page }) => {
         return {
           url: `users/admin/get-all`,
           method: "GET",
@@ -93,6 +98,7 @@ const accountServices = hrManagementApi.injectEndpoints({
             role: role === OUserRole.All ? "" : role,
             page: page ? page : 1,
             search: search || "",
+            items_per_page: items_per_page || "ALL",
           },
         };
       },

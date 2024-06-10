@@ -24,6 +24,7 @@ import {
   useGetDepartmentStaffsQuery,
   useUpdateAssignmentMutation,
   useGetTaskFileMutation,
+  useGetUsersQuery,
 } from "src/share/services";
 
 import {
@@ -77,6 +78,11 @@ export const TaskForm = ({
   const { data: departmentStaff } = useGetDepartmentStaffsQuery({
     itemsPerPage: "ALL",
     departmentId: project.ProjectProperty?.department_id,
+  });
+  const { data: users } = useGetUsersQuery({
+    items_per_page: "ALL",
+    page: 1,
+    role: "STAFF",
   });
   const [getFile] = useGetTaskFileMutation();
   const [fileLinks, setFileLinks] = useState<string[]>([]);
@@ -201,12 +207,21 @@ export const TaskForm = ({
           {!isStaff && (
             <Form.Item name={"assignedStaff"} label='Assigned'>
               <Select
-                options={departmentStaff?.users.map((staff) => {
-                  return {
-                    label: <Text>{staff.username}</Text>,
-                    value: staff.UserProperty?.user_property_id,
-                  };
-                })}
+                options={
+                  project.department_id
+                    ? departmentStaff?.users.map((staff) => {
+                        return {
+                          label: <Text>{staff.username}</Text>,
+                          value: staff.UserProperty?.user_property_id,
+                        };
+                      })
+                    : users?.users.map((staff) => {
+                        return {
+                          label: <Text>{staff.username}</Text>,
+                          value: staff.UserProperty?.user_property_id,
+                        };
+                      })
+                }
               />
             </Form.Item>
           )}
@@ -269,6 +284,7 @@ export const TaskForm = ({
                 <Input
                   placeholder='New activity'
                   onPressEnter={async (e) => {
+                    e.preventDefault();
                     createActivity({
                       description: (e.target as HTMLInputElement).value,
                       task_property_id: task?.TaskProperty.task_property_id,

@@ -76,7 +76,7 @@ export const ProjectTasks = ({ project }: ProjectTasksProp) => {
                         onClick={() => {
                           setShowTaskForm(true);
                           setFormAction("update");
-                          setSelectedTask(a);
+                          setSelectedTask(task);
                           setSelectedAssignment(matchedAssignment);
                         }}
                       >

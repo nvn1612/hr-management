@@ -15,6 +15,7 @@ import {
   useUpdateProjectMutation,
   useGetDepartmentsQuery,
   useGetUserDetailQuery,
+  useGetUsersQuery,
 } from "src/share/services";
 import dayjs, { Dayjs } from "dayjs";
 
@@ -36,6 +37,10 @@ export const ProjectForm = ({
   const [editableForm, setEditableForm] = useState<boolean>(false);
   const [createProject] = useCreateProjectMutation();
   const [updateProject] = useUpdateProjectMutation();
+  const { data: pms } = useGetUsersQuery({
+    role: "PROJECT_MANAGER",
+    items_per_page: "ALL",
+  });
   const { data: departmentData } = useGetDepartmentsQuery({
     itemsPerPage: "ALL",
   });
@@ -137,16 +142,31 @@ export const ProjectForm = ({
             <Input.TextArea />
           </Form.Item>
           {userDetail?.UserProperty?.role?.name === OUserRole.Admin && (
-            <Form.Item<Project> name={"department_id"} label='Department'>
-              <Select
-                options={departmentData?.departments?.map((department) => {
-                  return {
-                    label: <Text>{department.name}</Text>,
-                    value: department.department_id,
-                  };
-                })}
-              />
-            </Form.Item>
+            <>
+              <Form.Item<Project> name={"department_id"} label='Department'>
+                <Select
+                  options={departmentData?.departments?.map((department) => {
+                    return {
+                      label: <Text>{department.name}</Text>,
+                      value: department.department_id,
+                    };
+                  })}
+                />
+              </Form.Item>
+              <Form.Item<Project>
+                name={"project_manager_id"}
+                label='Project Manager'
+              >
+                <Select
+                  options={pms?.users?.map((pm) => {
+                    return {
+                      label: <Text>{pm.name}</Text>,
+                      value: pm.user_id,
+                    };
+                  })}
+                />
+              </Form.Item>
+            </>
           )}
           {project && (
             <>

@@ -8,10 +8,12 @@ export const userRoleOptions: DefaultOptionType[] = [
   { label: <Text>Admin</Text>, value: OUserRole.Admin },
   { label: <Text>Manager</Text>, value: OUserRole.Manager },
   { label: <Text>Staff</Text>, value: OUserRole.Staff },
+  { label: <Text>Project Manager</Text>, value: OUserRole.ProjectManager },
 ];
 export const filterRoleOptions: DefaultOptionType[] = [
   { label: <Text>All</Text>, value: OUserRole.All },
   { label: <Text>Admin</Text>, value: OUserRole.Admin },
   { label: <Text>Manager</Text>, value: OUserRole.Manager },
   { label: <Text>Staff</Text>, value: OUserRole.Staff },
+  { label: <Text>Project Manager</Text>, value: OUserRole.ProjectManager },
 ];
