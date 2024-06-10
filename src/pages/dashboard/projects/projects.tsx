@@ -139,6 +139,7 @@ export const Projects = () => {
                   ? allProject?.total
                   : departmentProject?.total,
               onChange: onChangePage,
+              showSizeChanger: false,
             }}
             dataSource={
               role === OUserRole.Admin

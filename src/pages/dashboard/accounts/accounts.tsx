@@ -95,6 +95,7 @@ export const Accounts = () => {
               pageSize: 10,
               total: data?.total,
               onChange: onChangePage,
+              showSizeChanger: false,
             }}
             dataSource={data?.users}
             renderItem={

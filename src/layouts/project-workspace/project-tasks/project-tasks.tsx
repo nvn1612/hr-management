@@ -58,6 +58,7 @@ export const ProjectTasks = ({ project }: ProjectTasksProp) => {
               },
               total: taskList?.total,
               pageSize: 5,
+              showSizeChanger: false,
             }}
             dataSource={taskList?.data}
             renderItem={(task) => {

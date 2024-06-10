@@ -39,6 +39,7 @@ export const ProjectStaffs = ({ project }: ProjectStaffsProps) => {
             onChange: (currPage) => {
               setPage(currPage);
             },
+            showSizeChanger: false,
           }}
           dataSource={projectStaffs?.users}
           renderItem={(user) => {
