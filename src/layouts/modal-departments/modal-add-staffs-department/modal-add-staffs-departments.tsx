@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Modal,
   Radio,
@@ -71,15 +71,19 @@ export const ModalAddStaffsDepartment = ({
     role: "STAFF",
     search: searchValue,
   });
-  const { data: staffNoDepartmentData } = useManagerGetStaffNoDepartmentQuery({ search: searchValue});
+  const { data: staffNoDepartmentData } = useManagerGetStaffNoDepartmentQuery({
+    search: searchValue,
+  });
   const [addStaffDepartment] = useAddStaffDepartmentMutation();
   const [createUserDepartment] = useCreateUserMutation();
 
   const handleAddStaffDepartment = async () => {
     const filteredListStaff = listStaff.filter((id) => id !== undefined);
     await addStaffDepartment({
-      
-      departmentId: role==="MANAGER" ? detailDepartment?.department_id : department?.department_id,
+      departmentId:
+        role === "MANAGER"
+          ? detailDepartment?.department_id
+          : department?.department_id,
       listStaff: filteredListStaff,
     })
       .unwrap()
@@ -118,7 +122,7 @@ export const ModalAddStaffsDepartment = ({
   return (
     <>
       <Modal
-        title="Add Staffs To Department"
+        title='Add Staffs To Department'
         open={visible}
         onCancel={() => {
           setVisible(false);
@@ -128,9 +132,9 @@ export const ModalAddStaffsDepartment = ({
         footer={null}
       >
         <hr />
-        <div className="Change-select-staff-option">
+        <div className='Change-select-staff-option'>
           <Radio.Group
-            className="group-radio-select-add-staffs"
+            className='group-radio-select-add-staffs'
             value={value}
             onChange={onChange}
           >
@@ -147,22 +151,22 @@ export const ModalAddStaffsDepartment = ({
         <div className={`select-staffs-content ${value === 2 ? "hidden" : ""}`}>
           <p>Choose who can join this department</p>
           {role !== "MANAGER" ? (
-              <div className="searchbar-staffs ">
+            <div className='searchbar-staffs '>
               <Input
-                size="large"
-                placeholder="Search staffs...."
+                size='large'
+                placeholder='Search staffs....'
                 prefix={
-                  <div className="icon-search-staffs">
+                  <div className='icon-search-staffs'>
                     <SearchOutlined />
                   </div>
                 }
                 value={searchValue}
                 onChange={handleSearchChange}
               />
-            </div> ) : null
-            }
+            </div>
+          ) : null}
           <hr />
-          <div className="list-add-staffs">
+          <div className='list-add-staffs'>
             <List>
               {role !== "MANAGER" ? (
                 <VirtualList
@@ -178,7 +182,7 @@ export const ModalAddStaffsDepartment = ({
                   }
                   height={ContainerHeight}
                   itemHeight={47}
-                  itemKey="email"
+                  itemKey='email'
                 >
                   {(item: User, index: number) => (
                     <List.Item key={item.email}>
@@ -198,7 +202,7 @@ export const ModalAddStaffsDepartment = ({
                         description={item.name}
                       />
                       <Checkbox
-                        className="checkbox-staff"
+                        className='checkbox-staff'
                         checked={checkedItems[index]}
                         onChange={() => handleCheckChange(index, item.user_id)}
                       />
@@ -219,7 +223,7 @@ export const ModalAddStaffsDepartment = ({
                   }
                   height={ContainerHeight}
                   itemHeight={47}
-                  itemKey="email"
+                  itemKey='email'
                 >
                   {(item: User, index: number) => (
                     <List.Item key={item.email}>
@@ -239,7 +243,7 @@ export const ModalAddStaffsDepartment = ({
                         description={item.name}
                       />
                       <Checkbox
-                        className="checkbox-staff"
+                        className='checkbox-staff'
                         checked={checkedItems[index]}
                         onChange={() => handleCheckChange(index, item.user_id)}
                       />
@@ -254,9 +258,9 @@ export const ModalAddStaffsDepartment = ({
               pageSize={itemsPerPage}
               onChange={setCurrentPage}
             />
-            <div className="button-save-staffs">
+            <div className='button-save-staffs'>
               <Button
-                type="primary"
+                type='primary'
                 onClick={async () => {
                   await handleAddStaffDepartment();
                   setVisible(false);
@@ -271,56 +275,56 @@ export const ModalAddStaffsDepartment = ({
         <div
           className={`select-create-new-staffs ${value === 2 ? "" : "hidden"}`}
         >
-          <div className="title-add-staff">
+          <div className='title-add-staff'>
             <UserOutlined />
             <h2>Add staff</h2>
           </div>
 
           <hr />
-          <form action="" className="form-add-staff">
-            <div className="input-add-staff">
+          <form action='' className='form-add-staff'>
+            <div className='input-add-staff'>
               <strong>Username</strong>
               <Input
-                placeholder="diepvt123"
+                placeholder='diepvt123'
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
               />
             </div>
-            <div className="input-add-staff">
+            <div className='input-add-staff'>
               <strong>Password</strong>
               <Input
-                type="password"
-                placeholder="Password"
+                type='password'
+                placeholder='Password'
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
 
-            <div className="input-add-staff">
-              <div className="email-phone-staff">
-                <div className="email-staff">
+            <div className='input-add-staff'>
+              <div className='email-phone-staff'>
+                <div className='email-staff'>
                   <strong>Email</strong>
                   <Input
-                    placeholder="Email"
+                    placeholder='Email'
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
-                <div className="phone-number-staff">
+                <div className='phone-number-staff'>
                   <strong>Role</strong>
-                  <Input placeholder="Staff" disabled />
+                  <Input placeholder='Staff' disabled />
                 </div>
               </div>
             </div>
-            <div className="input-add-staff">
+            <div className='input-add-staff'>
               <strong>Deparment</strong>
-              <div className="department-staff">
+              <div className='department-staff'>
                 <Input placeholder={department?.name} disabled />
               </div>
             </div>
-            <div className="button-save-staffs">
+            <div className='button-save-staffs'>
               <Button
-                type="primary"
+                type='primary'
                 onClick={async () => {
                   await handleCreateUserDepartment();
                   setVisible(false);

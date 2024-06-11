@@ -48,9 +48,9 @@ export const MngPageHeader = ({
         )}
       </div>
       <div className='page-header-row-2'>
-        {filters?.map((filter) => {
+        {filters?.map((filter, index) => {
           return (
-            <div className='filter-item'>
+            <div className='filter-item' key={index}>
               <Text className='filter-title'>{filter.items.label}</Text>
               <Select
                 className='filter-selector'

@@ -4,13 +4,16 @@ import { ModalDepartments } from "src/layouts/modal-departments";
 import { CardDepartmentss } from "src/components/card-departments";
 import { ModalAddDepartment } from "../modal-departments/modal-add-department";
 import { MngPageHeader } from "../mng-page-header";
-import { useGetDepartmentsQuery } from "src/share/services";
+import {
+  useGetDepartmentsQuery,
+  useGetDetailDepartmentQuery,
+  useGetUserDetailQuery,
+} from "src/share/services";
 import "./card-departments-list.css";
 import { Department, Department2, OUserRole } from "src/share/models";
+import { useRoleChecker } from "src/share/hooks";
 
 import type { PaginationProps } from "antd";
-import { useGetUserDetailQuery } from "src/share/services";
-import { useGetDetailDepartmentQuery } from "src/share/services";
 
 export const CardDepartments = () => {
   const [visible, setVisible] = useState(false);
@@ -31,12 +34,20 @@ export const CardDepartments = () => {
   const closeModal = () => {
     setVisible(false);
   };
-  const { data, isFetching } = useGetDepartmentsQuery(queries);
   const { data: userDetail } = useGetUserDetailQuery();
-
-  const { data: departmentDetail } = useGetDetailDepartmentQuery({
-    departmentId: userDetail?.UserProperty?.department_id,
+  const checkRole = useRoleChecker();
+  const { data, isFetching } = useGetDepartmentsQuery(queries, {
+    skip: !checkRole(OUserRole.Admin) && !checkRole(OUserRole.ProjectManager),
   });
+
+  const { data: departmentDetail } = useGetDetailDepartmentQuery(
+    {
+      departmentId: userDetail?.UserProperty?.department_id,
+    },
+    {
+      skip: !checkRole(OUserRole.Admin) || !checkRole(OUserRole.ProjectManager),
+    }
+  );
 
   const onChangePage: PaginationProps["onChange"] = (page) => {
     setQueries({ ...queries, page });

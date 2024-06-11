@@ -32,16 +32,16 @@ export const ModalDepartmentManager = ({
 
   return (
     <Modal
-      title="INFORMATION MANAGER"
-      visible={visible}
+      title='INFORMATION MANAGER'
+      open={visible}
       onOk={() => setVisible(false)}
       onCancel={() => setVisible(false)}
       width={900}
     >
-      <Form layout="vertical">
-        <div className="main-layout">
-          <div className="layout-1">
-            <Form.Item className="avatar-manager-department">
+      <Form layout='vertical'>
+        <div className='main-layout'>
+          <div className='layout-1'>
+            <Form.Item className='avatar-manager-department'>
               <Avatar
                 {...(!department?.information?.manager?.avatar && {
                   style: { background: randAvaBg(), fontSize: "80px" },
@@ -54,12 +54,12 @@ export const ModalDepartmentManager = ({
                     .toUpperCase()}
               </Avatar>
             </Form.Item>
-            <Form.Item label="Role">
-              <Input value="manager" readOnly />
+            <Form.Item label='Role'>
+              <Input value='manager' readOnly />
             </Form.Item>
           </div>
-          <div className="layout-2">
-            <Form.Item label="Username">
+          <div className='layout-2'>
+            <Form.Item label='Username'>
               <Input
                 value={
                   role === "MANAGER"
@@ -69,7 +69,7 @@ export const ModalDepartmentManager = ({
                 readOnly
               />
             </Form.Item>
-            <Form.Item label="Name">
+            <Form.Item label='Name'>
               <Input
                 value={
                   role === "MANAGER"
@@ -80,8 +80,8 @@ export const ModalDepartmentManager = ({
               />
             </Form.Item>
           </div>
-          <div className="layout-3">
-            <Form.Item label="Email">
+          <div className='layout-3'>
+            <Form.Item label='Email'>
               <Input
                 value={
                   role === "MANAGER"
@@ -91,7 +91,7 @@ export const ModalDepartmentManager = ({
                 readOnly
               />
             </Form.Item>
-            <Form.Item label="Phone">
+            <Form.Item label='Phone'>
               <Input
                 value={
                   role === "MANAGER"
@@ -101,12 +101,8 @@ export const ModalDepartmentManager = ({
                 readOnly
               />
             </Form.Item>
-            <Form.Item label="Birthday">
-              <DatePicker
-                value={getBirthday()}
-                format="DD/MM/YYYY"
-                disabled
-              />
+            <Form.Item label='Birthday'>
+              <DatePicker value={getBirthday()} format='DD/MM/YYYY' disabled />
             </Form.Item>
           </div>
         </div>

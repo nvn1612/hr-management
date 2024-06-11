@@ -52,8 +52,8 @@ export const TabProjectDepartment = ({
     <>
       <Spin spinning={isFetching}>
         <div className='projects-tab-content'>
-          {projectData?.data.map((project: Project) => (
-            <div className='project-card-department'>
+          {projectData?.data.map((project: Project, index) => (
+            <div className='project-card-department' key={index}>
               <ProjectCard
                 key={project.project_id}
                 onClick={() => {

@@ -35,10 +35,6 @@ export const ModalDepartments = ({
   departmentDetail,
   role,
 }: ModalDepartmentsProps) => {
-  const onChange = (key: string) => {
-    console.log(key);
-  };
-
   const [managerModalVisible, setManagerModalVisible] = useState(false);
 
   const showModal = () => {
@@ -71,8 +67,8 @@ export const ModalDepartments = ({
       label: "Information",
       children: (
         <>
-          <div className="information-departments">
-            <div className="description-department">
+          <div className='information-departments'>
+            <div className='description-department'>
               <BookOutlined />
               <p>
                 {role === "MANAGER"
@@ -80,20 +76,26 @@ export const ModalDepartments = ({
                   : department?.description}
               </p>
             </div>
-            <div className="info-department-wrapper">
-              <div className="department-manager">
+            <div className='info-department-wrapper'>
+              <div className='department-manager'>
                 <Row>
                   <Col span={10}>
-                    <div className="title-manager-department">
+                    <div className='title-manager-department'>
                       <span>Manager</span>
                     </div>
                   </Col>
                   <Col span={12}>
                     <div
-                      className="name-manager-department"
-                      onClick={role==="MANAGER"? showModal : department?.information?.manager?.user_id ? showModal : undefined}
+                      className='name-manager-department'
+                      onClick={
+                        role === "MANAGER"
+                          ? showModal
+                          : department?.information?.manager?.user_id
+                          ? showModal
+                          : undefined
+                      }
                     >
-                    {department?.information?.manager?.user_id ? (
+                      {department?.information?.manager?.user_id ? (
                         <Avatar
                           {...(!department?.information?.manager?.avatar && {
                             style: { background: randAvaBg() },
@@ -106,11 +108,16 @@ export const ModalDepartments = ({
                               .toUpperCase()}
                         </Avatar>
                       ) : null}
-                        <p>{role === "MANAGER" ? departmentDetail?.information?.[0].manager?.name : department?.information?.manager?.user_id ? department.information?.manager?.name : "No Manager"  }</p>
-                     
+                      <p>
+                        {role === "MANAGER"
+                          ? departmentDetail?.information?.[0].manager?.name
+                          : department?.information?.manager?.user_id
+                          ? department.information?.manager?.name
+                          : "No Manager"}
+                      </p>
                     </div>
                   </Col>
-                  <Col span={2} className="edit-manager-icon">
+                  <Col span={2} className='edit-manager-icon'>
                     {role !== "MANAGER" ? (
                       <div onClick={showAddManager}>
                         <EditOutlined />
@@ -120,16 +127,16 @@ export const ModalDepartments = ({
                 </Row>
               </div>
             </div>
-            <div className="info-staffs-wrapper">
-              <div className="department-staff">
+            <div className='info-staffs-wrapper'>
+              <div className='department-staff'>
                 <Row>
                   <Col span={10}>
-                    <div className="title-staff-department">
+                    <div className='title-staff-department'>
                       <span>Staff</span>
                     </div>
                   </Col>
                   <Col span={12}>
-                    <div className="number-staff-department">
+                    <div className='number-staff-department'>
                       <p>
                         {role === "MANAGER"
                           ? departmentDetail?.information?.[0].total_staff
@@ -137,16 +144,16 @@ export const ModalDepartments = ({
                       </p>
                     </div>
                   </Col>
-                  <Col span={2} className="icon-list-staff-department">
+                  <Col span={2} className='icon-list-staff-department'>
                     <UnorderedListOutlined onClick={showModalStaff} />
                   </Col>
                 </Row>
               </div>
             </div>
             {role !== "MANAGER" ? (
-              <div className="delete-icon">
+              <div className='delete-icon'>
                 <Popconfirm
-                  title="Are you sure to delete this department?"
+                  title='Are you sure to delete this department?'
                   icon={<QuestionCircleOutlined style={{ color: "red" }} />}
                   onConfirm={() => {
                     handleDeleteDepartment().then(() => {
@@ -166,14 +173,26 @@ export const ModalDepartments = ({
       key: "2",
       label: "Projects",
       children: (
-        <TabProjectDepartment department_id={role==="MANAGER" ? departmentDetail?.department_id : department?.department_id} />
+        <TabProjectDepartment
+          department_id={
+            role === "MANAGER"
+              ? departmentDetail?.department_id
+              : department?.department_id
+          }
+        />
       ),
     },
     {
       key: "3",
       label: "Report",
       children: (
-        <TabReportDepartment department_id={role==="MANAGER" ? departmentDetail?.department_id : department?.department_id} />
+        <TabReportDepartment
+          department_id={
+            role === "MANAGER"
+              ? departmentDetail?.department_id
+              : department?.department_id
+          }
+        />
       ),
     },
   ];
@@ -181,13 +200,13 @@ export const ModalDepartments = ({
   return (
     <>
       <Modal
-        visible={visible}
+        open={visible}
         onCancel={() => setVisible(false)}
         footer={null}
         title={department?.name}
         width={1000}
       >
-        <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
+        <Tabs defaultActiveKey='1' items={items} />
       </Modal>
       <ModalDepartmentManager
         visible={managerModalVisible}

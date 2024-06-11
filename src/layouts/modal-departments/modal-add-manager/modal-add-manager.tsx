@@ -33,7 +33,7 @@ export const ModalAddManager = ({
       managerId: mainManager,
     })
       .unwrap()
-      .then((value) => {
+      .then(() => {
         message.success("Manager Updated");
       })
       .catch(() => {
@@ -50,33 +50,32 @@ export const ModalAddManager = ({
   return (
     <>
       <Modal
-        title="Select Manager"
+        title='Select Manager'
         visible={visible}
-        onOk={()=>{
+        onOk={() => {
           handleUpdateManager();
           setSelectedManager(null);
-        }
-          }
+        }}
         onCancel={handleCancel}
         width={800}
-        className="modal-select-manager"
-        okText="Save"
+        className='modal-select-manager'
+        okText='Save'
       >
-        <div className="select-manager-wrapper">
-          <p className="decribe-select-manager">
+        <div className='select-manager-wrapper'>
+          <p className='decribe-select-manager'>
             Select manager for your department
           </p>
-          <div className="list-manager">
-            <Divider orientation="left" className="title-manager-list">
+          <div className='list-manager'>
+            <Divider orientation='left' className='title-manager-list'>
               List Manager
             </Divider>
             <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
               {data?.users
                 .filter((user) => user.UserProperty?.department_id === null)
                 .map((manager, index) => (
-                  <Col className="gutter-row" span={6} key={index}>
+                  <Col className='gutter-row' span={6} key={index}>
                     <div
-                      className="item-list-manager"
+                      className='item-list-manager'
                       onClick={() => {
                         setSelectedManager(
                           selectedManager === index ? null : index
@@ -84,23 +83,24 @@ export const ModalAddManager = ({
                         setMainManager(manager.user_id);
                       }}
                     >
-                      <div className="checkbox-select-staff">
+                      <div className='checkbox-select-staff'>
                         <Checkbox checked={selectedManager === index} />
                       </div>
-                      <div className="avatar-manager">
-                      <Avatar
+                      <div className='avatar-manager'>
+                        <Avatar
                           {...(!manager?.avatar && {
-                            style: { background: randAvaBg(), fontSize: "25px" },
+                            style: {
+                              background: randAvaBg(),
+                              fontSize: "25px",
+                            },
                           })}
                           size={50}
                         >
                           {!manager?.avatar &&
-                            manager?.username
-                              ?.substring(0, 1)
-                              .toUpperCase()}
+                            manager?.username?.substring(0, 1).toUpperCase()}
                         </Avatar>
                       </div>
-                      <div className="name-manager">{manager.name}</div>
+                      <div className='name-manager'>{manager.name}</div>
                     </div>
                   </Col>
                 ))}

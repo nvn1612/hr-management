@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Popconfirm,message} from "antd";
+import { Card, Popconfirm } from "antd";
 import {
   TeamOutlined,
   UserOutlined,
@@ -8,7 +8,6 @@ import {
 } from "@ant-design/icons";
 import "./card-departments.css";
 import { useDeleteDepartmentsMutation } from "src/share/services";
-
 
 type CardDepartmentssProps = {
   title?: string;
@@ -25,48 +24,50 @@ export const CardDepartmentss: React.FC<CardDepartmentssProps> = ({
   onClick,
   departmentId,
   staffCount,
-  role
+  role,
 }) => {
   const [deleteDepartment] = useDeleteDepartmentsMutation();
 
   const handleDeleteClick = async (event: React.MouseEvent<HTMLElement>) => {
     event.stopPropagation();
-    
   };
   const deleteDapartment = async () => {
-    await deleteDepartment({departmentId}).unwrap().then().catch()
-  }
-  
+    await deleteDepartment({ departmentId }).unwrap().then().catch();
+  };
+
   return (
     <>
       <Card
         title={
-          <span className="card-department-title">
-          {title}
-          {role !== "MANAGER" ? (
-            <div className="icon-delete-department" onClick={handleDeleteClick}>
-              <Popconfirm
-                title="Are you sure to delete this department?"
-                icon={<QuestionCircleOutlined style={{ color: "red" }} />}
-                onConfirm={deleteDapartment}
+          <span className='card-department-title'>
+            {title}
+            {role !== "MANAGER" ? (
+              <div
+                className='icon-delete-department'
+                onClick={handleDeleteClick}
               >
-                <DeleteOutlined />
-              </Popconfirm>
-            </div>
-          ) : (
-            ""
-          )}
-        </span>
+                <Popconfirm
+                  title='Are you sure to delete this department?'
+                  icon={<QuestionCircleOutlined style={{ color: "red" }} />}
+                  onConfirm={deleteDapartment}
+                >
+                  <DeleteOutlined />
+                </Popconfirm>
+              </div>
+            ) : (
+              ""
+            )}
+          </span>
         }
         bordered={false}
-        className="card-department"
+        className='card-department'
         onClick={onClick}
       >
-        <div className="departments-info">
-          <div className="manager-departments-info">
+        <div className='departments-info'>
+          <div className='manager-departments-info'>
             <UserOutlined /> <p>{manager}</p>
           </div>
-          <div className="staff-departments-info">
+          <div className='staff-departments-info'>
             <TeamOutlined />
             <p>{staffCount}</p>
           </div>

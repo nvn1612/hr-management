@@ -33,9 +33,12 @@ export const Projects = () => {
   );
   const { data: userDetail } = useGetUserDetailQuery();
   const { data: departmentProject, isFetching: departProjectFetch } =
-    useGetAllProjectDepartmentQuery({
-      departmentId: userDetail?.UserProperty?.department_id,
-    });
+    useGetAllProjectDepartmentQuery(
+      {
+        departmentId: userDetail?.UserProperty?.department_id,
+      },
+      { skip: role === OUserRole.Admin || role === OUserRole.ProjectManager }
+    );
   const [deleteProject] = useDeleteProjectMutation();
 
   const subRefetch = () => {
@@ -180,6 +183,7 @@ export const Projects = () => {
           !(role === OUserRole.Staff) && !isCreate
             ? [
                 <Popconfirm
+                  key={1}
                   title='Delete Project'
                   description='Are you sure to delete this Project?'
                   okText='Yes'
