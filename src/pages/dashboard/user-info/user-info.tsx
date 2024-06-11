@@ -65,7 +65,7 @@ export const UserInfo = () => {
           <Upload className='upload-sec' {...avaFileProps}>
             <Button icon={<CameraOutlined />}>Upload your avatar</Button>
           </Upload>
-          <h3>{data?.username}</h3>
+          <h3>{data?.name || ""}</h3>
           <h3>{role}</h3>
         </div>
         <UserInfoForm
