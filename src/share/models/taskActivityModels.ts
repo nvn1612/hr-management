@@ -5,7 +5,6 @@ export interface Task {
   createdBy: string;
   modifiedBy: string;
   createdAt: string;
-  TaskProperty: TaskProperty;
 }
 
 export interface TaskResp {
@@ -37,15 +36,4 @@ export interface ActivityResp {
   previousPage: number;
   currentPage: number;
   itemsPerPage: number;
-}
-
-export interface TaskProperty {
-  task_property_id?: string;
-  task_id?: string;
-  createdBy?: string;
-  modifiedBy?: string;
-  createdAt?: string;
-  updatedAt?: string;
-  deletedAt?: string;
-  deletedMark?: boolean;
 }

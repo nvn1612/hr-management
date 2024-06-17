@@ -30,13 +30,13 @@ export const ProjectTasks = ({ project }: ProjectTasksProp) => {
   >(undefined);
 
   const { data: taskList, isFetching: taskFetch } = useGetProjectTasksQuery({
-    projectPropertyId: project.ProjectProperty?.project_property_id,
+    projectPropertyId: project?.project_id,
     page,
     items_per_page: 5,
   });
   const { data: assigments, isFetching: assignmentFetch } =
     useGetAssignmentsQuery({
-      targetPropertyId: project.ProjectProperty!.project_property_id,
+      targetPropertyId: project!.project_id!,
       items_per_page: "ALL",
       target: "project",
     });
@@ -63,11 +63,9 @@ export const ProjectTasks = ({ project }: ProjectTasksProp) => {
             dataSource={taskList?.data}
             renderItem={(task) => {
               let matchedAssignment: Assignment | undefined;
-              if (task.TaskProperty.task_property_id) {
+              if (task.task_id) {
                 matchedAssignment = assigments?.assignments?.find(
-                  (assignment) =>
-                    task.TaskProperty.task_property_id ===
-                    assignment.task_property_id
+                  (assignment) => task.task_id === assignment.task_property_id
                 );
                 return (
                   <List.Item

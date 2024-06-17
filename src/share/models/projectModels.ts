@@ -6,23 +6,29 @@ export interface Project {
   name?: string;
   projectCode?: string;
   description?: string;
-  startAt?: string | Dayjs;
-  endAt?: string | Dayjs;
-  turnover?: string;
+  startAt?: string;
+  endAt?: string;
+  turnover?: boolean;
   document?: string[];
   investor?: string;
   createdBy?: string;
   modifiedBy?: string;
   createdAt?: string;
-  ProjectProperty?: ProjectProperty;
-  department_id?: string;
   project_manager_id?: string;
-  information?: {
-    total_user: number;
-    total_task: {
-      total_task_is_done: number;
-      total_task_is_not_done: number;
-    };
+  department_id?: string;
+  client_ownership?: {
+    client_id: string;
+    fullname: string;
+    email: string;
+    avatar: string;
+    address: string;
+    phone: string;
+    createdBy: string;
+    modifiedBy: string;
+    createdAt: string;
+    updatedAt: string;
+    deletedAt: string;
+    deletedMark: boolean;
   };
 }
 

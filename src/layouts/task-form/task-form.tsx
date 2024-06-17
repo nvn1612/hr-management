@@ -1,40 +1,50 @@
 import "./task-form.css";
+import "dayjs/locale/vi";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
 import {
   Form,
   Button,
   Input,
   DatePicker,
-  Checkbox,
-  List,
-  Upload,
   message,
   Typography,
   Spin,
   Select,
+  Avatar,
 } from "antd";
+import locale from "antd/es/date-picker/locale/vi_VN";
+import {
+  EditOutlined,
+  CalendarOutlined,
+  DownOutlined,
+  SaveOutlined,
+  DeleteOutlined,
+} from "@ant-design/icons";
 import dayjs, { Dayjs } from "dayjs";
 import { useEffect, useState } from "react";
-import { UploadOutlined } from "@ant-design/icons";
 import {
   useCreateTaskMutation,
   useCreateAssigmentMutation,
-  useGetTaskActivityQuery,
-  useCreateActivityMutation,
   useUpdateTaskMutation,
   useGetDepartmentStaffsQuery,
   useUpdateAssignmentMutation,
-  useGetTaskFileMutation,
   useGetUsersQuery,
 } from "src/share/services";
-
 import {
   type Task,
   type Assignment,
   type Project,
   OUserRole,
 } from "src/share/models";
-import type { FormProps, UploadProps } from "antd";
-import { localStorageUtil } from "src/share/utils";
+import { useRoleChecker } from "src/share/hooks";
+import { TaskWorkspace } from "./task-workspace";
+
+import type { FormProps } from "antd";
+
+dayjs.extend(timezone);
+dayjs.extend(utc);
+dayjs.locale("vi-VN");
 
 interface TaskFormFields {
   description: string;
@@ -51,57 +61,36 @@ interface TaskFormProps {
   project: Project;
 }
 
-const role = localStorageUtil.get("role")!;
-const isStaff = role === OUserRole.Staff;
-
+const { Title } = Typography;
 export const TaskForm = ({
   assignment,
   action,
   project,
   task,
 }: TaskFormProps) => {
+  const checkRole = useRoleChecker();
+  const [editDesc, setEditDesc] = useState<boolean>(false);
+
   const [form] = Form.useForm();
+  const taskDesc = Form.useWatch("description", form);
+  const taskDeadline = Form.useWatch("deadline", form);
+  const taskAssginedUser = Form.useWatch("assignedStaff", form);
 
   const [createAssignment, { isLoading: creAssignLoad }] =
     useCreateAssigmentMutation();
   const [createTask, { isLoading: creTaskLoad }] = useCreateTaskMutation();
-  const [createActivity, { isLoading: creActiLoad }] =
-    useCreateActivityMutation();
   const [updateTask, { isLoading: updTaskLoad }] = useUpdateTaskMutation();
   const [updateAssignment, { isLoading: updAssignLoad }] =
     useUpdateAssignmentMutation();
-  const { data: actitvityData, isFetching: actiFetch } =
-    useGetTaskActivityQuery({
-      taskPropertyId: task?.TaskProperty.task_property_id,
-      items_per_page: "ALL",
-    });
   const { data: departmentStaff } = useGetDepartmentStaffsQuery({
     itemsPerPage: "ALL",
-    departmentId: project.ProjectProperty?.department_id,
+    departmentId: project?.department_id,
   });
   const { data: users } = useGetUsersQuery({
     items_per_page: "ALL",
     page: 1,
     role: "STAFF",
   });
-  const [getFile] = useGetTaskFileMutation();
-  const [fileLinks, setFileLinks] = useState<string[]>([]);
-  const { Text } = Typography;
-  const baseApi = import.meta.env.VITE_REQUEST_API_URL;
-
-  const uploadProps: UploadProps = {
-    action: `${baseApi}tasks/upload-file-from-local/${task?.task_id}`,
-    headers: {
-      authorization: localStorageUtil.get("accessToken")!,
-    },
-    onChange(info) {
-      if (info.file.status === "done") {
-        message.success(`file uploaded successfully`);
-      } else if (info.file.status === "error") {
-        message.error(`file too large or bad internet`);
-      }
-    },
-  };
 
   const onFinish: FormProps<TaskFormFields>["onFinish"] = async (values) => {
     if (values.deadline) {
@@ -114,7 +103,7 @@ export const TaskForm = ({
         }).unwrap();
         await createAssignment({
           ...{
-            project_property_id: project.ProjectProperty?.project_property_id,
+            project_id: project?.project_id,
             task_property_id: newTask.task_property.task_property_id,
             user_property_id: values.assignedStaff,
           },
@@ -149,17 +138,6 @@ export const TaskForm = ({
     }
   };
 
-  const getLinks = () => {
-    setFileLinks([]);
-    return task?.document?.map((filename) =>
-      getFile({ filename })
-        .unwrap()
-        .then((link) => {
-          setFileLinks([...fileLinks, link]);
-        })
-    );
-  };
-
   useEffect(() => {
     if (task && assignment) {
       form.setFieldsValue({
@@ -176,127 +154,144 @@ export const TaskForm = ({
         assignedStaff: "",
       });
     }
-    if (task) {
-      getLinks();
-    }
-  }, [assignment, project, task, actitvityData, action]);
+  }, [assignment, project, task, action]);
 
   return (
     <div className='task-form-container'>
       <Spin
-        spinning={
-          creAssignLoad ||
-          creTaskLoad ||
-          creActiLoad ||
-          updTaskLoad ||
-          updAssignLoad ||
-          actiFetch
-        }
+        spinning={creAssignLoad || creTaskLoad || updTaskLoad || updAssignLoad}
       >
         <Form
           form={form}
           name='task-form'
           onFinish={onFinish}
-          labelCol={{ span: 4 }}
-          wrapperCol={{ span: 16 }}
           className='task-form'
+          disabled={checkRole(OUserRole.Staff)}
         >
-          <Form.Item<TaskFormFields> label='Description' name={"description"}>
-            <Input.TextArea disabled={isStaff} />
-          </Form.Item>
-          {!isStaff && (
-            <Form.Item name={"assignedStaff"} label='Assigned'>
-              <Select
-                options={
-                  project.department_id
-                    ? departmentStaff?.users.map((staff) => {
-                        return {
-                          label: <Text>{staff.username}</Text>,
-                          value: staff.UserProperty?.user_property_id,
-                        };
-                      })
-                    : users?.users.map((staff) => {
-                        return {
-                          label: <Text>{staff.username}</Text>,
-                          value: staff.UserProperty?.user_property_id,
-                        };
-                      })
-                }
-              />
-            </Form.Item>
-          )}
-
-          {action === "update" && (
-            <>
-              <Form.Item<TaskFormFields> label='Deadline' name={"deadline"}>
-                <DatePicker disabled={isStaff} />
-              </Form.Item>
-              <Form.Item<TaskFormFields>
-                label='Completed'
-                name={"status"}
-                valuePropName='checked'
-              >
-                <Checkbox disabled={isStaff} />
-              </Form.Item>
-            </>
-          )}
-          {!isStaff && (
-            <Form.Item wrapperCol={{ offset: 4 }}>
-              <Button type='primary' htmlType='submit'>
-                {action === "update" ? "Save Changes" : "Create"}
-              </Button>
-            </Form.Item>
-          )}
-          {action === "update" && (
-            <>
-              <Form.Item label='Documents'>
-                <List
-                  dataSource={
-                    task !== undefined && task.document!.length >= 1
-                      ? fileLinks
-                      : []
-                  }
-                  renderItem={(link) => {
-                    return (
-                      <List.Item>
-                        <a href={link}>{link}</a>
-                      </List.Item>
-                    );
+          <div className='task-detail-content'>
+            <div className='main-sec'>
+              <div className='task-desc'>
+                <Form.Item<TaskFormFields>
+                  name='description'
+                  className='task-desc-input'
+                >
+                  <Input
+                    style={{
+                      display: editDesc ? "block" : "none",
+                    }}
+                    onPressEnter={(e) => {
+                      e.preventDefault();
+                      setEditDesc(false);
+                    }}
+                  />
+                </Form.Item>
+                <Title
+                  className='task-desc-displayer'
+                  style={{
+                    display: editDesc ? "none" : "flex",
                   }}
-                />
-                {!isStaff && (
-                  <Upload {...uploadProps}>
-                    <Button icon={<UploadOutlined />}>
-                      Upload new Document
-                    </Button>
-                  </Upload>
-                )}
-              </Form.Item>
-              <Form.Item label='Activities'>
-                <List
-                  dataSource={actitvityData ? actitvityData : []}
-                  renderItem={(activity) => (
-                    <List.Item>
-                      <Text>{activity.description}</Text>
-                    </List.Item>
-                  )}
-                />
-                <Input
-                  placeholder='New activity'
-                  onPressEnter={async (e) => {
-                    e.preventDefault();
-                    createActivity({
-                      description: (e.target as HTMLInputElement).value,
-                      task_property_id: task?.TaskProperty.task_property_id,
-                    })
-                      .unwrap()
-                      .then(() => message.success("New task is created"))
-                      .catch(() => message.error("Failed to create task"));
+                  level={4}
+                  onClick={() => {
+                    if (!checkRole(OUserRole.Staff)) {
+                      setEditDesc(true);
+                    }
                   }}
-                />
-              </Form.Item>
-            </>
-          )}
+                >
+                  {taskDesc}
+                  <EditOutlined style={{ fontSize: "15px" }} />
+                </Title>
+              </div>
+              <TaskWorkspace task={task!} />
+            </div>
+            <div className='side-sec'>
+              <div className='task-date-picker'>
+                <Form.Item<TaskFormFields>
+                  name={"deadline"}
+                  className='task-update-date'
+                >
+                  <DatePicker
+                    className='task-datepicker'
+                    inputReadOnly
+                    suffixIcon={""}
+                    style={{
+                      width: "250px",
+                      height: "70px",
+                    }}
+                    size='large'
+                    locale={locale}
+                  />
+                </Form.Item>
+                <div
+                  className='task-update-date-displayer'
+                  style={{ width: "250px", height: "70px" }}
+                >
+                  <CalendarOutlined
+                    style={{ fontSize: "20px", marginRight: "5px" }}
+                  />
+                  <span>
+                    {taskDeadline
+                      ? (taskDeadline as Dayjs).tz("Asia/Bangkok").toString()
+                      : "Select deadline"}
+                    <DownOutlined
+                      style={{ fontSize: "15px", marginLeft: "5px" }}
+                    />
+                  </span>
+                </div>
+              </div>
+              <div className='task-date-picker'>
+                <Form.Item<TaskFormFields>
+                  name={"deadline"}
+                  className='task-update-date'
+                >
+                  <Select
+                    style={{
+                      width: "250px",
+                      height: "70px",
+                    }}
+                    options={
+                      assignment
+                        ? departmentStaff?.users.map((staff) => {
+                            return {
+                              label: staff.username,
+                              value: staff.user_id,
+                            };
+                          })
+                        : users?.users.map((staff) => {
+                            return {
+                              label: staff.username,
+                              value: staff.user_id,
+                            };
+                          })
+                    }
+                  />
+                </Form.Item>
+                <div
+                  className='task-update-date-displayer'
+                  style={{ width: "250px", height: "70px" }}
+                >
+                  <Avatar style={{ fontSize: "20px", marginRight: "5px" }} />
+                  {(taskAssginedUser as string)
+                    ? departmentStaff?.users.find(
+                        (staff) => staff.user_id === taskAssginedUser
+                      )?.username
+                    : "Unassgined"}
+                  <DownOutlined
+                    style={{ fontSize: "15px", marginLeft: "5px" }}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className='task-update-form-btns'>
+            <Button type='primary' htmlType='submit'>
+              <SaveOutlined />
+              Save
+            </Button>
+            <Button type='primary' htmlType='submit' danger>
+              <DeleteOutlined />
+              Delete
+            </Button>
+          </div>
         </Form>
       </Spin>
     </div>

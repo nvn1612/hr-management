@@ -1,18 +1,73 @@
 @import url(src/index.css);
 
-.task-form-container {
-  min-width: 95%;
-  max-height: 60dvh;
-  overflow-y: auto;
-  padding: var(--padding-m);
-  .task-form {
-    width: 100%;
-  }
-}
-.task-user-selector-item {
+.task-form {
   display: flex;
-  flex-direction: row;
-  justify-content: start;
-  align-items: center;
-  gap: var(--gap-s);
+  flex-direction: column;
+  gap: var(--gap-l);
+  .task-detail-content {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    .main-sec {
+      display: flex;
+      flex-direction: column;
+      justify-content: start;
+      align-items: flex-start;
+      gap: var(--gap-xl);
+      padding-top: var(--padding-m);
+      width: 500px;
+      .task-desc {
+        width: 1005;
+        height: 30px;
+        .task-desc-input {
+          position: absolute;
+        }
+        .task-desc-displayer {
+          position: absolute;
+          display: flex;
+          justify-content: flex-start;
+          align-items: center;
+          gap: var(--gap-s);
+          cursor: pointer;
+          transition-duration: 300ms;
+          &:hover {
+            background-color: var(--gray-color);
+          }
+        }
+      }
+    }
+    .side-sec {
+      display: flex;
+      flex-direction: column;
+      justify-content: start;
+      align-items: flex-start;
+      .task-date-picker {
+        width: 250px;
+        height: 70px;
+        border-radius: var(--rounded-border);
+        cursor: pointer;
+        transition-duration: 300ms;
+        &:hover {
+          background: var(--gray-color);
+        }
+        .task-update-date {
+          position: absolute;
+          z-index: 1;
+          opacity: 0;
+        }
+      }
+      .task-update-date-displayer {
+        padding: var(--padding-s);
+        cursor: pointer;
+        position: absolute;
+        word-break: break-all;
+      }
+    }
+  }
+  .task-update-form-btns {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: var(--gap-s);
+  }
 }

@@ -38,6 +38,7 @@ export const CardDepartmentss: React.FC<CardDepartmentssProps> = ({
   return (
     <>
       <Card
+        hoverable
         title={
           <span className='card-department-title'>
             {title}

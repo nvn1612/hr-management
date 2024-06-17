@@ -1,7 +1,7 @@
-import { useGetUserDetailQuery } from "src/share/services/";
 import { UserRole } from "../models";
+import { localStorageUtil } from "src/share/utils";
 
 export const useRoleChecker = () => {
-  const { data } = useGetUserDetailQuery();
-  return (role: UserRole) => data?.UserProperty?.role?.name === role;
+  const localRole = localStorageUtil.get("role");
+  return (role: UserRole) => localRole === role;
 };

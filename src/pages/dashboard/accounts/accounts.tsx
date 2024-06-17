@@ -7,6 +7,7 @@ import { MngPageHeader } from "src/layouts/mng-page-header";
 import { useGetUsersQuery } from "src/share/services";
 import { filterRoleOptions } from "src/share/utils";
 import { OUserRole } from "src/share/models";
+import { useRoleChecker } from "src/share/hooks";
 
 import type { PaginationProps } from "antd";
 import type { User, UserRole } from "src/share/models";
@@ -16,6 +17,7 @@ export const Accounts = () => {
   const [openAccTab, setOpenAccTab] = useState<boolean>(false);
   const [selectedAcc, setSelectedAcc] = useState<User | undefined>(undefined);
   const [formAction, setFormAction] = useState<"create" | "update">("create");
+  const checkRole = useRoleChecker();
   const [queries, setQueries] = useState<{
     role: UserRole;
     page: number | undefined;
@@ -43,7 +45,9 @@ export const Accounts = () => {
     setQueries({ ...queries, page });
   };
 
-  const { data, isLoading } = useGetUsersQuery(queries);
+  const { data, isLoading } = useGetUsersQuery(queries, {
+    skip: !checkRole("ADMIN"),
+  });
 
   const subRefetch = () => {
     if (selectedAcc) {

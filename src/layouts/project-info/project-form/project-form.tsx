@@ -18,6 +18,7 @@ import {
   useGetUsersQuery,
 } from "src/share/services";
 import dayjs, { Dayjs } from "dayjs";
+import { useRoleChecker } from "src/share/hooks";
 
 import { OUserRole, type Project } from "src/share/models";
 import type { FormProps } from "antd";
@@ -35,15 +36,22 @@ export const ProjectForm = ({
 }: ProjectFormProps) => {
   const [form] = Form.useForm();
   const [editableForm, setEditableForm] = useState<boolean>(false);
+  const checkRole = useRoleChecker();
   const [createProject] = useCreateProjectMutation();
   const [updateProject] = useUpdateProjectMutation();
-  const { data: pms } = useGetUsersQuery({
-    role: "PROJECT_MANAGER",
-    items_per_page: "ALL",
-  });
-  const { data: departmentData } = useGetDepartmentsQuery({
-    itemsPerPage: "ALL",
-  });
+  const { data: pms } = useGetUsersQuery(
+    {
+      role: "PROJECT_MANAGER",
+      items_per_page: "ALL",
+    },
+    { skip: !checkRole(OUserRole.Admin) }
+  );
+  const { data: departmentData } = useGetDepartmentsQuery(
+    {
+      itemsPerPage: "ALL",
+    },
+    { skip: !checkRole(OUserRole.Admin) }
+  );
   const { data: userDetail } = useGetUserDetailQuery();
 
   const [messageApi, contextHolder] = message.useMessage();

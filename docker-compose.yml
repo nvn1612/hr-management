@@ -3,8 +3,8 @@ services:
     build:
       dockerfile: Dockerfile
     platform: linux/amd64
-    image: nambndpx000/projectmanagementwebui
+    image: chicong42/projectmanagementwebui
     ports:
       - "3000:3000"
     environment:
-      - VITE_REQUEST_API_URL=http://10.100.1.153:3050/
+      - VITE_REQUEST_API_URL=http://localhost:3050/

@@ -8,6 +8,9 @@ import { useGetDepartmentStaffsQuery } from "src/share/services";
 import { useDeleteStaffDepartmentMutation } from "src/share/services";
 import { useManagerGetAllStaffDepartmentQuery } from "src/share/services";
 
+import { useRoleChecker } from "src/share/hooks";
+import { OUserRole } from "src/share/models";
+
 type ModalDepartmentListStaffProps = {
   visible: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
@@ -29,16 +32,21 @@ export const ModalListStaffDepartment = ({
     {}
   );
 
+  const checkrole = useRoleChecker();
+
   const showModalAddStaff = () => {
     setVisibleAddStaff(true);
   };
 
-  const { data, isFetching, refetch } = useGetDepartmentStaffsQuery({
-    departmentId:
-      role === "MANAGER"
-        ? detailDepartment?.department_id
-        : department?.department_id,
-  });
+  const { data, isFetching, refetch } = useGetDepartmentStaffsQuery(
+    {
+      departmentId:
+        role === "MANAGER"
+          ? detailDepartment?.department_id
+          : department?.department_id,
+    },
+    { skip: checkrole(OUserRole.Staff) }
+  );
 
   const { data: dataStaff } = useManagerGetAllStaffDepartmentQuery({
     departmentId: detailDepartment?.department_id,

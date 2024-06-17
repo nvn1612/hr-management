@@ -37,15 +37,15 @@ export const CardDepartments = () => {
   const { data: userDetail } = useGetUserDetailQuery();
   const checkRole = useRoleChecker();
   const { data, isFetching } = useGetDepartmentsQuery(queries, {
-    skip: !checkRole(OUserRole.Admin) && !checkRole(OUserRole.ProjectManager),
+    skip: checkRole(OUserRole.Staff) || checkRole(OUserRole.Manager),
   });
 
   const { data: departmentDetail } = useGetDetailDepartmentQuery(
     {
-      departmentId: userDetail?.UserProperty?.department_id,
+      departmentId: userDetail?.department_id,
     },
     {
-      skip: !checkRole(OUserRole.Admin) || !checkRole(OUserRole.ProjectManager),
+      skip: checkRole(OUserRole.Admin) || checkRole(OUserRole.ProjectManager),
     }
   );
 
@@ -57,7 +57,7 @@ export const CardDepartments = () => {
   };
 
   const subRefetch = () => {
-    if (userDetail?.UserProperty?.role?.name === OUserRole.Admin) {
+    if (userDetail?.role?.name === OUserRole.Admin) {
       setMainDepartment((oldState) => {
         return data?.departments?.find(
           (newState) => newState.department_id === oldState?.department_id
@@ -84,28 +84,24 @@ export const CardDepartments = () => {
           title='Departments'
           addBtnContent='Create Department'
           addBtnOnClick={
-            userDetail?.UserProperty?.role?.name === "MANAGER"
-              ? info
-              : showAddDepartment
+            userDetail?.role?.name === "MANAGER" ? info : showAddDepartment
           }
-          itemCount={
-            userDetail?.UserProperty?.role?.name === "MANAGER" ? 1 : data?.total
-          }
+          itemCount={userDetail?.role?.name === "MANAGER" ? 1 : data?.total}
           filters={[]}
         />
         <div className='department-card-container'>
-          {userDetail?.UserProperty?.role?.name === "MANAGER" ? (
+          {userDetail?.role?.name === "MANAGER" ? (
             <CardDepartmentss
               onClick={() => {
                 setVisible(true);
                 setDetailDepartment(departmentDetail);
               }}
-              role={userDetail?.UserProperty?.role?.name}
+              role={userDetail?.role?.name}
               title={departmentDetail?.name}
               manager={departmentDetail?.information?.[0]?.manager?.name}
               staffCount={departmentDetail?.information?.[0]?.total_staff}
             />
-          ) : userDetail?.UserProperty?.role?.name === "ADMIN" ? (
+          ) : userDetail?.role?.name === "ADMIN" ? (
             <List
               grid={{
                 gutter: 16,
@@ -158,7 +154,7 @@ export const CardDepartments = () => {
         department={mainDepartment}
         closeModal={closeModal}
         departmentDetail={detailDepartment}
-        role={userDetail?.UserProperty?.role?.name}
+        role={userDetail?.role?.name}
       />
       <ModalAddDepartment
         visible={visibleAddDepartment}

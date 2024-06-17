@@ -16,10 +16,11 @@ import { useManagerGetStaffNoDepartmentQuery } from "src/share/services";
 import { useGetUsersQuery } from "src/share/services";
 import { useCreateUserMutation } from "src/share/services";
 import { useAddStaffDepartmentMutation } from "src/share/services";
-import { User } from "src/share/models/accountModels";
+import { OUserRole, User } from "src/share/models/accountModels";
 import { Department, Department2 } from "src/share/models";
 import "./modal-add-staffs-departments.css";
 import { randAvaBg } from "src/share/utils";
+import { useRoleChecker } from "src/share/hooks";
 
 type ModalAddStaffsDepartmentProps = {
   visible: boolean;
@@ -46,6 +47,8 @@ export const ModalAddStaffsDepartment = ({
   const [email, setEmail] = useState("");
   const [checkedItems, setCheckedItems] = useState<boolean[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const checkRole = useRoleChecker();
+
   const itemsPerPage = 6;
 
   const onChange = (e: RadioChangeEvent) => {
@@ -67,10 +70,13 @@ export const ModalAddStaffsDepartment = ({
     });
   };
 
-  const { data: staffData } = useGetUsersQuery({
-    role: "STAFF",
-    search: searchValue,
-  });
+  const { data: staffData } = useGetUsersQuery(
+    {
+      role: "STAFF",
+      search: searchValue,
+    },
+    { skip: checkRole(OUserRole.Admin) }
+  );
   const { data: staffNoDepartmentData } = useManagerGetStaffNoDepartmentQuery({
     search: searchValue,
   });
@@ -172,9 +178,7 @@ export const ModalAddStaffsDepartment = ({
                 <VirtualList
                   data={
                     staffData?.users
-                      .filter(
-                        (user) => user.UserProperty?.department_id === null
-                      )
+                      .filter((user) => user?.department_id === null)
                       .slice(
                         (currentPage - 1) * itemsPerPage,
                         currentPage * itemsPerPage
@@ -213,9 +217,7 @@ export const ModalAddStaffsDepartment = ({
                 <VirtualList
                   data={
                     staffNoDepartmentData?.users
-                      .filter(
-                        (user) => user.UserProperty?.department_id === null
-                      )
+                      .filter((user) => user?.department_id === null)
                       .slice(
                         (currentPage - 1) * itemsPerPage,
                         currentPage * itemsPerPage

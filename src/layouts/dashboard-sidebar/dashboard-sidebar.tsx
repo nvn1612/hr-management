@@ -12,8 +12,10 @@ import {
 import { localStorageUtil } from "src/share/utils";
 import { useDispatch } from "react-redux";
 import { hrManagementApi } from "src/share/services";
+import { useRoleChecker } from "src/share/hooks";
 
 import { Layout, Menu } from "antd";
+import { OUserRole } from "src/share/models";
 const { Sider } = Layout;
 
 const menuItems = [
@@ -42,20 +44,57 @@ const menuItems = [
   },
 ];
 
-const authorizedMenuItem = () => {
-  return menuItems.filter((item) => {
-    return (
-      item.label !== "Accounts" ||
-      (localStorageUtil.get("role") === "ADMIN" && item.label === "Accounts")
-    );
-  });
-};
+const menuItems2 = [
+  {
+    key: "1",
+    icon: <ApartmentOutlined />,
+    label: "Departments ",
+    url: "departments",
+  },
+  {
+    key: "2",
+    icon: <ProjectOutlined />,
+    label: " Projects",
+    url: "projects",
+  },
+  {
+    key: "3",
+    icon: <LogoutOutlined />,
+    label: "Log Out",
+  },
+];
+const menuItems3 = [
+  {
+    key: "1",
+    icon: <ProjectOutlined />,
+    label: " Projects",
+    url: "projects",
+  },
+  {
+    key: "2",
+    icon: <LogoutOutlined />,
+    label: "Log Out",
+  },
+];
 
 const Dashboardsidebar: React.FC = () => {
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const [selectItem, setSelectItem] = useState<string>("0");
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const checkRole = useRoleChecker();
+
+  const authorizedMenuItem = () => {
+    if (checkRole(OUserRole.Admin)) {
+      return menuItems;
+    } else if (
+      checkRole(OUserRole.Manager) ||
+      checkRole(OUserRole.ProjectManager)
+    ) {
+      return menuItems2;
+    }
+    return menuItems3;
+  };
 
   const logout = (): void => {
     localStorageUtil.delete("accessToken");
@@ -66,19 +105,42 @@ const Dashboardsidebar: React.FC = () => {
 
   const setDefaultItem = () => {
     const currPath = window.location.pathname.replace("/dashboard/", "");
-    const isAdmin = localStorageUtil.get("role") === "ADMIN";
-    switch (currPath) {
-      case "accounts":
-        setSelectItem("1");
-        break;
-      case "departments":
-        setSelectItem(isAdmin ? "2" : "1");
-        break;
-      case "projects":
-        setSelectItem(isAdmin ? "3" : "2");
-        break;
-      default:
-        setSelectItem("0");
+    if (checkRole(OUserRole.Admin)) {
+      switch (currPath) {
+        case "accounts":
+          setSelectItem("1");
+          break;
+        case "departments":
+          setSelectItem("2");
+          break;
+        case "projects":
+          setSelectItem("3");
+          break;
+        default:
+          setSelectItem("0");
+      }
+    } else if (
+      checkRole(OUserRole.Manager) ||
+      checkRole(OUserRole.ProjectManager)
+    ) {
+      switch (currPath) {
+        case "departments":
+          setSelectItem("1");
+          break;
+        case "projects":
+          setSelectItem("2");
+          break;
+        default:
+          setSelectItem("0");
+      }
+    } else if (checkRole(OUserRole.Staff)) {
+      switch (currPath) {
+        case "projects":
+          setSelectItem("1");
+          break;
+        default:
+          setSelectItem("0");
+      }
     }
   };
 

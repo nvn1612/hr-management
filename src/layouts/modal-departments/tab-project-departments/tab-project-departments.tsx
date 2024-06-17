@@ -1,9 +1,7 @@
 import { useState } from "react";
-import { Button, Modal, Popconfirm, Spin, Tabs, message } from "antd";
-import {
-  useGetAllProjectDepartmentQuery,
-  useDeleteProjectMutation,
-} from "src/share/services";
+import { Button, Spin, Tabs } from "antd";
+import { useGetAllProjectDepartmentQuery } from "src/share/services";
+import { ArrowLeftOutlined } from "@ant-design/icons";
 import { ProjectCard } from "src/components/project-card";
 import { ProjectWorkspace } from "src/layouts/project-workspace";
 import { ProjectInfo } from "src/layouts/project-info";
@@ -47,60 +45,37 @@ export const TabProjectDepartment = ({
   const { data: projectData, isFetching } = useGetAllProjectDepartmentQuery({
     departmentId: department_id,
   });
-  const [deleteProject] = useDeleteProjectMutation();
+
   return (
     <>
-      <Spin spinning={isFetching}>
-        <div className='projects-tab-content'>
-          {projectData?.data.map((project: Project, index) => (
-            <div className='project-card-department' key={index}>
-              <ProjectCard
-                key={project.project_id}
-                onClick={() => {
-                  setOpenProjectTab(true);
-                  setSelectedProject(project);
-                }}
-                projectName={project.name}
-                description={project.description}
-                information={project.information}
-              />
-            </div>
-          ))}
-        </div>
-      </Spin>
-      <Modal
-        title={"Project Details"}
-        className='project-detail-modal'
-        open={openProjectTab}
-        onCancel={() => {
-          setOpenProjectTab(false);
-        }}
-        footer={[
-          <Popconfirm
-            title='Delete Project'
-            description='Are you sure to delete this Project?'
-            okText='Yes'
-            onConfirm={async () => {
-              await deleteProject(selectedProject!.project_id!)
-                .unwrap()
-                .then(() => {
-                  message.success("Project deleted");
-                  setOpenProjectTab(false);
-                })
-                .catch(() => {
-                  message.error("Failed to delete project");
-                });
-            }}
-            cancelText='No'
-          >
-            <Button type='primary' danger>
-              Delete Project
-            </Button>
-          </Popconfirm>,
-        ]}
-      >
-        <Tabs items={tabsProps} className='project-tabs' />
-      </Modal>
+      {openProjectTab ? (
+        <>
+          <Button onClick={() => setOpenProjectTab(false)}>
+            <ArrowLeftOutlined />
+            Back to project list
+          </Button>
+          <Tabs items={tabsProps} className='project-tabs' />
+        </>
+      ) : (
+        <Spin spinning={isFetching}>
+          <div className='projects-tab-content'>
+            {projectData?.data.map((project: Project, index) => (
+              <div className='project-card-department' key={index}>
+                <ProjectCard
+                  key={project.project_id}
+                  onClick={() => {
+                    setOpenProjectTab(true);
+                    setSelectedProject(project);
+                  }}
+                  projectName={project.name}
+                  description={project.description}
+                  information={project.information}
+                />
+              </div>
+            ))}
+          </div>
+        </Spin>
+      )}
     </>
   );
 };

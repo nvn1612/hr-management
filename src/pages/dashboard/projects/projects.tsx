@@ -12,6 +12,7 @@ import {
   useGetUserDetailQuery,
   useGetAllProjectDepartmentQuery,
 } from "src/share/services";
+import { useRoleChecker } from "src/share/hooks";
 
 import type { TabsProps, PaginationProps } from "antd";
 import { OUserRole, type Project } from "src/share/models";
@@ -26,18 +27,22 @@ export const Projects = () => {
     page: number;
   }>({ page: 1 });
   const [messageApi, contextHolder] = message.useMessage();
+  const checkRole = useRoleChecker();
 
   const { data: allProject, isFetching } = useGetAllProjectQuery(
     { ...queries },
-    { skip: role !== OUserRole.Admin }
+    { skip: !checkRole(OUserRole.Admin) }
   );
   const { data: userDetail } = useGetUserDetailQuery();
   const { data: departmentProject, isFetching: departProjectFetch } =
     useGetAllProjectDepartmentQuery(
       {
-        departmentId: userDetail?.UserProperty?.department_id,
+        departmentId: userDetail?.department_id,
       },
-      { skip: role === OUserRole.Admin || role === OUserRole.ProjectManager }
+      {
+        skip:
+          !checkRole(OUserRole.Admin) || !checkRole(OUserRole.ProjectManager),
+      }
     );
   const [deleteProject] = useDeleteProjectMutation();
 

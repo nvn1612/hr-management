@@ -172,19 +172,18 @@ export const UserInfoForm = ({
           >
             <Input />
           </Form.Item>
-          {action !== "create" && (
-            <>
-              <Form.Item<UserInfoType> label='Name' name='name'>
-                <Input />
-              </Form.Item>
-              <Form.Item<UserInfoType> label='Phone' name='phone'>
-                <Input />
-              </Form.Item>
-              <Form.Item<UserInfoType> label='Birth Day' name={"birthday"}>
-                <DatePicker />
-              </Form.Item>
-            </>
-          )}
+
+          <>
+            <Form.Item<UserInfoType> label='Name' name='name'>
+              <Input />
+            </Form.Item>
+            <Form.Item<UserInfoType> label='Phone' name='phone'>
+              <Input />
+            </Form.Item>
+            <Form.Item<UserInfoType> label='Birth Day' name={"birthday"}>
+              <DatePicker />
+            </Form.Item>
+          </>
           {!initValues && (
             <Form.Item<UserInfoType>
               label='Role'
