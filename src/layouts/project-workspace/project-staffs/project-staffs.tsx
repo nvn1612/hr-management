@@ -19,13 +19,13 @@ export const ProjectStaffs = ({ project }: ProjectStaffsProps) => {
 
   const { data: projectStaffs, isFetching: projectStaffFetch } =
     useGetProjectStaffsQuery({
-      projectPropertyId: project?.ProjectProperty?.project_property_id,
+      projectId: project?.project_id,
       page,
       items_per_page: 5,
     });
 
   const departmentStaffs = useGetDepartmentStaffsQuery({
-    departmentId: project?.ProjectProperty!.department_id,
+    departmentId: project?.department_id,
   });
 
   return (

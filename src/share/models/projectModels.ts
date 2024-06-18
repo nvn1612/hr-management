@@ -62,15 +62,15 @@ export interface Client {
 
 export interface Assignment {
   assignment_id?: string;
-  user_property_id?: string;
-  project_property_id?: string;
-  task_property_id?: string;
+  user_id?: string;
+  project_id?: string;
+  task_id?: string;
   startAt?: string | Dayjs;
   endAt?: string | Dayjs;
   status?: boolean;
   createdBy?: string;
-  createdAt?: string;
-  task_information?: Task[];
+  createdAt?: string | Dayjs;
+  task_information?: Task;
   user_information?: {
     user_id?: string;
     username?: string;

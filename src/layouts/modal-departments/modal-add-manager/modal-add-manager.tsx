@@ -71,7 +71,7 @@ export const ModalAddManager = ({
             </Divider>
             <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
               {data?.users
-                .filter((user) => user.UserProperty?.department_id === null)
+                .filter((user) => user?.department_id === null)
                 .map((manager, index) => (
                   <Col className='gutter-row' span={6} key={index}>
                     <div

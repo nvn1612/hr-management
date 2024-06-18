@@ -1,10 +1,8 @@
 import "./project-tasks.css";
 import { useState } from "react";
-import { Modal, Button, Popconfirm, List, Spin, message } from "antd";
+import { Modal, Button, List, Spin } from "antd";
 import { TaskForm } from "src/layouts";
 import {
-  useDeleteAssignmentMutation,
-  useDeleteTaskMutation,
   useGetProjectTasksQuery,
   useGetAssignmentsQuery,
 } from "src/share/services";
@@ -30,19 +28,16 @@ export const ProjectTasks = ({ project }: ProjectTasksProp) => {
   >(undefined);
 
   const { data: taskList, isFetching: taskFetch } = useGetProjectTasksQuery({
-    projectPropertyId: project?.project_id,
+    projectId: project?.project_id,
     page,
     items_per_page: 5,
   });
   const { data: assigments, isFetching: assignmentFetch } =
     useGetAssignmentsQuery({
-      targetPropertyId: project!.project_id!,
+      targetId: project!.project_id!,
       items_per_page: "ALL",
       target: "project",
     });
-
-  const [deleteAssignment] = useDeleteAssignmentMutation();
-  const [deleteTask] = useDeleteTaskMutation();
 
   return (
     <div className='task-section'>
@@ -65,7 +60,7 @@ export const ProjectTasks = ({ project }: ProjectTasksProp) => {
               let matchedAssignment: Assignment | undefined;
               if (task.task_id) {
                 matchedAssignment = assigments?.assignments?.find(
-                  (assignment) => task.task_id === assignment.task_property_id
+                  (assignment) => task.task_id === assignment.task_id
                 );
                 return (
                   <List.Item
@@ -109,35 +104,15 @@ export const ProjectTasks = ({ project }: ProjectTasksProp) => {
         )}
       </div>
       <Modal
-        title={formAction === "update" ? "Task Details" : "Create Task"}
+        title={
+          <Button type='primary' onClick={() => {}}>
+            Complete
+          </Button>
+        }
         open={showTaskForm}
         onCancel={() => setShowTaskForm(false)}
         onOk={() => setShowTaskForm(false)}
-        footer={[
-          formAction === "update" && (
-            <Popconfirm
-              title='Delete Task'
-              description='Are you sure to delete this task ?'
-              okText='Yes'
-              cancelText='No'
-              onConfirm={async () => {
-                try {
-                  await deleteAssignment({
-                    assigmentId: selectedAssignment?.assignment_id,
-                  }).unwrap();
-                  await deleteTask({ taskId: selectedTask?.task_id });
-                  message.success("Deleted task");
-                } catch {
-                  message.error("Failed to delete task");
-                }
-              }}
-            >
-              <Button type='primary' danger>
-                Delete task
-              </Button>
-            </Popconfirm>
-          ),
-        ]}
+        footer={[]}
         className='task-modal'
       >
         <TaskForm

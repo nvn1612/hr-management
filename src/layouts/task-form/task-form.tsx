@@ -12,6 +12,7 @@ import {
   Spin,
   Select,
   Avatar,
+  Popconfirm,
 } from "antd";
 import locale from "antd/es/date-picker/locale/vi_VN";
 import {
@@ -30,6 +31,8 @@ import {
   useGetDepartmentStaffsQuery,
   useUpdateAssignmentMutation,
   useGetUsersQuery,
+  useDeleteAssignmentMutation,
+  useDeleteTaskMutation,
 } from "src/share/services";
 import {
   type Task,
@@ -76,6 +79,8 @@ export const TaskForm = ({
   const taskDeadline = Form.useWatch("deadline", form);
   const taskAssginedUser = Form.useWatch("assignedStaff", form);
 
+  const [deleteAssignment] = useDeleteAssignmentMutation();
+  const [deleteTask] = useDeleteTaskMutation();
   const [createAssignment, { isLoading: creAssignLoad }] =
     useCreateAssigmentMutation();
   const [createTask, { isLoading: creTaskLoad }] = useCreateTaskMutation();
@@ -104,15 +109,15 @@ export const TaskForm = ({
         await createAssignment({
           ...{
             project_id: project?.project_id,
-            task_property_id: newTask.task_property.task_property_id,
-            user_property_id: values.assignedStaff,
+            task_id: newTask.task_id,
+            user_id: values.assignedStaff,
           },
         })
           .unwrap()
           .then(() => {
             message.success("successful create task");
           })
-          .catch((e) => message.error(e));
+          .catch(() => message.error("Failed to create task"));
 
         break;
       }
@@ -127,7 +132,7 @@ export const TaskForm = ({
             value: {
               endAt: values.deadline,
               status: values.status,
-              user_property_id: values.assignedStaff,
+              user_id: values.assignedStaff,
             },
           });
           message.success("Task is updated");
@@ -145,7 +150,7 @@ export const TaskForm = ({
         deadline: assignment.endAt
           ? dayjs((assignment.endAt as string).substring(0, 10), "YYYY/MM/DD")
           : undefined,
-        assignedStaff: assignment.user_property_id || "",
+        assignedStaff: assignment.user_id || "",
         status: assignment?.status,
       });
     } else {
@@ -175,9 +180,10 @@ export const TaskForm = ({
                   name='description'
                   className='task-desc-input'
                 >
-                  <Input
+                  <Input.TextArea
                     style={{
                       display: editDesc ? "block" : "none",
+                      width: "100%",
                     }}
                     onPressEnter={(e) => {
                       e.preventDefault();
@@ -201,7 +207,7 @@ export const TaskForm = ({
                   <EditOutlined style={{ fontSize: "15px" }} />
                 </Title>
               </div>
-              <TaskWorkspace task={task!} />
+              {action === "update" && <TaskWorkspace task={task!} />}
             </div>
             <div className='side-sec'>
               <div className='task-date-picker'>
@@ -240,7 +246,7 @@ export const TaskForm = ({
               </div>
               <div className='task-date-picker'>
                 <Form.Item<TaskFormFields>
-                  name={"deadline"}
+                  name={"assignedStaff"}
                   className='task-update-date'
                 >
                   <Select
@@ -248,8 +254,9 @@ export const TaskForm = ({
                       width: "250px",
                       height: "70px",
                     }}
+                    onChange={() => console.log(taskAssginedUser)}
                     options={
-                      assignment
+                      project.department_id
                         ? departmentStaff?.users.map((staff) => {
                             return {
                               label: staff.username,
@@ -271,9 +278,13 @@ export const TaskForm = ({
                 >
                   <Avatar style={{ fontSize: "20px", marginRight: "5px" }} />
                   {(taskAssginedUser as string)
-                    ? departmentStaff?.users.find(
-                        (staff) => staff.user_id === taskAssginedUser
-                      )?.username
+                    ? project.department_id
+                      ? departmentStaff?.users.find(
+                          (staff) => staff.user_id === taskAssginedUser
+                        )?.username
+                      : users?.users.find(
+                          (staff) => staff.user_id === taskAssginedUser
+                        )?.username
                     : "Unassgined"}
                   <DownOutlined
                     style={{ fontSize: "15px", marginLeft: "5px" }}
@@ -287,10 +298,20 @@ export const TaskForm = ({
               <SaveOutlined />
               Save
             </Button>
-            <Button type='primary' htmlType='submit' danger>
-              <DeleteOutlined />
-              Delete
-            </Button>
+            {action === "update" && (
+              <Popconfirm
+                title='Delete task'
+                onConfirm={() => {
+                  deleteAssignment({ assigmentId: assignment?.assignment_id });
+                  deleteTask({ taskId: task?.task_id });
+                }}
+              >
+                <Button type='primary' danger>
+                  <DeleteOutlined />
+                  Delete
+                </Button>
+              </Popconfirm>
+            )}
           </div>
         </Form>
       </Spin>

@@ -38,7 +38,7 @@ export const AccountModal = ({
         label: "Advanced",
         children: (
           <UserAdvance
-            userRole={selectedAcc?.UserProperty?.role?.name}
+            userRole={selectedAcc?.role?.name}
             userId={selectedAcc?.user_id}
             userEmail={selectedAcc?.email}
           />

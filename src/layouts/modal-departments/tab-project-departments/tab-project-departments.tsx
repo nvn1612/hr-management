@@ -69,7 +69,8 @@ export const TabProjectDepartment = ({
                   }}
                   projectName={project.name}
                   description={project.description}
-                  information={project.information}
+                  // tempory comment, wait for BE changes
+                  // information={project.information}
                 />
               </div>
             ))}

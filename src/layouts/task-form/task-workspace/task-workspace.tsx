@@ -38,7 +38,7 @@ export const TaskWorkspace = ({ task }: WorkspaceProps) => {
 
   const [createActivity] = useCreateActivityMutation();
   const { data: actitvityData } = useGetTaskActivityQuery({
-    taskPropertyId: task?.TaskProperty.task_property_id,
+    taskId: task?.task_id,
     items_per_page: "ALL",
   });
 
@@ -85,7 +85,7 @@ export const TaskWorkspace = ({ task }: WorkspaceProps) => {
           e.preventDefault();
           createActivity({
             description: (e.target as HTMLInputElement).value,
-            task_property_id: task?.TaskProperty.task_property_id,
+            task_id: task?.task_id,
           })
             .unwrap()
             .then(() => message.success("New task is created"))
