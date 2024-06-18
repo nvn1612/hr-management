@@ -5,6 +5,7 @@ import { TaskForm } from "src/layouts";
 import {
   useGetProjectTasksQuery,
   useGetAssignmentsQuery,
+  useUpdateAssignmentMutation,
 } from "src/share/services";
 import { ClockCircleOutlined, CheckCircleOutlined } from "@ant-design/icons";
 
@@ -27,6 +28,7 @@ export const ProjectTasks = ({ project }: ProjectTasksProp) => {
     Assignment | undefined
   >(undefined);
 
+  const [updateAssignment] = useUpdateAssignmentMutation();
   const { data: taskList, isFetching: taskFetch } = useGetProjectTasksQuery({
     projectId: project?.project_id,
     page,
@@ -105,9 +107,36 @@ export const ProjectTasks = ({ project }: ProjectTasksProp) => {
       </div>
       <Modal
         title={
-          <Button type='primary' onClick={() => {}}>
-            Complete
-          </Button>
+          formAction === "update" &&
+          (selectedAssignment?.status ? (
+            <Button
+              type='default'
+              onClick={async () => {
+                await updateAssignment({
+                  assignmentId: selectedAssignment!.assignment_id!,
+                  value: {
+                    status: false,
+                  },
+                });
+              }}
+            >
+              Complete
+            </Button>
+          ) : (
+            <Button
+              type='primary'
+              onClick={async () => {
+                await updateAssignment({
+                  assignmentId: selectedAssignment!.assignment_id!,
+                  value: {
+                    status: true,
+                  },
+                });
+              }}
+            >
+              Complete
+            </Button>
+          ))
         }
         open={showTaskForm}
         onCancel={() => setShowTaskForm(false)}

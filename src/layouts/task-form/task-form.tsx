@@ -128,7 +128,7 @@ export const TaskForm = ({
             value: { description: values.description },
           }).unwrap();
           await updateAssignment({
-            assigmentId: assignment!.assignment_id!,
+            assignmentId: assignment!.assignment_id!,
             value: {
               endAt: values.deadline,
               status: values.status,
@@ -162,159 +162,156 @@ export const TaskForm = ({
   }, [assignment, project, task, action]);
 
   return (
-    <div className='task-form-container'>
-      <Spin
-        spinning={creAssignLoad || creTaskLoad || updTaskLoad || updAssignLoad}
+    <Spin
+      spinning={creAssignLoad || creTaskLoad || updTaskLoad || updAssignLoad}
+    >
+      <Form
+        form={form}
+        name='task-form'
+        onFinish={onFinish}
+        className='task-form'
+        disabled={checkRole(OUserRole.Staff)}
       >
-        <Form
-          form={form}
-          name='task-form'
-          onFinish={onFinish}
-          className='task-form'
-          disabled={checkRole(OUserRole.Staff)}
-        >
-          <div className='task-detail-content'>
-            <div className='main-sec'>
-              <div className='task-desc'>
-                <Form.Item<TaskFormFields>
-                  name='description'
-                  className='task-desc-input'
-                >
-                  <Input.TextArea
-                    style={{
-                      display: editDesc ? "block" : "none",
-                      width: "100%",
-                    }}
-                    onPressEnter={(e) => {
-                      e.preventDefault();
-                      setEditDesc(false);
-                    }}
-                  />
-                </Form.Item>
-                <Title
-                  className='task-desc-displayer'
+        <div className='task-detail-content'>
+          <div className='main-sec'>
+            <div className='task-desc'>
+              {action === "create" && <Title level={3}>Description</Title>}
+              <Form.Item<TaskFormFields>
+                name='description'
+                className='task-desc-input'
+              >
+                <Input.TextArea
                   style={{
-                    display: editDesc ? "none" : "flex",
+                    display: editDesc ? "block" : "none",
+                    width: "100%",
                   }}
-                  level={4}
-                  onClick={() => {
-                    if (!checkRole(OUserRole.Staff)) {
-                      setEditDesc(true);
-                    }
+                  onPressEnter={(e) => {
+                    e.preventDefault();
+                    setEditDesc(false);
                   }}
-                >
-                  {taskDesc}
-                  <EditOutlined style={{ fontSize: "15px" }} />
-                </Title>
-              </div>
-              {action === "update" && <TaskWorkspace task={task!} />}
+                />
+              </Form.Item>
+              <Title
+                className='task-desc-displayer'
+                style={{
+                  display: editDesc ? "none" : "flex",
+                }}
+                level={4}
+                onClick={() => {
+                  if (!checkRole(OUserRole.Staff)) {
+                    setEditDesc(true);
+                  }
+                }}
+              >
+                {taskDesc}
+                <EditOutlined style={{ fontSize: "15px" }} />
+              </Title>
             </div>
-            <div className='side-sec'>
-              <div className='task-date-picker'>
-                <Form.Item<TaskFormFields>
-                  name={"deadline"}
-                  className='task-update-date'
-                >
-                  <DatePicker
-                    className='task-datepicker'
-                    inputReadOnly
-                    suffixIcon={""}
-                    style={{
-                      width: "250px",
-                      height: "70px",
-                    }}
-                    size='large'
-                    locale={locale}
-                  />
-                </Form.Item>
-                <div
-                  className='task-update-date-displayer'
-                  style={{ width: "250px", height: "70px" }}
-                >
-                  <CalendarOutlined
-                    style={{ fontSize: "20px", marginRight: "5px" }}
-                  />
-                  <span>
-                    {taskDeadline
-                      ? (taskDeadline as Dayjs).tz("Asia/Bangkok").toString()
-                      : "Select deadline"}
-                    <DownOutlined
-                      style={{ fontSize: "15px", marginLeft: "5px" }}
-                    />
-                  </span>
-                </div>
-              </div>
-              <div className='task-date-picker'>
-                <Form.Item<TaskFormFields>
-                  name={"assignedStaff"}
-                  className='task-update-date'
-                >
-                  <Select
-                    style={{
-                      width: "250px",
-                      height: "70px",
-                    }}
-                    onChange={() => console.log(taskAssginedUser)}
-                    options={
-                      project.department_id
-                        ? departmentStaff?.users.map((staff) => {
-                            return {
-                              label: staff.username,
-                              value: staff.user_id,
-                            };
-                          })
-                        : users?.users.map((staff) => {
-                            return {
-                              label: staff.username,
-                              value: staff.user_id,
-                            };
-                          })
-                    }
-                  />
-                </Form.Item>
-                <div
-                  className='task-update-date-displayer'
-                  style={{ width: "250px", height: "70px" }}
-                >
-                  <Avatar style={{ fontSize: "20px", marginRight: "5px" }} />
-                  {(taskAssginedUser as string)
-                    ? project.department_id
-                      ? departmentStaff?.users.find(
-                          (staff) => staff.user_id === taskAssginedUser
-                        )?.username
-                      : users?.users.find(
-                          (staff) => staff.user_id === taskAssginedUser
-                        )?.username
-                    : "Unassgined"}
+            {action === "update" && <TaskWorkspace task={task!} />}
+          </div>
+          <div className='side-sec'>
+            <div className='task-date-picker'>
+              <Form.Item<TaskFormFields>
+                name={"deadline"}
+                className='task-update-date'
+              >
+                <DatePicker
+                  className='task-datepicker'
+                  inputReadOnly
+                  suffixIcon={""}
+                  style={{
+                    width: "250px",
+                    height: "70px",
+                  }}
+                  size='large'
+                  locale={locale}
+                />
+              </Form.Item>
+              <div
+                className='task-update-date-displayer'
+                style={{ width: "250px", height: "70px" }}
+              >
+                <CalendarOutlined
+                  style={{ fontSize: "20px", marginRight: "5px" }}
+                />
+                <span>
+                  {taskDeadline
+                    ? (taskDeadline as Dayjs).tz("Asia/Bangkok").toString()
+                    : "Select deadline"}
                   <DownOutlined
                     style={{ fontSize: "15px", marginLeft: "5px" }}
                   />
-                </div>
+                </span>
+              </div>
+            </div>
+            <div className='task-date-picker'>
+              <Form.Item<TaskFormFields>
+                name={"assignedStaff"}
+                className='task-update-date'
+              >
+                <Select
+                  style={{
+                    width: "250px",
+                    height: "70px",
+                  }}
+                  onChange={() => console.log(taskAssginedUser)}
+                  options={
+                    project.department_id
+                      ? departmentStaff?.users.map((staff) => {
+                          return {
+                            label: staff.username,
+                            value: staff.user_id,
+                          };
+                        })
+                      : users?.users.map((staff) => {
+                          return {
+                            label: staff.username,
+                            value: staff.user_id,
+                          };
+                        })
+                  }
+                />
+              </Form.Item>
+              <div
+                className='task-update-date-displayer'
+                style={{ width: "250px", height: "70px" }}
+              >
+                <Avatar style={{ fontSize: "20px", marginRight: "5px" }} />
+                {(taskAssginedUser as string)
+                  ? project.department_id
+                    ? departmentStaff?.users.find(
+                        (staff) => staff.user_id === taskAssginedUser
+                      )?.username
+                    : users?.users.find(
+                        (staff) => staff.user_id === taskAssginedUser
+                      )?.username
+                  : "Unassgined"}
+                <DownOutlined style={{ fontSize: "15px", marginLeft: "5px" }} />
               </div>
             </div>
           </div>
-          <div className='task-update-form-btns'>
-            <Button type='primary' htmlType='submit'>
-              <SaveOutlined />
-              Save
-            </Button>
-            {action === "update" && (
-              <Popconfirm
-                title='Delete task'
-                onConfirm={() => {
-                  deleteAssignment({ assigmentId: assignment?.assignment_id });
-                  deleteTask({ taskId: task?.task_id });
-                }}
-              >
-                <Button type='primary' danger>
-                  <DeleteOutlined />
-                  Delete
-                </Button>
-              </Popconfirm>
-            )}
-          </div>
-        </Form>
-      </Spin>
-    </div>
+        </div>
+        <div className='task-update-form-btns'>
+          <Button type='primary' htmlType='submit'>
+            <SaveOutlined />
+            Save
+          </Button>
+          {action === "update" && (
+            <Popconfirm
+              title='Delete task'
+              onConfirm={() => {
+                deleteAssignment({ assigmentId: assignment?.assignment_id });
+                deleteTask({ taskId: task?.task_id });
+              }}
+            >
+              <Button type='primary' danger>
+                <DeleteOutlined />
+                Delete
+              </Button>
+            </Popconfirm>
+          )}
+        </div>
+      </Form>
+    </Spin>
   );
 };

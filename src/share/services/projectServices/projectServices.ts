@@ -238,12 +238,12 @@ const projectServices = hrManagementApi.injectEndpoints({
           endAt?: string | Dayjs;
           user_id?: string;
         };
-        assigmentId: string;
+        assignmentId: string;
       }
     >({
-      query({ assigmentId, value }) {
+      query({ assignmentId, value }) {
         return {
-          url: `assignments/update/${assigmentId}`,
+          url: `assignments/update/${assignmentId}`,
           method: "PUT",
           headers: {
             authorization: accessToken(),

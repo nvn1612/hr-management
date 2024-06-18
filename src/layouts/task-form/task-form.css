@@ -4,6 +4,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--gap-l);
+  margin-top: 30px;
   .task-detail-content {
     display: flex;
     justify-content: space-between;
@@ -14,7 +15,6 @@
       justify-content: start;
       align-items: flex-start;
       gap: var(--gap-xl);
-      padding-top: var(--padding-m);
       width: 500px;
       .task-desc {
         width: 100%;
