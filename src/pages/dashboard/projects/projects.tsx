@@ -167,7 +167,6 @@ export const Projects = () => {
                           }}
                           projectName={project?.name}
                           description={project.description}
-                          information={project.information}
                         />
                       </List.Item>
                     );

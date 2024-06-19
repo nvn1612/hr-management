@@ -114,6 +114,7 @@ const projectServices = hrManagementApi.injectEndpoints({
         user_id?: string;
         project_id: string;
         task_id?: string;
+        endAt?: string | Dayjs;
       }>
     >({
       query({ user_id, project_id, task_id }) {
@@ -163,7 +164,7 @@ const projectServices = hrManagementApi.injectEndpoints({
     >({
       query({ page, search, items_per_page, taskId }) {
         return {
-          url: `activities/get-all-activities-from-task/${taskId}`,
+          url: `activities/get-all-activities/${taskId}`,
           method: "GET",
           headers: {
             authorization: accessToken(),
@@ -362,6 +363,44 @@ const projectServices = hrManagementApi.injectEndpoints({
       },
       invalidatesTags: ["task"],
     }),
+    updateActivity: build.mutation<
+      Response<string>,
+      Partial<{
+        activityId?: string;
+        value: {
+          description: string;
+        };
+      }>
+    >({
+      query({ activityId, value }) {
+        return {
+          url: `/activities/update/${activityId}`,
+          method: "PUT",
+          headers: {
+            authorization: accessToken(),
+          },
+          body: value,
+        };
+      },
+      invalidatesTags: ["activity"],
+    }),
+    deleteActivity: build.mutation<
+      Response<string>,
+      Partial<{
+        activityId?: string;
+      }>
+    >({
+      query({ activityId }) {
+        return {
+          url: `/activities/update/${activityId}`,
+          method: "DELETE",
+          headers: {
+            authorization: accessToken(),
+          },
+        };
+      },
+      invalidatesTags: ["activity"],
+    }),
     getUse: build.mutation<
       Response<boolean>,
       Partial<{
@@ -425,4 +464,6 @@ export const {
   useGetProjectStaffsQuery,
   useGetAssignmentsQuery,
   useGetProjectTasksQuery,
+  useUpdateActivityMutation,
+  useDeleteActivityMutation,
 } = projectServices;

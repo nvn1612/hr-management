@@ -17,6 +17,7 @@
   --gap-m: 15px;
   --gap-l: 20px;
   --gap-xl: 25px;
+  --gap-xxl: 35px;
 
   /* border */
   --primary-border-s: solid 1px --primary-color;

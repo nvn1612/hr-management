@@ -111,6 +111,7 @@ export const TaskForm = ({
             project_id: project?.project_id,
             task_id: newTask.task_id,
             user_id: values.assignedStaff,
+            endAt: values?.deadline,
           },
         })
           .unwrap()
@@ -183,7 +184,10 @@ export const TaskForm = ({
                 <Input.TextArea
                   style={{
                     display: editDesc ? "block" : "none",
-                    width: "100%",
+                    width: "500px",
+                    height: "50px",
+                    resize: "none",
+                    marginBottom: "20px",
                   }}
                   onPressEnter={(e) => {
                     e.preventDefault();

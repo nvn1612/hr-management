@@ -14,7 +14,7 @@
       flex-direction: column;
       justify-content: start;
       align-items: flex-start;
-      gap: var(--gap-xl);
+      gap: var(--gap-xxl);
       width: 500px;
       .task-desc {
         width: 100%;

@@ -1,6 +1,16 @@
+@import url(src/index.css);
 .new-task-btn-sec {
   width: 100%;
   display: flex;
   justify-content: flex-end;
   align-items: center;
+}
+.acti-container {
+  width: 100%;
+  display: flex;
+  gap: var(--gap-l);
+  flex-direction: column;
+  .edit-task-btn {
+    color: var(--success-color);
+  }
 }

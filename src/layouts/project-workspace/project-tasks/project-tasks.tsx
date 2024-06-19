@@ -1,6 +1,6 @@
 import "./project-tasks.css";
-import { useState } from "react";
-import { Modal, Button, List, Spin } from "antd";
+import { useEffect, useState } from "react";
+import { Modal, Button, List, Spin, Popover, message } from "antd";
 import { TaskForm } from "src/layouts";
 import {
   useGetProjectTasksQuery,
@@ -40,6 +40,30 @@ export const ProjectTasks = ({ project }: ProjectTasksProp) => {
       items_per_page: "ALL",
       target: "project",
     });
+
+  const assignTaskSubFetch = () => {
+    if (!taskFetch && !assignmentFetch) {
+      setSelectedAssignment((prevAssign) =>
+        assigments?.assignments.find(
+          (assign) => assign.assignment_id === prevAssign?.assignment_id
+        )
+      );
+      setSelectedTask((prevTask) =>
+        taskList?.data.find((task) => task.task_id === prevTask?.task_id)
+      );
+    }
+  };
+
+  const updateTaskStatusColor = () => {
+    if (selectedAssignment?.status) {
+      return "task-done-btn-green";
+    }
+    return "task-done-btn-gray";
+  };
+
+  useEffect(() => {
+    assignTaskSubFetch();
+  }, [taskList, assigments]);
 
   return (
     <div className='task-section'>
@@ -107,36 +131,46 @@ export const ProjectTasks = ({ project }: ProjectTasksProp) => {
       </div>
       <Modal
         title={
-          formAction === "update" &&
-          (selectedAssignment?.status ? (
-            <Button
-              type='default'
-              onClick={async () => {
-                await updateAssignment({
-                  assignmentId: selectedAssignment!.assignment_id!,
-                  value: {
-                    status: false,
-                  },
-                });
-              }}
+          formAction === "update" && (
+            <Popover
+              content={
+                selectedAssignment?.status
+                  ? "Mark as in progress"
+                  : "Mark as complete"
+              }
             >
-              Complete
-            </Button>
-          ) : (
-            <Button
-              type='primary'
-              onClick={async () => {
-                await updateAssignment({
-                  assignmentId: selectedAssignment!.assignment_id!,
-                  value: {
-                    status: true,
-                  },
-                });
-              }}
-            >
-              Complete
-            </Button>
-          ))
+              <CheckCircleOutlined
+                className={`task-done-btn ${updateTaskStatusColor()}`}
+                onClick={async () => {
+                  if (selectedAssignment!.status) {
+                    try {
+                      await updateAssignment({
+                        assignmentId: selectedAssignment!.assignment_id!,
+                        value: {
+                          status: false,
+                        },
+                      });
+                      message.success("Mark as complete");
+                    } catch {
+                      message.error("Action failed");
+                    }
+                  } else {
+                    try {
+                      await updateAssignment({
+                        assignmentId: selectedAssignment!.assignment_id!,
+                        value: {
+                          status: true,
+                        },
+                      });
+                      message.success("Mark as in progress");
+                    } catch {
+                      message.error("Action failed");
+                    }
+                  }
+                }}
+              />
+            </Popover>
+          )
         }
         open={showTaskForm}
         onCancel={() => setShowTaskForm(false)}

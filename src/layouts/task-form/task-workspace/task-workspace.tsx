@@ -1,10 +1,15 @@
 import "./task-workspace.css";
 import { Button, Input, List, Upload, message, Typography } from "antd";
-import { UploadOutlined, ArrowRightOutlined } from "@ant-design/icons";
+import {
+  UploadOutlined,
+  ArrowRightOutlined,
+  EditOutlined,
+} from "@ant-design/icons";
 import {
   useCreateActivityMutation,
   useGetTaskActivityQuery,
   useGetTaskFileMutation,
+  useUpdateActivityMutation,
 } from "src/share/services";
 
 import type { Task } from "src/share/models";
@@ -15,12 +20,14 @@ import { useEffect, useState } from "react";
 interface WorkspaceProps {
   task: Task;
 }
-const { Text, Title } = Typography;
+const { Title } = Typography;
 const baseApi = import.meta.env.VITE_REQUEST_API_URL;
 
 export const TaskWorkspace = ({ task }: WorkspaceProps) => {
-  const [getFile] = useGetTaskFileMutation();
   const [fileLinks, setFileLinks] = useState<string[]>([]);
+  const [actiDesc, setActiDesc] = useState<string>("");
+  const [actiId, setActiId] = useState<string>("");
+  const [getFile] = useGetTaskFileMutation();
 
   const uploadProps: UploadProps = {
     action: `${baseApi}tasks/upload-file-from-local/${task?.task_id}`,
@@ -37,6 +44,7 @@ export const TaskWorkspace = ({ task }: WorkspaceProps) => {
   };
 
   const [createActivity] = useCreateActivityMutation();
+  const [updateActivity] = useUpdateActivityMutation();
   const { data: actitvityData } = useGetTaskActivityQuery({
     taskId: task?.task_id,
     items_per_page: "ALL",
@@ -76,37 +84,73 @@ export const TaskWorkspace = ({ task }: WorkspaceProps) => {
           }}
         />
       )}
-      <Title level={5}>Activites</Title>
-      <Input.TextArea
-        style={{ resize: "none", height: "100px" }}
-        className='task-text-area'
-        placeholder='New activity'
-        onPressEnter={async (e) => {
-          e.preventDefault();
-          createActivity({
-            description: (e.target as HTMLInputElement).value,
-            task_id: task?.task_id,
-          })
-            .unwrap()
-            .then(() => message.success("New task is created"))
-            .catch(() => message.error("Failed to create task"));
-        }}
-      />
-      <div className='new-task-btn-sec'>
-        <Button type='primary'>
-          <ArrowRightOutlined />
-        </Button>
-      </div>
-      {actitvityData && (
-        <List
-          dataSource={actitvityData ? actitvityData : []}
-          renderItem={(activity) => (
-            <List.Item>
-              <Text>{activity.description}</Text>
-            </List.Item>
-          )}
+      <div className='acti-container'>
+        <Title level={5}>Activites</Title>
+        <Input.TextArea
+          style={{ resize: "none", height: "100px" }}
+          className='task-text-area'
+          placeholder='New activity'
+          value={actiDesc}
+          onChange={(e) => {
+            setActiDesc(e.target.value);
+          }}
         />
-      )}
+        <div className='new-task-btn-sec'>
+          <Button
+            type='primary'
+            onClick={() => {
+              if (!actiId) {
+                createActivity({
+                  description: actiDesc,
+                  task_id: task?.task_id,
+                })
+                  .unwrap()
+                  .then(() => message.success("New task is created"))
+                  .catch(() => message.error("Failed to create task"));
+              } else {
+                updateActivity({
+                  activityId: actiId,
+                  value: { description: actiDesc },
+                })
+                  .unwrap()
+                  .then(() => {
+                    message.success("Successful updated activity");
+                    setActiId("");
+                    setActiDesc("");
+                  })
+                  .catch(() => message.error("Failed to update activity"));
+              }
+            }}
+          >
+            {actiId ? "Update" : "Create"}
+            <ArrowRightOutlined />
+          </Button>
+        </div>
+        {actitvityData && (
+          <List
+            style={{ width: "100%" }}
+            dataSource={actitvityData ? actitvityData : []}
+            renderItem={(activity) => (
+              <List.Item
+                actions={[
+                  <EditOutlined
+                    className='edit-task-btn'
+                    onClick={() => {
+                      setActiId(activity.activity_id!);
+                      setActiDesc(activity.description || "");
+                    }}
+                  />,
+                ]}
+              >
+                <List.Item.Meta
+                  title={activity.createdAt?.substring(0, 10)}
+                  description={activity.description}
+                />
+              </List.Item>
+            )}
+          />
+        )}
+      </div>
     </>
   );
 };
