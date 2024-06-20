@@ -16,6 +16,11 @@ export interface Project {
   createdAt?: string;
   project_manager_id?: string;
   department_id?: string;
+  total_staff: string;
+  total_task: {
+    total_task_is_done: string;
+    total_task_is_not_done: string;
+  };
   client_ownership?: {
     client_id: string;
     fullname: string;

@@ -3,8 +3,9 @@ import { Modal, Col, Divider, Row, Avatar, Checkbox, message } from "antd";
 import "./modal-add-manager.css";
 import { useGetUsersQuery } from "src/share/services";
 import { useUpdateManagerDepartmentMutation } from "src/share/services/departmentServices";
-import { Department } from "src/share/models";
+import { Department, OUserRole } from "src/share/models";
 import { randAvaBg } from "src/share/utils";
+import { useRoleChecker } from "src/share/hooks";
 
 type ModalAddManagerProps = {
   visible: boolean;
@@ -17,8 +18,13 @@ export const ModalAddManager = ({
   setVisible,
   department,
 }: ModalAddManagerProps) => {
+  const checkRole = useRoleChecker();
+
   const [mainManager, setMainManager] = useState<string | undefined>();
-  const { data } = useGetUsersQuery({ role: "MANAGER" });
+  const { data } = useGetUsersQuery(
+    { role: "MANAGER" },
+    { skip: !checkRole(OUserRole.Admin) }
+  );
   const [selectedManager, setSelectedManager] = useState<number | null>(null);
   const [updateManager] = useUpdateManagerDepartmentMutation();
 

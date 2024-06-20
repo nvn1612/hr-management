@@ -167,6 +167,17 @@ export const Projects = () => {
                           }}
                           projectName={project?.name}
                           description={project.description}
+                          information={{
+                            total_user: parseFloat(project.total_staff),
+                            total_task: {
+                              total_task_is_done: parseFloat(
+                                project.total_task.total_task_is_done
+                              ),
+                              total_task_is_not_done: parseFloat(
+                                project.total_task.total_task_is_not_done
+                              ),
+                            },
+                          }}
                         />
                       </List.Item>
                     );

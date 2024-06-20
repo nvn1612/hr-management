@@ -45,7 +45,7 @@ export const ModalListStaffDepartment = ({
           ? detailDepartment?.department_id
           : department?.department_id,
     },
-    { skip: checkrole(OUserRole.Staff) }
+    { skip: checkrole(OUserRole.Staff) || !detailDepartment?.department_id }
   );
 
   const { data: dataStaff } = useManagerGetAllStaffDepartmentQuery({

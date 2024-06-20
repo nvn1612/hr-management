@@ -12,9 +12,11 @@ import {
 } from "antd";
 import { useAddDepartmentMutation } from "src/share/services";
 import { useGetUsersQuery } from "src/share/services";
-import { User } from "src/share/models";
+import { OUserRole, User } from "src/share/models";
 import "./modal-add-department.css";
 import { randAvaBg } from "src/share/utils";
+import { useRoleChecker } from "src/share/hooks";
+
 const { TextArea } = Input;
 
 type ModalAddDepartmentProps = {
@@ -43,8 +45,16 @@ export const ModalAddDepartment = ({
     marginTop: 16,
   };
 
-  const { data: managerData } = useGetUsersQuery({ role: "MANAGER" });
-  const { data: staffData } = useGetUsersQuery({ role: "STAFF" });
+  const checkRole = useRoleChecker();
+
+  const { data: managerData } = useGetUsersQuery(
+    { role: "MANAGER" },
+    { skip: !checkRole(OUserRole.Admin) }
+  );
+  const { data: staffData } = useGetUsersQuery(
+    { role: "STAFF" },
+    { skip: !checkRole(OUserRole.Admin) }
+  );
 
   const handleCheckChangeStaff = (
     checked: boolean,
@@ -108,7 +118,7 @@ export const ModalAddDepartment = ({
             itemLayout='horizontal'
             dataSource={
               managerData?.users.filter(
-                (user) => user.UserProperty?.department_id === null
+                (user) => user?.department_id === null
               ) ?? []
             }
             renderItem={(item) => (
@@ -156,9 +166,8 @@ export const ModalAddDepartment = ({
             className='list-user'
             itemLayout='horizontal'
             dataSource={
-              staffData?.users.filter(
-                (user) => user.UserProperty?.department_id === null
-              ) ?? []
+              staffData?.users.filter((user) => user?.department_id === null) ??
+              []
             }
             renderItem={(item) => (
               <List.Item>

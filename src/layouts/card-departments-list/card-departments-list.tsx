@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { List, Spin, message } from "antd";
+import { List, Spin, Typography, message } from "antd";
 import { ModalDepartments } from "src/layouts/modal-departments";
 import { CardDepartmentss } from "src/components/card-departments";
 import { ModalAddDepartment } from "../modal-departments/modal-add-department";
@@ -45,7 +45,10 @@ export const CardDepartments = () => {
       departmentId: userDetail?.department_id,
     },
     {
-      skip: checkRole(OUserRole.Admin) || checkRole(OUserRole.ProjectManager),
+      skip:
+        checkRole(OUserRole.Admin) ||
+        checkRole(OUserRole.ProjectManager) ||
+        !userDetail?.department_id,
     }
   );
 
@@ -91,16 +94,27 @@ export const CardDepartments = () => {
         />
         <div className='department-card-container'>
           {userDetail?.role?.name === "MANAGER" ? (
-            <CardDepartmentss
-              onClick={() => {
-                setVisible(true);
-                setDetailDepartment(departmentDetail);
-              }}
-              role={userDetail?.role?.name}
-              title={departmentDetail?.name}
-              manager={departmentDetail?.information?.[0]?.manager?.name}
-              staffCount={departmentDetail?.information?.[0]?.total_staff}
-            />
+            !userDetail.department_id ? (
+              <div className='no-depart-message'>
+                <Typography.Title level={4}>
+                  You have no department yet
+                </Typography.Title>
+              </div>
+            ) : (
+              <>
+                <div className='manager-department-ui'>
+                  <ModalDepartments
+                    visible={visible}
+                    setVisible={setVisible}
+                    department={mainDepartment}
+                    closeModal={closeModal}
+                    departmentDetail={detailDepartment}
+                    role={userDetail?.role?.name}
+                    isModal={false}
+                  />
+                </div>
+              </>
+            )
           ) : userDetail?.role?.name === "ADMIN" ? (
             <List
               grid={{
@@ -155,6 +169,7 @@ export const CardDepartments = () => {
         closeModal={closeModal}
         departmentDetail={detailDepartment}
         role={userDetail?.role?.name}
+        isModal={true}
       />
       <ModalAddDepartment
         visible={visibleAddDepartment}

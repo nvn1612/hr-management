@@ -75,7 +75,7 @@ export const ModalAddStaffsDepartment = ({
       role: "STAFF",
       search: searchValue,
     },
-    { skip: checkRole(OUserRole.Admin) }
+    { skip: !checkRole(OUserRole.Admin) }
   );
   const { data: staffNoDepartmentData } = useManagerGetStaffNoDepartmentQuery({
     search: searchValue,

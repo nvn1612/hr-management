@@ -25,6 +25,7 @@ type ModalDepartmentsProps = {
   departmentDetail?: Department2;
   closeModal: () => void;
   role?: string;
+  isModal: boolean;
 };
 
 export const ModalDepartments = ({
@@ -34,6 +35,7 @@ export const ModalDepartments = ({
   closeModal,
   departmentDetail,
   role,
+  isModal,
 }: ModalDepartmentsProps) => {
   const [managerModalVisible, setManagerModalVisible] = useState(false);
 
@@ -61,7 +63,7 @@ export const ModalDepartments = ({
       .catch();
   };
 
-  const items: TabsProps["items"] = [
+  const departmentItems: TabsProps["items"] = [
     {
       key: "1",
       label: "Information",
@@ -91,8 +93,8 @@ export const ModalDepartments = ({
                         role === "MANAGER"
                           ? showModal
                           : department?.information?.manager?.user_id
-                          ? showModal
-                          : undefined
+                            ? showModal
+                            : undefined
                       }
                     >
                       {department?.information?.manager?.user_id ? (
@@ -112,8 +114,8 @@ export const ModalDepartments = ({
                         {role === "MANAGER"
                           ? departmentDetail?.information?.[0].manager?.name
                           : department?.information?.manager?.user_id
-                          ? department.information?.manager?.name
-                          : "No Manager"}
+                            ? department.information?.manager?.name
+                            : "No Manager"}
                       </p>
                     </div>
                   </Col>
@@ -199,15 +201,19 @@ export const ModalDepartments = ({
 
   return (
     <>
-      <Modal
-        open={visible}
-        onCancel={() => setVisible(false)}
-        footer={null}
-        title={department?.name}
-        width={1000}
-      >
-        <Tabs defaultActiveKey='1' items={items} />
-      </Modal>
+      {isModal ? (
+        <Modal
+          open={visible}
+          onCancel={() => setVisible(false)}
+          footer={null}
+          title={department?.name}
+          width={1000}
+        >
+          <Tabs defaultActiveKey='1' items={departmentItems} />
+        </Modal>
+      ) : (
+        <Tabs defaultActiveKey='1' items={departmentItems} />
+      )}
       <ModalDepartmentManager
         visible={managerModalVisible}
         setVisible={setManagerModalVisible}

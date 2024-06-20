@@ -188,7 +188,7 @@ export const DepartmentServices = hrManagementApi.injectEndpoints({
     ManagerGetStaffNoDepartment: build.query<GetUserResp, { search?: string }>({
       query: ({ search }) => {
         return {
-          url: "/users/get-a-list-of-staff-do-do-not-have-departments",
+          url: "/users/get-a-list-of-staff-do-not-have-departments",
           method: "GET",
           headers: {
             authorization: accessToken(),
