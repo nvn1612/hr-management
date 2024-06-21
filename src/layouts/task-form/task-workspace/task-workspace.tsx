@@ -1,5 +1,13 @@
 import "./task-workspace.css";
-import { Button, Input, List, Upload, message, Typography } from "antd";
+import {
+  Button,
+  Input,
+  List,
+  Upload,
+  message,
+  Typography,
+  Popover,
+} from "antd";
 import {
   UploadOutlined,
   ArrowRightOutlined,
@@ -141,37 +149,45 @@ export const TaskWorkspace = ({ task }: WorkspaceProps) => {
                 actions={
                   !checkRole(OUserRole.Admin)
                     ? [
-                        <EditOutlined
-                          className='edit-task-btn'
-                          onClick={() => {
-                            setActiId(activity.activity_id!);
-                            setActiDesc(activity.description || "");
-                          }}
-                        />,
+                        <Popover content={"Edit"}>
+                          <EditOutlined
+                            className='edit-task-btn'
+                            onClick={() => {
+                              setActiId(activity.activity_id!);
+                              setActiDesc(activity.description || "");
+                            }}
+                          />
+                        </Popover>,
                       ]
                     : [
-                        <EditOutlined
-                          className='edit-acti-btn'
-                          onClick={() => {
-                            setActiId(activity.activity_id!);
-                            setActiDesc(activity.description || "");
-                          }}
-                        />,
-                        <DeleteOutlined
-                          className='delete-acti-btn'
-                          onClick={() => {
-                            deleteActivity({
-                              activityId: activity.activity_id,
-                            })
-                              .unwrap()
-                              .then(() =>
-                                message.success("Successfully delete activity")
-                              )
-                              .catch(() =>
-                                message.error("Failed to delete activity")
-                              );
-                          }}
-                        />,
+                        <Popover content={"Edit"}>
+                          <EditOutlined
+                            className='edit-acti-btn'
+                            onClick={() => {
+                              setActiId(activity.activity_id!);
+                              setActiDesc(activity.description || "");
+                            }}
+                          />
+                        </Popover>,
+                        <Popover content={"Delete"}>
+                          <DeleteOutlined
+                            className='delete-acti-btn'
+                            onClick={() => {
+                              deleteActivity({
+                                activityId: activity.activity_id,
+                              })
+                                .unwrap()
+                                .then(() =>
+                                  message.success(
+                                    "Successfully delete activity"
+                                  )
+                                )
+                                .catch(() =>
+                                  message.error("Failed to delete activity")
+                                );
+                            }}
+                          />
+                        </Popover>,
                       ]
                 }
               >

@@ -108,6 +108,7 @@ export const ProjectForm = ({
                 : new Date()
             ),
             department_id: project?.department_id,
+            pms: project.project_manager_id,
           }
         : { ...newProject }
     );
@@ -167,7 +168,7 @@ export const ProjectForm = ({
                 <Select
                   options={pms?.users?.map((pm) => {
                     return {
-                      label: <Text>{pm.name}</Text>,
+                      label: <Text>{pm.username}</Text>,
                       value: pm.user_id,
                     };
                   })}

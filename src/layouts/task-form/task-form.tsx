@@ -87,15 +87,21 @@ export const TaskForm = ({
   const [updateTask, { isLoading: updTaskLoad }] = useUpdateTaskMutation();
   const [updateAssignment, { isLoading: updAssignLoad }] =
     useUpdateAssignmentMutation();
-  const { data: departmentStaff } = useGetDepartmentStaffsQuery({
-    itemsPerPage: "ALL",
-    departmentId: project?.department_id,
-  });
-  const { data: users } = useGetUsersQuery({
-    items_per_page: "ALL",
-    page: 1,
-    role: "STAFF",
-  });
+  const { data: departmentStaff } = useGetDepartmentStaffsQuery(
+    {
+      itemsPerPage: "ALL",
+      departmentId: project?.department_id,
+    },
+    { skip: !project.department_id }
+  );
+  const { data: users } = useGetUsersQuery(
+    {
+      items_per_page: "ALL",
+      page: 1,
+      role: "STAFF",
+    },
+    { skip: !checkRole(OUserRole.Admin) }
+  );
 
   const onFinish: FormProps<TaskFormFields>["onFinish"] = async (values) => {
     if (values.deadline) {

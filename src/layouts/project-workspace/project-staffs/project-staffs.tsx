@@ -18,15 +18,21 @@ export const ProjectStaffs = ({ project }: ProjectStaffsProps) => {
   const [page, setPage] = useState<number>(1);
 
   const { data: projectStaffs, isFetching: projectStaffFetch } =
-    useGetProjectStaffsQuery({
-      projectId: project?.project_id,
-      page,
-      items_per_page: 5,
-    });
+    useGetProjectStaffsQuery(
+      {
+        projectId: project?.project_id,
+        page,
+        items_per_page: 5,
+      },
+      { skip: !project?.project_id }
+    );
 
-  const departmentStaffs = useGetDepartmentStaffsQuery({
-    departmentId: project?.department_id,
-  });
+  const departmentStaffs = useGetDepartmentStaffsQuery(
+    {
+      departmentId: project?.department_id,
+    },
+    { skip: !project?.department_id }
+  );
 
   return (
     <div className='project-staffs'>
