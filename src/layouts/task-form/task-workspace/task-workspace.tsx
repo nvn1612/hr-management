@@ -4,18 +4,21 @@ import {
   UploadOutlined,
   ArrowRightOutlined,
   EditOutlined,
+  DeleteOutlined,
 } from "@ant-design/icons";
 import {
   useCreateActivityMutation,
   useGetTaskActivityQuery,
   useGetTaskFileMutation,
   useUpdateActivityMutation,
+  useDeleteActivityMutation,
 } from "src/share/services";
 
-import type { Task } from "src/share/models";
+import { OUserRole, type Task } from "src/share/models";
 import { UploadProps } from "antd";
 import { localStorageUtil } from "src/share/utils";
 import { useEffect, useState } from "react";
+import { useRoleChecker } from "src/share/hooks";
 
 interface WorkspaceProps {
   task: Task;
@@ -27,7 +30,8 @@ export const TaskWorkspace = ({ task }: WorkspaceProps) => {
   const [fileLinks, setFileLinks] = useState<string[]>([]);
   const [actiDesc, setActiDesc] = useState<string>("");
   const [actiId, setActiId] = useState<string>("");
-  const [getFile] = useGetTaskFileMutation();
+
+  const checkRole = useRoleChecker();
 
   const uploadProps: UploadProps = {
     action: `${baseApi}tasks/upload-file-from-local/${task?.task_id}`,
@@ -43,9 +47,11 @@ export const TaskWorkspace = ({ task }: WorkspaceProps) => {
     },
   };
 
+  const [getFile] = useGetTaskFileMutation();
   const [createActivity] = useCreateActivityMutation();
   const [updateActivity] = useUpdateActivityMutation();
-  const { data: actitvityData } = useGetTaskActivityQuery({
+  const [deleteActivity] = useDeleteActivityMutation();
+  const { data: activityData } = useGetTaskActivityQuery({
     taskId: task?.task_id,
     items_per_page: "ALL",
   });
@@ -105,8 +111,8 @@ export const TaskWorkspace = ({ task }: WorkspaceProps) => {
                   task_id: task?.task_id,
                 })
                   .unwrap()
-                  .then(() => message.success("New task is created"))
-                  .catch(() => message.error("Failed to create task"));
+                  .then(() => message.success("New activity is created"))
+                  .catch(() => message.error("Failed to create activity"));
               } else {
                 updateActivity({
                   activityId: actiId,
@@ -126,24 +132,51 @@ export const TaskWorkspace = ({ task }: WorkspaceProps) => {
             <ArrowRightOutlined />
           </Button>
         </div>
-        {actitvityData && (
+        {activityData && (
           <List
             style={{ width: "100%" }}
-            dataSource={actitvityData ? actitvityData : []}
+            dataSource={activityData ? activityData : []}
             renderItem={(activity) => (
               <List.Item
-                actions={[
-                  <EditOutlined
-                    className='edit-task-btn'
-                    onClick={() => {
-                      setActiId(activity.activity_id!);
-                      setActiDesc(activity.description || "");
-                    }}
-                  />,
-                ]}
+                actions={
+                  !checkRole(OUserRole.Admin)
+                    ? [
+                        <EditOutlined
+                          className='edit-task-btn'
+                          onClick={() => {
+                            setActiId(activity.activity_id!);
+                            setActiDesc(activity.description || "");
+                          }}
+                        />,
+                      ]
+                    : [
+                        <EditOutlined
+                          className='edit-acti-btn'
+                          onClick={() => {
+                            setActiId(activity.activity_id!);
+                            setActiDesc(activity.description || "");
+                          }}
+                        />,
+                        <DeleteOutlined
+                          className='delete-acti-btn'
+                          onClick={() => {
+                            deleteActivity({
+                              activityId: activity.activity_id,
+                            })
+                              .unwrap()
+                              .then(() =>
+                                message.success("Successfully delete activity")
+                              )
+                              .catch(() =>
+                                message.error("Failed to delete activity")
+                              );
+                          }}
+                        />,
+                      ]
+                }
               >
                 <List.Item.Meta
-                  title={activity.createdAt?.substring(0, 10)}
+                  title={`${activity.createdAt?.substring(0, 10)} by ${activity.user?.username}`}
                   description={activity.description}
                 />
               </List.Item>

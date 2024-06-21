@@ -64,8 +64,8 @@ export const ProjectForm = ({
     if (values.startAt) {
       values.startAt = (values.startAt as Dayjs).add(1, "day");
     }
-    if (userDetail?.UserProperty?.role?.name === OUserRole.Manager) {
-      values.department_id = userDetail.UserProperty.department_id;
+    if (userDetail?.role?.name === OUserRole.Manager) {
+      values.department_id = userDetail.department_id;
     }
     if (!project) {
       await createProject(values)
@@ -107,7 +107,7 @@ export const ProjectForm = ({
                 ? project.endAt.substring(0, 10)
                 : new Date()
             ),
-            department_id: project.ProjectProperty?.department_id,
+            department_id: project?.department_id,
           }
         : { ...newProject }
     );
@@ -121,15 +121,14 @@ export const ProjectForm = ({
         size='large'
         tip='Take your time'
       >
-        {project &&
-          userDetail?.UserProperty?.role?.name !== OUserRole.Staff && (
-            <Checkbox
-              checked={editableForm}
-              onChange={() => setEditableForm(!editableForm)}
-            >
-              Edit information
-            </Checkbox>
-          )}
+        {project && userDetail?.role?.name !== OUserRole.Staff && (
+          <Checkbox
+            checked={editableForm}
+            onChange={() => setEditableForm(!editableForm)}
+          >
+            Edit information
+          </Checkbox>
+        )}
         <Form
           form={form}
           disabled={project ? !editableForm : false}
@@ -149,7 +148,7 @@ export const ProjectForm = ({
           <Form.Item<Project> name={"description"} label='Description'>
             <Input.TextArea />
           </Form.Item>
-          {userDetail?.UserProperty?.role?.name === OUserRole.Admin && (
+          {checkRole(OUserRole.Admin) && (
             <>
               <Form.Item<Project> name={"department_id"} label='Department'>
                 <Select

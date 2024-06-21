@@ -176,7 +176,7 @@ export const TaskForm = ({
         <div className='task-detail-content'>
           <div className='main-sec'>
             <div className='task-desc'>
-              {action === "create" && <Title level={3}>Description</Title>}
+              {action === "create" && <Title level={4}>Description</Title>}
               <Form.Item<TaskFormFields>
                 name='description'
                 className='task-desc-input'

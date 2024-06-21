@@ -150,7 +150,7 @@ export const ProjectTasks = ({ project }: ProjectTasksProp) => {
                           status: false,
                         },
                       });
-                      message.success("Mark as complete");
+                      message.success("Mark as in progress");
                     } catch {
                       message.error("Action failed");
                     }
@@ -162,7 +162,7 @@ export const ProjectTasks = ({ project }: ProjectTasksProp) => {
                           status: true,
                         },
                       });
-                      message.success("Mark as in progress");
+                      message.success("Mark as completed");
                     } catch {
                       message.error("Action failed");
                     }

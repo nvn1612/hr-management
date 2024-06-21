@@ -10,7 +10,10 @@
   display: flex;
   gap: var(--gap-l);
   flex-direction: column;
-  .edit-task-btn {
+  .edit-acti-btn {
     color: var(--success-color);
+  }
+  .delete-acti-btn {
+    color: var(--warning-color);
   }
 }

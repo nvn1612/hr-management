@@ -275,7 +275,7 @@ const projectServices = hrManagementApi.injectEndpoints({
       },
       transformResponse: (response: Response<ProjectReportResp>) =>
         response.data,
-      providesTags: ["activity"],
+      providesTags: ["activity", "task"],
     }),
     getProjectStaffs: build.query<
       GetUserResp,
@@ -392,7 +392,7 @@ const projectServices = hrManagementApi.injectEndpoints({
     >({
       query({ activityId }) {
         return {
-          url: `/activities/update/${activityId}`,
+          url: `/activities/admin/delete/${activityId}`,
           method: "DELETE",
           headers: {
             authorization: accessToken(),

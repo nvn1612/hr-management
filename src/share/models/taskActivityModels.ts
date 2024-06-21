@@ -1,3 +1,5 @@
+import type { User } from "./accountModels";
+
 export interface Task {
   task_id: string;
   description: string;
@@ -22,11 +24,7 @@ export interface Activity {
   createdBy?: string;
   modifiedBy?: string;
   createdAt?: string;
-  ActivityProperty?: {
-    activity_property_id?: string;
-    user_property_id?: string;
-    activity_id?: string;
-  };
+  user?: User;
 }
 
 export interface ActivityResp {

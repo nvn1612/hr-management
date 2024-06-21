@@ -6,18 +6,18 @@ export interface Project {
   name?: string;
   projectCode?: string;
   description?: string;
-  startAt?: string;
-  endAt?: string;
+  startAt?: string | Dayjs;
+  endAt?: string | Dayjs;
   turnover?: boolean;
   document?: string[];
   investor?: string;
   createdBy?: string;
   modifiedBy?: string;
-  createdAt?: string;
+  createdAt?: string | Dayjs;
   project_manager_id?: string;
   department_id?: string;
-  total_staff: string;
-  total_task: {
+  total_staff?: string;
+  total_task?: {
     total_task_is_done: string;
     total_task_is_not_done: string;
   };
@@ -30,9 +30,9 @@ export interface Project {
     phone: string;
     createdBy: string;
     modifiedBy: string;
-    createdAt: string;
-    updatedAt: string;
-    deletedAt: string;
+    createdAt: string | Dayjs;
+    updatedAt: string | Dayjs;
+    deletedAt: string | Dayjs;
     deletedMark: boolean;
   };
 }
