@@ -1,13 +1,12 @@
-import { RoleResp } from "../models/accountModels";
-export interface getDepartmentsResp{
-  total?:number;
+import { RoleResp, User } from "src/share/models/accountModels";
+export interface getDepartmentsResp {
+  total?: number;
   nextPage?: boolean;
   peviousPage?: boolean;
   currentPage?: number;
   itemsPerPage?: number;
   departments?: Department[];
 }
-
 
 export interface Department2 {
   department_id?: string;
@@ -16,15 +15,15 @@ export interface Department2 {
   createdBy?: string;
   createdAt?: string;
   manager_id?: string;
-  information?: Information[];
+  manager_info: User;
 }
 
-export interface Information{
+export interface Information {
   total_staff?: number;
   manager?: Manager;
 }
 
-export interface Manager{
+export interface Manager {
   user_id?: string;
   username?: string;
   email?: string;
@@ -38,7 +37,6 @@ export interface Manager{
   userProperty?: UserProperty;
 }
 
-
 export interface Department {
   department_id?: string;
   name?: string;
@@ -49,22 +47,22 @@ export interface Department {
   information?: information;
 }
 
-export interface information{
-    total_staff?: number;
-    manager?: manager;
+export interface information {
+  total_staff?: number;
+  manager?: manager;
 }
-export interface manager{
-    user_id?: string;
-    username?: string;
-    email?: string;
-    phone?: string;
-    avatar?: string;
-    name?: string;
-    birthday?: string;
-    createdAt?: string;
-    createBy?: string;
-    deletedMark?: boolean;
-    userProperty?: UserProperty;
+export interface manager {
+  user_id?: string;
+  username?: string;
+  email?: string;
+  phone?: string;
+  avatar?: string;
+  name?: string;
+  birthday?: string;
+  createdAt?: string;
+  createBy?: string;
+  deletedMark?: boolean;
+  userProperty?: UserProperty;
 }
 
 export interface UserProperty {

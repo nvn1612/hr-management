@@ -17,6 +17,9 @@ import "./modal-departments.css";
 import { TabProjectDepartment } from "./tab-project-departments";
 import { randAvaBg } from "src/share/utils";
 import { TabReportDepartment } from "./tab-report-department";
+import { UserRole } from "src/share/models";
+
+
 
 type ModalDepartmentsProps = {
   visible: boolean;
@@ -24,7 +27,7 @@ type ModalDepartmentsProps = {
   department?: Department;
   departmentDetail?: Department2;
   closeModal: () => void;
-  role?: string;
+  role?: UserRole;
   isModal: boolean;
 };
 
@@ -112,7 +115,7 @@ export const ModalDepartments = ({
                       ) : null}
                       <p>
                         {role === "MANAGER"
-                          ? departmentDetail?.information?.[0].manager?.name
+                          ? departmentDetail?.manager_info?.username
                           : department?.information?.manager?.user_id
                             ? department.information?.manager?.name
                             : "No Manager"}

@@ -16,9 +16,6 @@ import { useRoleChecker } from "src/share/hooks";
 
 import type { TabsProps, PaginationProps } from "antd";
 import { OUserRole, type Project } from "src/share/models";
-import { localStorageUtil } from "src/share/utils";
-
-const role = localStorageUtil.get("role");
 export const Projects = () => {
   const [openProjectTab, setOpenProjectTab] = useState<boolean>(false);
   const [selectedProject, setSelectedProject] = useState<Project | undefined>();
@@ -48,7 +45,7 @@ export const Projects = () => {
 
   const subRefetch = () => {
     setSelectedProject((oldState) => {
-      if (role === OUserRole.Admin) {
+      if (checkRole(OUserRole.Admin)) {
         return allProject?.data.find(
           (newState) => newState.project_id === oldState?.project_id
         );
@@ -118,7 +115,7 @@ export const Projects = () => {
           title='Projects'
           addBtnContent='Create Project'
           itemCount={
-            role === OUserRole.Admin
+            checkRole(OUserRole.Admin)
               ? allProject?.total
               : departmentProject?.total
           }
@@ -142,15 +139,14 @@ export const Projects = () => {
               position: "bottom",
               align: "center",
               pageSize: 10,
-              total:
-                role === OUserRole.Admin
-                  ? allProject?.total
-                  : departmentProject?.total,
+              total: checkRole(OUserRole.Admin)
+                ? allProject?.total
+                : departmentProject?.total,
               onChange: onChangePage,
               showSizeChanger: false,
             }}
             dataSource={
-              role === OUserRole.Admin
+              checkRole(OUserRole.Admin)
                 ? allProject?.data
                 : departmentProject?.data
             }
@@ -168,13 +164,13 @@ export const Projects = () => {
                           projectName={project?.name}
                           description={project.description}
                           information={{
-                            total_user: parseFloat(project.total_staff),
+                            total_user: parseFloat(project.total_staff!),
                             total_task: {
                               total_task_is_done: parseFloat(
-                                project.total_task.total_task_is_done
+                                project.total_task!.total_task_is_done
                               ),
                               total_task_is_not_done: parseFloat(
-                                project.total_task.total_task_is_not_done
+                                project.total_task!.total_task_is_not_done
                               ),
                             },
                           }}
@@ -195,7 +191,7 @@ export const Projects = () => {
           setOpenProjectTab(false);
         }}
         footer={
-          !(role === OUserRole.Staff) && !isCreate
+          !checkRole(OUserRole.Staff) && !isCreate
             ? [
                 <Popconfirm
                   key={1}

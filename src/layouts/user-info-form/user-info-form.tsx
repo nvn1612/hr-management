@@ -43,7 +43,7 @@ export const UserInfoForm = ({
     }
     switch (action) {
       case "detail": {
-        const sentValues = {
+        const sentValues: User = {
           ...values,
           username: values.username ? values.username : "",
         };
@@ -66,6 +66,8 @@ export const UserInfoForm = ({
           username: values.username!,
           email: values.email,
           role: values.role!,
+          birthday: values.birthday,
+          phone: values.phone || "",
         };
         await createUser(sentValues)
           .unwrap()

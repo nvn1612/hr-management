@@ -20,11 +20,13 @@ export interface User {
   birthday?: string | Dayjs;
   createdAt?: string;
   createBy?: string;
-  role?: {
-    name: UserRole;
-    role_id: string;
-  };
-  department_id: string;
+  role?:
+    | {
+        name: UserRole;
+        role_id: string;
+      }
+    | UserRole;
+  department_id?: string;
 }
 
 export interface GetUserResp {
@@ -58,4 +60,6 @@ export interface CreateUserPartial {
   password: string;
   role: UserRole;
   department_id?: string;
+  phone?: string;
+  birthday?: string | Dayjs;
 }
