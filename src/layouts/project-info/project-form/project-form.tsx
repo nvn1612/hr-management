@@ -20,7 +20,7 @@ import {
 import dayjs, { Dayjs } from "dayjs";
 import { useRoleChecker } from "src/share/hooks";
 
-import { OUserRole, type Project } from "src/share/models";
+import { OUserRole, type Project, type RoleResponse } from "src/share/models";
 import type { FormProps } from "antd";
 
 interface ProjectFormProps {
@@ -64,8 +64,8 @@ export const ProjectForm = ({
     if (values.startAt) {
       values.startAt = (values.startAt as Dayjs).add(1, "day");
     }
-    if (userDetail?.role?.name === OUserRole.Manager) {
-      values.department_id = userDetail.department_id;
+    if ((userDetail?.role as RoleResponse).name === OUserRole.Manager) {
+      values.department_id = userDetail?.department_id;
     }
     if (!project) {
       await createProject(values)
@@ -122,7 +122,7 @@ export const ProjectForm = ({
         size='large'
         tip='Take your time'
       >
-        {project && userDetail?.role?.name !== OUserRole.Staff && (
+        {project && (userDetail?.role as RoleResponse).name !== OUserRole.Staff && (
           <Checkbox
             checked={editableForm}
             onChange={() => setEditableForm(!editableForm)}

@@ -18,7 +18,6 @@ import locale from "antd/es/date-picker/locale/vi_VN";
 import {
   EditOutlined,
   CalendarOutlined,
-  DownOutlined,
   SaveOutlined,
   DeleteOutlined,
 } from "@ant-design/icons";
@@ -248,9 +247,6 @@ export const TaskForm = ({
                   {taskDeadline
                     ? (taskDeadline as Dayjs).tz("Asia/Bangkok").toString()
                     : "Select deadline"}
-                  <DownOutlined
-                    style={{ fontSize: "15px", marginLeft: "5px" }}
-                  />
                 </span>
               </div>
             </div>
@@ -296,7 +292,6 @@ export const TaskForm = ({
                         (staff) => staff.user_id === taskAssginedUser
                       )?.username
                   : "Unassgined"}
-                <DownOutlined style={{ fontSize: "15px", marginLeft: "5px" }} />
               </div>
             </div>
           </div>

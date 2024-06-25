@@ -41,14 +41,16 @@
       flex-direction: column;
       justify-content: start;
       align-items: flex-start;
+      background-color: var(--gray-color);
       .task-date-picker {
         width: 250px;
         height: 70px;
-        border-radius: var(--rounded-border);
         cursor: pointer;
         transition-duration: 300ms;
+        border: solid 1px var(--gray-color);
+        border-bottom: solid 1px var(--white-color);
         &:hover {
-          background: var(--gray-color);
+          border: solid 1px var(--primary-color);
         }
         .task-update-date {
           position: absolute;

@@ -1,32 +1,18 @@
 import "./task-workspace.css";
-import {
-  Button,
-  Input,
-  List,
-  Upload,
-  message,
-  Typography,
-  Popover,
-} from "antd";
-import {
-  UploadOutlined,
-  ArrowRightOutlined,
-  EditOutlined,
-  DeleteOutlined,
-} from "@ant-design/icons";
+import { Button, Input, List, Upload, message, Typography } from "antd";
+import { UploadOutlined, ArrowRightOutlined } from "@ant-design/icons";
 import {
   useCreateActivityMutation,
   useGetTaskActivityQuery,
   useGetTaskFileMutation,
-  useUpdateActivityMutation,
-  useDeleteActivityMutation,
+  useGetUserDetailQuery,
 } from "src/share/services";
 
-import { OUserRole, type Task } from "src/share/models";
+import { ActivityItem } from "./activity-item";
+import { type Task } from "src/share/models";
 import { UploadProps } from "antd";
 import { localStorageUtil } from "src/share/utils";
 import { useEffect, useState } from "react";
-import { useRoleChecker } from "src/share/hooks";
 
 interface WorkspaceProps {
   task: Task;
@@ -37,9 +23,6 @@ const baseApi = import.meta.env.VITE_REQUEST_API_URL;
 export const TaskWorkspace = ({ task }: WorkspaceProps) => {
   const [fileLinks, setFileLinks] = useState<string[]>([]);
   const [actiDesc, setActiDesc] = useState<string>("");
-  const [actiId, setActiId] = useState<string>("");
-
-  const checkRole = useRoleChecker();
 
   const uploadProps: UploadProps = {
     action: `${baseApi}tasks/upload-file-from-local/${task?.task_id}`,
@@ -50,15 +33,14 @@ export const TaskWorkspace = ({ task }: WorkspaceProps) => {
       if (info.file.status === "done") {
         message.success(`file uploaded successfully`);
       } else if (info.file.status === "error") {
-        message.error(`file too large or bad internet`);
+        message.error(`file is too large or bad connection`);
       }
     },
   };
 
+  const { data: userDetail } = useGetUserDetailQuery();
   const [getFile] = useGetTaskFileMutation();
   const [createActivity] = useCreateActivityMutation();
-  const [updateActivity] = useUpdateActivityMutation();
-  const [deleteActivity] = useDeleteActivityMutation();
   const { data: activityData } = useGetTaskActivityQuery({
     taskId: task?.task_id,
     items_per_page: "ALL",
@@ -109,34 +91,19 @@ export const TaskWorkspace = ({ task }: WorkspaceProps) => {
             setActiDesc(e.target.value);
           }}
         />
-        <div className='new-task-btn-sec'>
+        <div className='new-acti-btn-sec'>
           <Button
             type='primary'
             onClick={() => {
-              if (!actiId) {
-                createActivity({
-                  description: actiDesc,
-                  task_id: task?.task_id,
-                })
-                  .unwrap()
-                  .then(() => message.success("New activity is created"))
-                  .catch(() => message.error("Failed to create activity"));
-              } else {
-                updateActivity({
-                  activityId: actiId,
-                  value: { description: actiDesc },
-                })
-                  .unwrap()
-                  .then(() => {
-                    message.success("Successful updated activity");
-                    setActiId("");
-                    setActiDesc("");
-                  })
-                  .catch(() => message.error("Failed to update activity"));
-              }
+              createActivity({
+                description: actiDesc,
+                task_id: task?.task_id,
+              })
+                .unwrap()
+                .then(() => message.success("New activity is created"))
+                .catch(() => message.error("Failed to create activity"));
             }}
           >
-            {actiId ? "Update" : "Create"}
             <ArrowRightOutlined />
           </Button>
         </div>
@@ -145,57 +112,7 @@ export const TaskWorkspace = ({ task }: WorkspaceProps) => {
             style={{ width: "100%" }}
             dataSource={activityData ? activityData : []}
             renderItem={(activity) => (
-              <List.Item
-                actions={
-                  !checkRole(OUserRole.Admin)
-                    ? [
-                        <Popover content={"Edit"}>
-                          <EditOutlined
-                            className='edit-task-btn'
-                            onClick={() => {
-                              setActiId(activity.activity_id!);
-                              setActiDesc(activity.description || "");
-                            }}
-                          />
-                        </Popover>,
-                      ]
-                    : [
-                        <Popover content={"Edit"}>
-                          <EditOutlined
-                            className='edit-acti-btn'
-                            onClick={() => {
-                              setActiId(activity.activity_id!);
-                              setActiDesc(activity.description || "");
-                            }}
-                          />
-                        </Popover>,
-                        <Popover content={"Delete"}>
-                          <DeleteOutlined
-                            className='delete-acti-btn'
-                            onClick={() => {
-                              deleteActivity({
-                                activityId: activity.activity_id,
-                              })
-                                .unwrap()
-                                .then(() =>
-                                  message.success(
-                                    "Successfully delete activity"
-                                  )
-                                )
-                                .catch(() =>
-                                  message.error("Failed to delete activity")
-                                );
-                            }}
-                          />
-                        </Popover>,
-                      ]
-                }
-              >
-                <List.Item.Meta
-                  title={`${activity.createdAt?.substring(0, 10)} by ${activity.user?.username}`}
-                  description={activity.description}
-                />
-              </List.Item>
+              <ActivityItem activity={activity} uid={userDetail?.user_id!} />
             )}
           />
         )}
