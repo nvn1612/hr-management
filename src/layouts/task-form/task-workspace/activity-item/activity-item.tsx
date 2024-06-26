@@ -15,7 +15,7 @@ interface ActiItemProp {
 }
 
 export const ActivityItem = ({ activity, uid }: ActiItemProp) => {
-  const [editActi, setEditActi] = useState<boolean>();
+  const [editActi, setEditActi] = useState<boolean>(false);
   const [actiDesc, setActiDesc] = useState<string>(activity.description || "");
 
   const checkRole = useRoleChecker();
@@ -27,18 +27,8 @@ export const ActivityItem = ({ activity, uid }: ActiItemProp) => {
     <>
       <List.Item
         actions={
-          !checkRole(OUserRole.Admin) || uid !== activity.user?.user_id
+          checkRole(OUserRole.Admin) || uid === activity.user?.user_id
             ? [
-                <Popover content={"Edit"}>
-                  <EditOutlined
-                    className='edit-task-btn'
-                    onClick={() => {
-                      setEditActi(true);
-                    }}
-                  />
-                </Popover>,
-              ]
-            : [
                 <Popover content={"Edit"}>
                   <EditOutlined
                     className='edit-acti-btn'
@@ -65,28 +55,43 @@ export const ActivityItem = ({ activity, uid }: ActiItemProp) => {
                   />
                 </Popover>,
               ]
+            : [
+                <Popover content={"Edit"}>
+                  <EditOutlined
+                    className='edit-acti-btn'
+                    onClick={() => {
+                      setEditActi(true);
+                    }}
+                  />
+                </Popover>,
+              ]
         }
       >
         <List.Item.Meta
           title={activity.description}
           description={`${activity.createdAt?.substring(0, 10)} by ${activity.user?.username}`}
         />
-        {editActi ?? (
-          <Input
-            value={actiDesc}
-            onChange={(e) => {
-              setActiDesc(e.currentTarget.value);
-            }}
-            onPressEnter={async () => {
-              await updateActivity({
-                value: { description: actiDesc },
-                activityId: activity.activity_id,
-              });
-              setEditActi(false);
-            }}
-          />
-        )}
       </List.Item>
+      {editActi && (
+        <Input
+          className='update-acti-input'
+          value={actiDesc}
+          onChange={(e) => {
+            setActiDesc(e.currentTarget.value);
+          }}
+          onPressEnter={async () => {
+            await updateActivity({
+              value: { description: actiDesc },
+              activityId: activity.activity_id,
+            })
+              .then(() => {
+                message.success("Activity's updated");
+              })
+              .catch(() => message.error("Failed to update activity"));
+            setEditActi(false);
+          }}
+        />
+      )}
     </>
   );
 };
