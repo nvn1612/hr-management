@@ -219,41 +219,43 @@ export const TaskForm = ({
             {action === "update" && <TaskWorkspace task={task!} />}
           </div>
           <div className='side-sec'>
-            <div className='task-date-picker'>
-              <Form.Item<TaskFormFields>
-                name={"deadline"}
-                className='task-update-date'
-              >
-                <DatePicker
-                  className='task-datepicker'
-                  inputReadOnly
-                  suffixIcon={""}
-                  style={{
-                    width: "250px",
-                    height: "70px",
-                  }}
-                  size='large'
-                  locale={locale}
-                />
-              </Form.Item>
-              <div
-                className='task-update-date-displayer'
-                style={{ width: "250px", height: "70px" }}
-              >
-                <CalendarOutlined
-                  style={{ fontSize: "20px", marginRight: "5px" }}
-                />
-                <span>
-                  {taskDeadline
-                    ? (taskDeadline as Dayjs).tz("Asia/Bangkok").toString()
-                    : "Select deadline"}
-                </span>
+            {task && (
+              <div className='task-picker'>
+                <Form.Item<TaskFormFields>
+                  name={"deadline"}
+                  className='task-update'
+                >
+                  <DatePicker
+                    className='task-datepicker'
+                    inputReadOnly
+                    suffixIcon={""}
+                    style={{
+                      width: "250px",
+                      height: "70px",
+                    }}
+                    size='large'
+                    locale={locale}
+                  />
+                </Form.Item>
+                <div
+                  className='task-update-date-displayer'
+                  style={{ width: "250px", height: "70px" }}
+                >
+                  <CalendarOutlined
+                    style={{ fontSize: "20px", marginRight: "5px" }}
+                  />
+                  <span>
+                    {taskDeadline
+                      ? (taskDeadline as Dayjs).tz("Asia/Bangkok").toString()
+                      : "Select deadline"}
+                  </span>
+                </div>
               </div>
-            </div>
-            <div className='task-date-picker'>
+            )}
+            <div className='task-picker'>
               <Form.Item<TaskFormFields>
                 name={"assignedStaff"}
-                className='task-update-date'
+                className='task-update'
               >
                 <Select
                   style={{

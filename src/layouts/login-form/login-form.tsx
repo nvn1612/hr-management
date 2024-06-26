@@ -54,7 +54,7 @@ export const LoginForm = () => {
             name='username'
             rules={[{ required: true, message: "Username is required" }]}
           >
-            <Input placeholder='Username' />
+            <Input placeholder='Email' />
           </Form.Item>
           <Form.Item<LoginFieldType>
             name='password'

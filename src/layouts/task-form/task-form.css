@@ -42,7 +42,7 @@
       justify-content: start;
       align-items: flex-start;
       background-color: var(--gray-color);
-      .task-date-picker {
+      .task-picker {
         width: 250px;
         height: 70px;
         cursor: pointer;
@@ -52,7 +52,7 @@
         &:hover {
           border: solid 1px var(--primary-color);
         }
-        .task-update-date {
+        .task-update {
           position: absolute;
           z-index: 1;
           opacity: 0;

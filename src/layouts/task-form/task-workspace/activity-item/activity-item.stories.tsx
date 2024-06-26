@@ -30,6 +30,6 @@ export const Default: Story = {
         username: "supeAdmin",
       },
     },
-    uid: "abcd123",
+    uid: "abcdefghijklmnopqrstuvwxyz",
   },
 };
