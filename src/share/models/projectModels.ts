@@ -75,24 +75,9 @@ export interface Assignment {
   status?: boolean;
   createdBy?: string;
   createdAt?: string | Dayjs;
-  task_information?: Task;
-  user_information?: {
-    user_id?: string;
-    username?: string;
-    password?: string;
-    email?: string;
-    status: boolean;
-    phone?: string;
-    avatar?: string;
-    name?: string;
-    birthday?: string;
-    createdBy?: string;
-    modifiedBy?: string;
-    createdAt?: string;
-    updatedAt?: string;
-    deletedAt?: string;
-    deletedMark: boolean;
-  };
+  task?: Task;
+  user?: User;
+  project?: Project;
 }
 
 export interface AssignmentResp {

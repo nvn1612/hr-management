@@ -1,5 +1,5 @@
 import "./activity-items.css";
-import { List, Input, Popover, message } from "antd";
+import { List, Input, Popover, message, Space, Button } from "antd";
 import { useState } from "react";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useRoleChecker } from "src/share/hooks";
@@ -11,7 +11,7 @@ import {
 
 interface ActiItemProp {
   activity: Activity;
-  uid: string;
+  uid: string | undefined;
 }
 
 export const ActivityItem = ({ activity, uid }: ActiItemProp) => {
@@ -25,72 +25,85 @@ export const ActivityItem = ({ activity, uid }: ActiItemProp) => {
 
   return (
     <>
-      <List.Item
-        actions={
-          checkRole(OUserRole.Admin) || uid === activity.user?.user_id
-            ? [
-                <Popover content={"Edit"}>
-                  <EditOutlined
-                    className='edit-acti-btn'
-                    onClick={() => {
-                      setEditActi(true);
-                    }}
-                  />
-                </Popover>,
-                <Popover content={"Delete"}>
-                  <DeleteOutlined
-                    className='delete-acti-btn'
-                    onClick={() => {
-                      deleteActivity({
-                        activityId: activity.activity_id,
-                      })
-                        .unwrap()
-                        .then(() =>
-                          message.success("Successfully delete activity")
-                        )
-                        .catch(() =>
-                          message.error("Failed to delete activity")
-                        );
-                    }}
-                  />
-                </Popover>,
-              ]
-            : [
-                <Popover content={"Edit"}>
-                  <EditOutlined
-                    className='edit-acti-btn'
-                    onClick={() => {
-                      setEditActi(true);
-                    }}
-                  />
-                </Popover>,
-              ]
-        }
-      >
-        <List.Item.Meta
-          title={activity.description}
-          description={`${activity.createdAt?.substring(0, 10)} by ${activity.user?.username}`}
-        />
-      </List.Item>
-      {editActi && (
-        <Input
-          className='update-acti-input'
-          value={actiDesc}
-          onChange={(e) => {
-            setActiDesc(e.currentTarget.value);
-          }}
-          onPressEnter={async () => {
-            await updateActivity({
-              value: { description: actiDesc },
-              activityId: activity.activity_id,
-            })
-              .then(() => {
-                message.success("Activity's updated");
+      {editActi ? (
+        <Space.Compact style={{ width: "100%" }}>
+          <Input
+            className='update-acti-input'
+            value={actiDesc}
+            onChange={(e) => {
+              setActiDesc(e.currentTarget.value);
+            }}
+            onPressEnter={(e) => {
+              e.preventDefault();
+            }}
+          />
+          <Button
+            type='primary'
+            onClick={async (e) => {
+              e.preventDefault();
+              await updateActivity({
+                value: { description: actiDesc },
+                activityId: activity.activity_id,
               })
-              .catch(() => message.error("Failed to update activity"));
-            setEditActi(false);
-          }}
-        />
+                .then(() => {
+                  message.success("Activity's updated");
+                })
+                .catch(() => message.error("Failed to update activity"));
+              setEditActi(false);
+            }}
+          >
+            Update
+          </Button>
+          <Button onClick={() => setEditActi(false)}>Cancel</Button>
+        </Space.Compact>
+      ) : (
+        <List.Item
+          actions={
+            checkRole(OUserRole.Admin) || uid === activity.user?.user_id
+              ? [
+                  <Popover content={"Edit"}>
+                    <EditOutlined
+                      className='edit-acti-btn'
+                      onClick={() => {
+                        setEditActi(true);
+                      }}
+                    />
+                  </Popover>,
+                  <Popover content={"Delete"}>
+                    <DeleteOutlined
+                      className='delete-acti-btn'
+                      onClick={() => {
+                        deleteActivity({
+                          activityId: activity.activity_id,
+                        })
+                          .unwrap()
+                          .then(() =>
+                            message.success("Successfully delete activity")
+                          )
+                          .catch(() =>
+                            message.error("Failed to delete activity")
+                          );
+                      }}
+                    />
+                  </Popover>,
+                ]
+              : [
+                  <Popover content={"Edit"}>
+                    <EditOutlined
+                      className='edit-acti-btn'
+                      onClick={() => {
+                        setEditActi(true);
+                      }}
+                    />
+                  </Popover>,
+                ]
+          }
+        >
+          <List.Item.Meta
+            title={activity.description}
+            description={`${activity.createdAt?.substring(0, 10)} by ${activity.user?.username}`}
+          />
+        </List.Item>
       )}
     </>
   );

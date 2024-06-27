@@ -112,7 +112,7 @@ export const TaskWorkspace = ({ task }: WorkspaceProps) => {
             style={{ width: "100%" }}
             dataSource={activityData ? activityData : []}
             renderItem={(activity) => (
-              <ActivityItem activity={activity} uid={userDetail?.user_id!} />
+              <ActivityItem activity={activity} uid={userDetail?.user_id} />
             )}
           />
         )}

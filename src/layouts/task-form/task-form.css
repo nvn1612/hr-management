@@ -58,8 +58,12 @@
           opacity: 0;
         }
       }
-      .task-update-date-displayer {
-        padding: var(--padding-s);
+      .task-update-displayer {
+        display: flex;
+        justify-content: start;
+        align-items: center;
+        gap: var(--gap-s);
+        padding-left: var(--padding-s);
         cursor: pointer;
         position: absolute;
         word-break: break-all;

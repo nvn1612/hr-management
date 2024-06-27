@@ -20,6 +20,7 @@ import {
   CalendarOutlined,
   SaveOutlined,
   DeleteOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
 import dayjs, { Dayjs } from "dayjs";
 import { useEffect, useState } from "react";
@@ -43,6 +44,7 @@ import { useRoleChecker } from "src/share/hooks";
 import { TaskWorkspace } from "./task-workspace";
 
 import type { FormProps } from "antd";
+import { randAvaBg } from "src/share/utils";
 
 dayjs.extend(timezone);
 dayjs.extend(utc);
@@ -71,7 +73,10 @@ export const TaskForm = ({
   task,
 }: TaskFormProps) => {
   const checkRole = useRoleChecker();
-  const [editDesc, setEditDesc] = useState<boolean>(false);
+  const [editDesc, setEditDesc] = useState<boolean>(() => {
+    if (task) return true;
+    return false;
+  });
 
   const [form] = Form.useForm();
   const taskDesc = Form.useWatch("description", form);
@@ -219,7 +224,7 @@ export const TaskForm = ({
             {action === "update" && <TaskWorkspace task={task!} />}
           </div>
           <div className='side-sec'>
-            {task && (
+            {action === "update" && (
               <div className='task-picker'>
                 <Form.Item<TaskFormFields>
                   name={"deadline"}
@@ -238,11 +243,16 @@ export const TaskForm = ({
                   />
                 </Form.Item>
                 <div
-                  className='task-update-date-displayer'
+                  className='task-update-displayer'
                   style={{ width: "250px", height: "70px" }}
                 >
                   <CalendarOutlined
-                    style={{ fontSize: "20px", marginRight: "5px" }}
+                    style={{
+                      fontSize: "25px",
+                      marginRight: "5px",
+                      marginTop: "auto",
+                      marginBottom: "auto",
+                    }}
                   />
                   <span>
                     {taskDeadline
@@ -262,7 +272,6 @@ export const TaskForm = ({
                     width: "250px",
                     height: "70px",
                   }}
-                  onChange={() => console.log(taskAssginedUser)}
                   options={
                     project.department_id
                       ? departmentStaff?.users.map((staff) => {
@@ -281,10 +290,19 @@ export const TaskForm = ({
                 />
               </Form.Item>
               <div
-                className='task-update-date-displayer'
+                className='task-update-displayer'
                 style={{ width: "250px", height: "70px" }}
               >
-                <Avatar style={{ fontSize: "20px", marginRight: "5px" }} />
+                <Avatar
+                  className='assignedUserAvatar'
+                  {...(assignment?.user
+                    ? {
+                        ...(assignment.user.avatar
+                          ? { src: assignment.user.avatar }
+                          : { style: { background: randAvaBg() } }),
+                      }
+                    : { icon: <UserOutlined /> })}
+                />
                 {(taskAssginedUser as string)
                   ? project.department_id
                     ? departmentStaff?.users.find(
