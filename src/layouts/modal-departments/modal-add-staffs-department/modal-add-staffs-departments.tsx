@@ -193,9 +193,11 @@ export const ModalAddStaffsDepartment = ({
                       <List.Item.Meta
                         avatar={
                           <Avatar
-                            {...(!item?.avatar && {
-                              style: { background: randAvaBg() },
-                            })}
+                            {...(!item?.avatar
+                              ? {
+                                  style: { background: randAvaBg() },
+                                }
+                              : { src: item.avatar })}
                             size={25}
                           >
                             {!item?.avatar &&
@@ -232,9 +234,11 @@ export const ModalAddStaffsDepartment = ({
                       <List.Item.Meta
                         avatar={
                           <Avatar
-                            {...(!item?.avatar && {
-                              style: { background: randAvaBg() },
-                            })}
+                            {...(!item?.avatar
+                              ? {
+                                  style: { background: randAvaBg() },
+                                }
+                              : { src: item.avatar })}
                             size={25}
                           >
                             {!item?.avatar &&

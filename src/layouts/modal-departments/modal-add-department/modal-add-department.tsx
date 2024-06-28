@@ -139,9 +139,14 @@ export const ModalAddDepartment = ({
                 <List.Item.Meta
                   avatar={
                     <Avatar
-                      {...(item?.avatar && {
-                        style: { background: randAvaBg(), fontSize: "25px" },
-                      })}
+                      {...(item?.avatar
+                        ? {
+                            style: {
+                              background: randAvaBg(),
+                              fontSize: "25px",
+                            },
+                          }
+                        : { src: item.avatar })}
                       size={50}
                     >
                       {!item?.avatar &&
@@ -174,9 +179,14 @@ export const ModalAddDepartment = ({
                 <List.Item.Meta
                   avatar={
                     <Avatar
-                      {...(item?.avatar && {
-                        style: { background: randAvaBg(), fontSize: "25px" },
-                      })}
+                      {...(item?.avatar
+                        ? {
+                            style: {
+                              background: randAvaBg(),
+                              fontSize: "25px",
+                            },
+                          }
+                        : { src: item.avatar })}
                       size={50}
                     >
                       {!item?.avatar &&

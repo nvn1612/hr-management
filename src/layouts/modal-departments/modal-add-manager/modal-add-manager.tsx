@@ -94,12 +94,14 @@ export const ModalAddManager = ({
                       </div>
                       <div className='avatar-manager'>
                         <Avatar
-                          {...(!manager?.avatar && {
-                            style: {
-                              background: randAvaBg(),
-                              fontSize: "25px",
-                            },
-                          })}
+                          {...(!manager?.avatar
+                            ? {
+                                style: {
+                                  background: randAvaBg(),
+                                  fontSize: "25px",
+                                },
+                              }
+                            : { src: manager.avatar })}
                           size={50}
                         >
                           {!manager?.avatar &&

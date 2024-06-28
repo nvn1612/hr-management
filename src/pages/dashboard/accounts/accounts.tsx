@@ -115,6 +115,7 @@ export const Accounts = () => {
                           }}
                           username={user.username}
                           email={user.email}
+                          avatar={user.avatar}
                         />
                       </List.Item>
                     );

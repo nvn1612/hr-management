@@ -56,7 +56,7 @@ export const UserInfo = () => {
           <Avatar
             size={128}
             {...(data?.avatar
-              ? { src: `${avatar}` }
+              ? { src: `${data.avatar}` }
               : { style: { background: randAvaBg(), fontSize: 64 } })}
           >
             {!data?.avatar &&

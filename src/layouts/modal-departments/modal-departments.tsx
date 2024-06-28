@@ -19,8 +19,6 @@ import { randAvaBg } from "src/share/utils";
 import { TabReportDepartment } from "./tab-report-department";
 import { UserRole } from "src/share/models";
 
-
-
 type ModalDepartmentsProps = {
   visible: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
@@ -102,9 +100,11 @@ export const ModalDepartments = ({
                     >
                       {department?.information?.manager?.user_id ? (
                         <Avatar
-                          {...(!department?.information?.manager?.avatar && {
-                            style: { background: randAvaBg() },
-                          })}
+                          {...(!department?.information?.manager?.avatar
+                            ? {
+                                style: { background: randAvaBg() },
+                              }
+                            : { src: department.information.manager.avatar })}
                           size={25}
                         >
                           {!department?.information?.manager?.avatar &&

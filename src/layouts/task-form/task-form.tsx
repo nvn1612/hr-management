@@ -233,7 +233,6 @@ export const TaskForm = ({
                   <DatePicker
                     className='task-datepicker'
                     inputReadOnly
-                    suffixIcon={""}
                     style={{
                       width: "250px",
                       height: "70px",
@@ -302,7 +301,11 @@ export const TaskForm = ({
                           : { style: { background: randAvaBg() } }),
                       }
                     : { icon: <UserOutlined /> })}
-                />
+                >
+                  {assignment?.user &&
+                    !assignment.user.avatar &&
+                    assignment?.user.username?.substring(0, 1).toUpperCase()}
+                </Avatar>
                 {(taskAssginedUser as string)
                   ? project.department_id
                     ? departmentStaff?.users.find(

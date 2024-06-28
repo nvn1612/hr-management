@@ -43,9 +43,11 @@ export const ModalDepartmentManager = ({
           <div className='layout-1'>
             <Form.Item className='avatar-manager-department'>
               <Avatar
-                {...(!department?.information?.manager?.avatar && {
-                  style: { background: randAvaBg(), fontSize: "80px" },
-                })}
+                {...(!department?.information?.manager
+                  ? {
+                      style: { background: randAvaBg(), fontSize: "80px" },
+                    }
+                  : { src: department.information.manager.avatar })}
                 size={160}
               >
                 {!department?.information?.manager?.avatar &&

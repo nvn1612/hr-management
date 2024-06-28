@@ -5,10 +5,16 @@ import { randAvaBg } from "src/share/utils";
 interface UserCardProps {
   username?: string;
   email?: string;
+  avatar?: string;
   onClick?: () => void;
 }
 
-export const UserCard = ({ username, email, onClick }: UserCardProps) => {
+export const UserCard = ({
+  username,
+  email,
+  avatar,
+  onClick,
+}: UserCardProps) => {
   const { Meta } = Card;
   return (
     <Card
@@ -19,8 +25,13 @@ export const UserCard = ({ username, email, onClick }: UserCardProps) => {
     >
       <Meta
         avatar={
-          <Avatar size={64} style={{ background: randAvaBg(), fontSize: 32 }}>
-            {username?.substring(0, 1).toUpperCase()}
+          <Avatar
+            size={64}
+            {...(avatar
+              ? { src: avatar }
+              : { style: { background: randAvaBg(), fontSize: 32 } })}
+          >
+            {!avatar && username?.substring(0, 1).toUpperCase()}
           </Avatar>
         }
         title={username}

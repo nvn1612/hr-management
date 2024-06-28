@@ -1,5 +1,5 @@
 import "./activity-items.css";
-import { List, Input, Popover, message, Space, Button } from "antd";
+import { List, Input, Popover, message, Space, Button, Avatar } from "antd";
 import { useState } from "react";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useRoleChecker } from "src/share/hooks";
@@ -8,6 +8,7 @@ import {
   useUpdateActivityMutation,
   useDeleteActivityMutation,
 } from "src/share/services";
+import { randAvaBg } from "src/share/utils";
 
 interface ActiItemProp {
   activity: Activity;
@@ -100,6 +101,16 @@ export const ActivityItem = ({ activity, uid }: ActiItemProp) => {
           }
         >
           <List.Item.Meta
+            avatar={
+              <Avatar
+                {...(activity.user?.avatar
+                  ? { src: activity.user.avatar }
+                  : { style: { background: randAvaBg() } })}
+              >
+                {!activity.user?.avatar &&
+                  activity.user?.username?.substring(0, 1).toLocaleUpperCase()}
+              </Avatar>
+            }
             title={activity.description}
             description={`${activity.createdAt?.substring(0, 10)} by ${activity.user?.username}`}
           />
