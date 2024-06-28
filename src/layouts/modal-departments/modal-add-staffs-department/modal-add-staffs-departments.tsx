@@ -17,7 +17,7 @@ import { useGetUsersQuery } from "src/share/services";
 import { useCreateUserMutation } from "src/share/services";
 import { useAddStaffDepartmentMutation } from "src/share/services";
 import { OUserRole, User } from "src/share/models/accountModels";
-import { Department, Department2 } from "src/share/models";
+import { Department } from "src/share/models";
 import "./modal-add-staffs-departments.css";
 import { randAvaBg } from "src/share/utils";
 import { useRoleChecker } from "src/share/hooks";
@@ -26,7 +26,7 @@ type ModalAddStaffsDepartmentProps = {
   visible: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
   department?: Department;
-  detailDepartment?: Department2;
+  detailDepartment?: Department;
   role?: string;
 };
 

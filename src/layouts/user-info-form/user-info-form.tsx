@@ -4,10 +4,11 @@ import {
   Input,
   Button,
   DatePicker,
-  Checkbox,
   Select,
   Spin,
   message,
+  Row,
+  Col,
 } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 import { useEffect, useState } from "react";
@@ -65,6 +66,7 @@ export const UserInfoForm = ({
           password: values.password!,
           username: values.username!,
           email: values.email,
+          name: values.name,
           role: values.role!,
           birthday: values.birthday,
           phone: values.phone || "",
@@ -115,6 +117,7 @@ export const UserInfoForm = ({
       initValues
         ? {
             ...initValues,
+            role: initValues.role.name,
             birthday: dayjs(
               initValues.birthday
                 ? (initValues.birthday as string).substring(0, 10)
@@ -134,73 +137,90 @@ export const UserInfoForm = ({
         className='account-card-loading'
         size='large'
       >
-        {(action === "detail" || action === "update") && (
-          <Checkbox
-            checked={editableForm}
-            onChange={() => setEditableForm(!editableForm)}
+        <div className='user-form-container'>
+          <Form
+            form={form}
+            disabled={action === "create" ? false : !editableForm}
+            name='user-info'
+            onFinish={onFinish}
+            labelCol={{ span: 4 }}
+            wrapperCol={{ span: 16 }}
+            className='user-form'
           >
-            Edit Infomation
-          </Checkbox>
-        )}
-        <Form
-          form={form}
-          disabled={action === "create" ? false : !editableForm}
-          name='user-info'
-          onFinish={onFinish}
-          labelCol={{ span: 4 }}
-          wrapperCol={{ span: 16 }}
-          className='user-form'
-        >
-          <Form.Item<UserInfoType>
-            label='Username'
-            name='username'
-            rules={[{ required: true, message: "Username is required" }]}
-          >
-            <Input />
-          </Form.Item>
-          {action === "create" && (
             <Form.Item<UserInfoType>
-              label='Password'
-              name='password'
-              rules={[{ required: true, message: "Password is required" }]}
+              label='Username'
+              name='username'
+              rules={[{ required: true, message: "Username is required" }]}
             >
-              <Input.Password placeholder='Password' />
+              <Input />
             </Form.Item>
-          )}
-          <Form.Item<UserInfoType>
-            label='Email'
-            name='email'
-            rules={[{ required: true, message: "Email is required" }]}
-          >
-            <Input />
-          </Form.Item>
+            {action === "create" && (
+              <Form.Item<UserInfoType>
+                label='Password'
+                name='password'
+                rules={[{ required: true, message: "Password is required" }]}
+              >
+                <Input.Password placeholder='Password' />
+              </Form.Item>
+            )}
+            <Form.Item<UserInfoType>
+              label='Email'
+              name='email'
+              rules={[{ required: true, message: "Email is required" }]}
+            >
+              <Input />
+            </Form.Item>
 
-          <>
-            <Form.Item<UserInfoType> label='Name' name='name'>
-              <Input />
-            </Form.Item>
-            <Form.Item<UserInfoType> label='Phone' name='phone'>
-              <Input />
-            </Form.Item>
-            <Form.Item<UserInfoType> label='Birth Day' name={"birthday"}>
-              <DatePicker />
-            </Form.Item>
-          </>
-          {!initValues && (
-            <Form.Item<UserInfoType>
-              label='Role'
-              name='role'
-              rules={[{ required: true, message: "Role is required" }]}
-            >
-              <Select options={userRoleOptions} />
-            </Form.Item>
+            <>
+              <Form.Item<UserInfoType> label='Name' name='name'>
+                <Input />
+              </Form.Item>
+              <Form.Item<UserInfoType> label='Phone' name='phone'>
+                <Input />
+              </Form.Item>
+              <Form.Item<UserInfoType> label='Birth Day' name={"birthday"}>
+                <DatePicker />
+              </Form.Item>
+            </>
+            {!(action === "detail") && (
+              <Form.Item<UserInfoType>
+                label='Role'
+                name='role'
+                rules={[{ required: true, message: "Role is required" }]}
+              >
+                <Select options={userRoleOptions} />
+              </Form.Item>
+            )}
+            {editableForm && (
+              <>
+                <Form.Item wrapperCol={{ offset: 4, span: 20 }}>
+                  <Button type='primary' htmlType='submit'>
+                    {action === "create" ? "Create User" : "Save Changes"}
+                  </Button>
+                  {action === "update" || action === "detail" ? (
+                    <Button
+                      className='user-form-cancel-btn'
+                      onClick={() => setEditableForm(false)}
+                    >
+                      Cancel
+                    </Button>
+                  ) : (
+                    ""
+                  )}
+                </Form.Item>
+              </>
+            )}
+          </Form>
+          {!editableForm && (
+            <Row>
+              <Col offset={4}>
+                <Button type='primary' onClick={() => setEditableForm(true)}>
+                  Update Information
+                </Button>
+              </Col>
+            </Row>
           )}
-          <Form.Item wrapperCol={{ offset: 4 }}>
-            <Button type='primary' htmlType='submit'>
-              {action === "create" ? "Create User" : "Save Changes"}
-            </Button>
-          </Form.Item>
-        </Form>
+        </div>
       </Spin>
     </>
   );

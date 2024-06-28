@@ -7,6 +7,7 @@
   gap: var(--gap-l);
   padding: var(--padding-l);
   border-radius: var(--rounded-border);
+  height: 360px;
   .first-section {
     display: flex;
     justify-content: center;

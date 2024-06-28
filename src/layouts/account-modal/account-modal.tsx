@@ -1,7 +1,7 @@
 import "./account-modal.css";
 import { Modal, Tabs } from "antd";
 import { UserAdvance, UserInfoForm } from "src/layouts";
-import { User } from "src/share/models";
+import { User, RoleResponse } from "src/share/models";
 
 import type { TabsProps } from "antd";
 
@@ -38,7 +38,9 @@ export const AccountModal = ({
         label: "Advanced",
         children: (
           <UserAdvance
-            userRole={selectedAcc?.role?.name}
+            userRole={
+              selectedAcc?.role && (selectedAcc.role as RoleResponse).name
+            }
             userId={selectedAcc?.user_id}
             userEmail={selectedAcc?.email}
           />
@@ -62,9 +64,7 @@ export const AccountModal = ({
       onCancel={() => {
         setOpenAccountTab(false);
       }}
-      onOk={() => {
-        setOpenAccountTab(false);
-      }}
+      footer={[]}
     >
       <Tabs
         defaultActiveKey='1'

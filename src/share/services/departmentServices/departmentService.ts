@@ -4,7 +4,6 @@ import type {
   Response,
   getDepartmentsResp,
   Department,
-  Department2,
   ProjectReportResp,
 } from "src/share/models";
 import { AddDepartmentForm } from "src/share/models/departmentModels";
@@ -134,6 +133,22 @@ export const DepartmentServices = hrManagementApi.injectEndpoints({
       },
       invalidatesTags: ["department", "User"],
     }),
+    updateDepartment: build.mutation<
+      Response<Department>,
+      Partial<{ body: Department; departmentId: string }>
+    >({
+      query({ departmentId, body }) {
+        return {
+          url: `departments/admin/update/${departmentId}`,
+          method: "PUT",
+          headers: {
+            authorization: accessToken(),
+          },
+          body,
+        };
+      },
+      invalidatesTags: ["department", "User"],
+    }),
     addStaffDepartment: build.mutation<
       Response<{ count: number }>,
       { departmentId?: string; listStaff?: (string | undefined)[] }
@@ -152,7 +167,7 @@ export const DepartmentServices = hrManagementApi.injectEndpoints({
       },
       invalidatesTags: ["department", "User"],
     }),
-    getDetailDepartment: build.query<Department2, { departmentId?: string }>({
+    getDetailDepartment: build.query<Department, { departmentId?: string }>({
       query: ({ departmentId }) => {
         return {
           url: `departments/detail/${departmentId}`,
@@ -162,7 +177,7 @@ export const DepartmentServices = hrManagementApi.injectEndpoints({
           },
         };
       },
-      transformResponse: (response: Response<Department2>) => response.data,
+      transformResponse: (response: Response<Department>) => response.data,
     }),
     managerGetAllStaffDepartment: build.query<
       GetUserResp,
@@ -216,4 +231,5 @@ export const {
   useGetDetailDepartmentQuery,
   useManagerGetAllStaffDepartmentQuery,
   useManagerGetStaffNoDepartmentQuery,
+  useUpdateDepartmentMutation,
 } = DepartmentServices;

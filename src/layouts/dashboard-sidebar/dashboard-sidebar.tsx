@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./dashboard-sidebar.css";
 import { Link, useNavigate } from "react-router-dom";
-import { Avatar } from "antd";
 import {
   TeamOutlined,
   ApartmentOutlined,
@@ -19,6 +18,12 @@ import { OUserRole } from "src/share/models";
 const { Sider } = Layout;
 
 const menuItems = [
+  {
+    key: "0",
+    icon: <UserOutlined />,
+    label: "Account Detail",
+    url: "user-info",
+  },
   {
     key: "1",
     icon: <TeamOutlined />,
@@ -46,6 +51,12 @@ const menuItems = [
 
 const menuItems2 = [
   {
+    key: "0",
+    icon: <UserOutlined />,
+    label: "Account Detail",
+    url: "user-info",
+  },
+  {
     key: "1",
     icon: <ApartmentOutlined />,
     label: "Departments ",
@@ -64,6 +75,12 @@ const menuItems2 = [
   },
 ];
 const menuItems3 = [
+  {
+    key: "0",
+    icon: <UserOutlined />,
+    label: "Account Detail",
+    url: "user-info",
+  },
   {
     key: "1",
     icon: <ProjectOutlined />,
@@ -155,7 +172,8 @@ const Dashboardsidebar: React.FC = () => {
       }`}
     >
       <Sider
-        style={{ position: "absolute", zIndex: 2, height: "100dvh" }}
+        style={{ position: "absolute", zIndex: 2 }}
+        theme='light'
         className='sider'
         trigger={null}
         collapsible
@@ -163,26 +181,13 @@ const Dashboardsidebar: React.FC = () => {
         onMouseEnter={() => setCollapsed(true)}
         onMouseLeave={() => setCollapsed(false)}
       >
-        <Link to={"/dashboard/user-info"}>
-          <div
-            className={`side-avatar-containter ${
-              collapsed && "extended-avatar"
-            } ${selectItem === "0" && "select-info"}`}
-            onClick={() => {
-              setSelectItem("0");
-            }}
-          >
-            <Avatar className='avatar-role' size={30} icon={<UserOutlined />} />
-            {collapsed && <div className='avatar-text'>Account detail</div>}
-          </div>
-        </Link>
-        <Menu theme='dark' mode='inline' selectedKeys={[selectItem]}>
+        <Menu className='sider-menu' mode='inline' selectedKeys={[selectItem]}>
           {authorizedMenuItem().map((item, index) => (
             <Menu.Item
-              key={index + 1}
+              key={index}
               icon={item.icon}
               onClick={() => {
-                setSelectItem((index + 1).toString());
+                setSelectItem(index.toString());
                 if (!item.url) {
                   logout();
                 }

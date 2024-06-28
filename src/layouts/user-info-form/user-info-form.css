@@ -1,3 +1,8 @@
-.user-form {
-  width: 600px;
+.user-form-container {
+  .user-form {
+    width: 600px;
+    .user-form-cancel-btn {
+      margin-left: 10px;
+    }
+  }
 }

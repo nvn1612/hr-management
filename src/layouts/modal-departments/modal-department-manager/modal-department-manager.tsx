@@ -2,7 +2,7 @@ import React from "react";
 import { Modal, Form, Input, Avatar, DatePicker } from "antd";
 import dayjs from "dayjs";
 import "./modal-department-manager.css";
-import { Department, Department2 } from "src/share/models";
+import { Department } from "src/share/models";
 import { randAvaBg } from "src/share/utils";
 
 type ModalDepartmentManagerProps = {
@@ -10,7 +10,7 @@ type ModalDepartmentManagerProps = {
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
   manager?: string;
   department?: Department;
-  detailDepartment?: Department2;
+  detailDepartment?: Department;
   role?: string;
 };
 
@@ -24,7 +24,7 @@ export const ModalDepartmentManager = ({
   const getBirthday = () => {
     const birthday =
       role === "MANAGER"
-        ? detailDepartment?.information?.[0]?.manager?.birthday
+        ? detailDepartment?.information?.manager?.birthday
         : department?.information?.manager?.birthday;
 
     return birthday ? dayjs(birthday) : null;
@@ -65,7 +65,7 @@ export const ModalDepartmentManager = ({
               <Input
                 value={
                   role === "MANAGER"
-                    ? detailDepartment?.information?.[0]?.manager?.username
+                    ? detailDepartment?.information?.manager?.username
                     : department?.information?.manager?.username
                 }
                 readOnly
@@ -75,7 +75,7 @@ export const ModalDepartmentManager = ({
               <Input
                 value={
                   role === "MANAGER"
-                    ? detailDepartment?.information?.[0]?.manager?.name
+                    ? detailDepartment?.information?.manager?.name
                     : department?.information?.manager?.name
                 }
                 readOnly
@@ -87,7 +87,7 @@ export const ModalDepartmentManager = ({
               <Input
                 value={
                   role === "MANAGER"
-                    ? detailDepartment?.information?.[0]?.manager?.email
+                    ? detailDepartment?.information?.manager?.email
                     : department?.information?.manager?.email
                 }
                 readOnly
@@ -97,7 +97,7 @@ export const ModalDepartmentManager = ({
               <Input
                 value={
                   role === "MANAGER"
-                    ? detailDepartment?.information?.[0]?.manager?.phone
+                    ? detailDepartment?.information?.manager?.phone
                     : department?.information?.manager?.phone
                 }
                 readOnly

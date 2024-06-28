@@ -11,7 +11,7 @@ import { ModalDepartmentManager } from "src/layouts/modal-departments/modal-depa
 import { ModalListStaffDepartment } from "src/layouts/modal-departments/modal-list-staff-department";
 import { ModalAddManager } from "src/layouts/modal-departments/modal-add-manager";
 import { ModalReportProjectDepartment } from "src/layouts/modal-departments/modal-report-project-department";
-import { Department, Department2 } from "src/share/models/departmentModels";
+import { Department } from "src/share/models/departmentModels";
 import { useDeleteDepartmentsMutation } from "src/share/services";
 import "./modal-departments.css";
 import { TabProjectDepartment } from "./tab-project-departments";
@@ -23,7 +23,7 @@ type ModalDepartmentsProps = {
   visible: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
   department?: Department;
-  departmentDetail?: Department2;
+  departmentDetail?: Department;
   closeModal: () => void;
   role?: UserRole;
   isModal: boolean;
@@ -144,7 +144,7 @@ export const ModalDepartments = ({
                     <div className='number-staff-department'>
                       <p>
                         {role === "MANAGER"
-                          ? departmentDetail?.information?.[0].total_staff
+                          ? departmentDetail?.information?.total_staff
                           : department?.information?.total_staff}
                       </p>
                     </div>

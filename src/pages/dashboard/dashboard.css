@@ -1,7 +1,6 @@
 @import url(src/index.css);
 
 .content {
-  background-color: var(--gray-color);
   width: calc(100vw - 80px);
   position: absolute;
   right: 0;

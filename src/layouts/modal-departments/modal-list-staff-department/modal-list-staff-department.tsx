@@ -3,7 +3,7 @@ import { Modal, Table, Checkbox, Spin, message } from "antd";
 import { PlusSquareOutlined } from "@ant-design/icons";
 import { ModalAddStaffsDepartment } from "src/layouts/modal-departments/modal-add-staffs-department";
 import "./modal-list-staff-department.css";
-import { Department, Department2 } from "src/share/models/departmentModels";
+import { Department } from "src/share/models/departmentModels";
 import { useGetDepartmentStaffsQuery } from "src/share/services";
 import { useDeleteStaffDepartmentMutation } from "src/share/services";
 import { useManagerGetAllStaffDepartmentQuery } from "src/share/services";
@@ -15,7 +15,7 @@ type ModalDepartmentListStaffProps = {
   visible: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
   department?: Department;
-  detailDepartment?: Department2;
+  detailDepartment?: Department;
   role?: string;
 };
 

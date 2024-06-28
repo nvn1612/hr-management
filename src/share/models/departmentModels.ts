@@ -8,35 +8,10 @@ export interface getDepartmentsResp {
   departments?: Department[];
 }
 
-export interface Department2 {
-  department_id?: string;
-  name?: string;
-  description?: string;
-  createdBy?: string;
-  createdAt?: string;
-  manager_id?: string;
-  manager_info: User;
-}
-
-export interface Information {
+export interface DepartInformation {
   total_staff?: number;
-  manager?: Manager;
+  manager?: User;
 }
-
-export interface Manager {
-  user_id?: string;
-  username?: string;
-  email?: string;
-  phone?: string;
-  avatar?: string;
-  name?: string;
-  birthday?: string;
-  createdAt?: string;
-  createBy?: string;
-  deletedMark?: boolean;
-  userProperty?: UserProperty;
-}
-
 export interface Department {
   department_id?: string;
   name?: string;
@@ -44,13 +19,10 @@ export interface Department {
   createdBy?: string;
   createdAt?: string;
   manager_id?: string;
-  information?: information;
+  manager_info: User;
+  information?: DepartInformation;
 }
 
-export interface information {
-  total_staff?: number;
-  manager?: manager;
-}
 export interface manager {
   user_id?: string;
   username?: string;

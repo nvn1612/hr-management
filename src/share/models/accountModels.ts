@@ -58,6 +58,7 @@ export interface CreateUserPartial {
   username: string;
   email: string;
   password: string;
+  name?: string;
   role: UserRole;
   department_id?: string;
   phone?: string;
