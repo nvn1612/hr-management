@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Spin, Tabs } from "antd";
+import { Button, Empty, Spin, Tabs } from "antd";
 import { useGetAllProjectDepartmentQuery } from "src/share/services";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { ProjectCard } from "src/components/project-card";
@@ -48,34 +48,38 @@ export const TabProjectDepartment = ({
 
   return (
     <>
-      {openProjectTab ? (
-        <>
-          <Button onClick={() => setOpenProjectTab(false)}>
-            <ArrowLeftOutlined />
-            Back to project list
-          </Button>
-          <Tabs items={tabsProps} className='project-tabs' />
-        </>
+      {projectData?.data && projectData.data.length > 0 ? (
+        openProjectTab ? (
+          <>
+            <Button onClick={() => setOpenProjectTab(false)}>
+              <ArrowLeftOutlined />
+              Back to project list
+            </Button>
+            <Tabs items={tabsProps} className='project-tabs' />
+          </>
+        ) : (
+          <Spin spinning={isFetching}>
+            <div className='projects-tab-content'>
+              {projectData?.data.map((project: Project, index) => (
+                <div className='project-card-department' key={index}>
+                  <ProjectCard
+                    key={project.project_id}
+                    onClick={() => {
+                      setOpenProjectTab(true);
+                      setSelectedProject(project);
+                    }}
+                    projectName={project.name}
+                    description={project.description}
+                    // tempory comment, wait for BE changes
+                    // information={project.information}
+                  />
+                </div>
+              ))}
+            </div>
+          </Spin>
+        )
       ) : (
-        <Spin spinning={isFetching}>
-          <div className='projects-tab-content'>
-            {projectData?.data.map((project: Project, index) => (
-              <div className='project-card-department' key={index}>
-                <ProjectCard
-                  key={project.project_id}
-                  onClick={() => {
-                    setOpenProjectTab(true);
-                    setSelectedProject(project);
-                  }}
-                  projectName={project.name}
-                  description={project.description}
-                  // tempory comment, wait for BE changes
-                  // information={project.information}
-                />
-              </div>
-            ))}
-          </div>
-        </Spin>
+        <Empty />
       )}
     </>
   );

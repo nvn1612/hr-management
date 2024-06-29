@@ -2,13 +2,27 @@
 
 .project-reports-container {
   display: flex;
-  flex-direction: column;
-  justify-content: start;
+  justify-content: center;
+  align-items: flex-start;
   width: 100%;
   padding: var(--padding-l);
-  max-height: 50dvh;
+  height: 50dvh;
   overflow-y: auto;
+  overflow-x: hidden;
   .report-timeline {
     width: 100%;
+    .ant-timeline-item-label {
+      width: 80px;
+    }
+    .ant-timeline-item-tail {
+      inset-inline-start: 15%;
+    }
+    .ant-timeline-item-content {
+      inset-inline-start: calc(15% - 12px) !important;
+      width: 90% !important;
+    }
+    .ant-timeline-item-head {
+      inset-inline-start: 15%;
+    }
   }
 }

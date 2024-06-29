@@ -1,0 +1,16 @@
+.time-line-report-department {
+  width: 100%;
+  .ant-timeline-item-label {
+    width: 80px !important;
+  }
+  .ant-timeline-item-tail {
+    inset-inline-start: 10% !important;
+  }
+  .ant-timeline-item-content {
+    inset-inline-start: calc(10% - 12px) !important;
+    width: 90% !important;
+  }
+  .ant-timeline-item-head {
+    inset-inline-start: 10% !important;
+  }
+}

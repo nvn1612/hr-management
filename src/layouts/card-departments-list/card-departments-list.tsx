@@ -10,7 +10,7 @@ import {
   useGetUserDetailQuery,
 } from "src/share/services";
 import "./card-departments-list.css";
-import { Department, Department2, OUserRole } from "src/share/models";
+import { Department, OUserRole } from "src/share/models";
 import { useRoleChecker } from "src/share/hooks";
 
 import type { PaginationProps } from "antd";
@@ -25,7 +25,7 @@ export const CardDepartments = () => {
     Department | undefined
   >();
   const [detailDepartment, setDetailDepartment] = useState<
-    Department2 | undefined
+    Department | undefined
   >();
   const [visibleAddDepartment, setVisibleAddDepartment] = useState(false);
   const showAddDepartment = () => {
@@ -60,7 +60,7 @@ export const CardDepartments = () => {
   };
 
   const subRefetch = () => {
-    if (userDetail?.role?.name === OUserRole.Admin) {
+    if (checkRole(OUserRole.Admin)) {
       setMainDepartment((oldState) => {
         return data?.departments?.find(
           (newState) => newState.department_id === oldState?.department_id
@@ -87,14 +87,14 @@ export const CardDepartments = () => {
           title='Departments'
           addBtnContent='Create Department'
           addBtnOnClick={
-            userDetail?.role?.name === "MANAGER" ? info : showAddDepartment
+            checkRole(OUserRole.Manager) ? info : showAddDepartment
           }
-          itemCount={userDetail?.role?.name === "MANAGER" ? 1 : data?.total}
+          itemCount={checkRole(OUserRole.Manager) ? 1 : data?.total}
           filters={[]}
         />
         <div className='department-card-container'>
-          {userDetail?.role?.name === "MANAGER" ? (
-            !userDetail.department_id ? (
+          {checkRole(OUserRole.Manager) ? (
+            userDetail?.department_id ? (
               <div className='no-depart-message'>
                 <Typography.Title level={4}>
                   You have no department yet

@@ -19,7 +19,7 @@ import {
   useCreateUserMutation,
 } from "src/share/services/accountServices";
 
-import type { User, CreateUserPartial } from "src/share/models";
+import type { User, CreateUserPartial, RoleResponse } from "src/share/models";
 import type { FormProps } from "antd";
 import type { UserFormProp, UserInfoType } from "./models";
 
@@ -117,7 +117,7 @@ export const UserInfoForm = ({
       initValues
         ? {
             ...initValues,
-            role: initValues.role.name,
+            role: initValues.role && (initValues.role as RoleResponse).name,
             birthday: dayjs(
               initValues.birthday
                 ? (initValues.birthday as string).substring(0, 10)

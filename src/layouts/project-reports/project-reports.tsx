@@ -17,7 +17,7 @@ export const ProjectReports = ({ projectId }: ProjectReportProp) => {
   return (
     <Spin spinning={isFetching} size='large'>
       <div className='project-reports-container'>
-        {isSuccess && data.tasks ? (
+        {isSuccess && data.tasks.length > 0 ? (
           <Timeline
             className='report-timeline'
             mode='left'

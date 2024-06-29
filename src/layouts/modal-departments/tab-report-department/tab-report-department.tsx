@@ -1,4 +1,5 @@
-import { Spin, Timeline } from "antd";
+import "./tab-report-department.css";
+import { Empty, Spin, Timeline } from "antd";
 import { useGetReportDepartmentsQuery } from "src/share/services/departmentServices";
 import { useHandleReports } from "src/share/hooks";
 
@@ -15,9 +16,13 @@ export const TabReportDepartment = ({
   return (
     <>
       <Spin spinning={isFetching}>
-        <div className='time-line-report-department'>
-          <Timeline mode={"left"} items={reportTimelineItem} />
-        </div>
+        {reportTimelineItem && reportTimelineItem.length > 0 ? (
+          <div className='time-line-report-department'>
+            <Timeline mode={"left"} items={reportTimelineItem} />
+          </div>
+        ) : (
+          <Empty />
+        )}
       </Spin>
     </>
   );
