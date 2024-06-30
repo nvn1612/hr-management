@@ -10,7 +10,7 @@ import {
   useGetUserDetailQuery,
 } from "src/share/services";
 import "./card-departments-list.css";
-import { Department, OUserRole } from "src/share/models";
+import { Department, OUserRole, RoleResponse } from "src/share/models";
 import { useRoleChecker } from "src/share/hooks";
 
 import type { PaginationProps } from "antd";
@@ -109,13 +109,16 @@ export const CardDepartments = () => {
                     department={mainDepartment}
                     closeModal={closeModal}
                     departmentDetail={detailDepartment}
-                    role={userDetail?.role?.name}
+                    role={
+                      userDetail?.role &&
+                      (userDetail?.role as RoleResponse).name
+                    }
                     isModal={false}
                   />
                 </div>
               </>
             )
-          ) : userDetail?.role?.name === "ADMIN" ? (
+          ) : checkRole(OUserRole.Admin) ? (
             <List
               grid={{
                 gutter: 16,
@@ -168,7 +171,7 @@ export const CardDepartments = () => {
         department={mainDepartment}
         closeModal={closeModal}
         departmentDetail={detailDepartment}
-        role={userDetail?.role?.name}
+        role={userDetail?.role && (userDetail?.role as RoleResponse).name}
         isModal={true}
       />
       <ModalAddDepartment

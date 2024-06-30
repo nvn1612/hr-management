@@ -1,14 +1,16 @@
+import "./project-form.css";
 import { useEffect, useState } from "react";
 import {
   Form,
   Input,
   Button,
-  Checkbox,
   DatePicker,
   message,
   Select,
   Typography,
   Spin,
+  Row,
+  Col,
 } from "antd";
 import {
   useCreateProjectMutation,
@@ -122,15 +124,8 @@ export const ProjectForm = ({
         size='large'
         tip='Take your time'
       >
-        {project && (userDetail?.role as RoleResponse).name !== OUserRole.Staff && (
-          <Checkbox
-            checked={editableForm}
-            onChange={() => setEditableForm(!editableForm)}
-          >
-            Edit information
-          </Checkbox>
-        )}
         <Form
+          className='project-form'
           form={form}
           disabled={project ? !editableForm : false}
           onFinish={onFinish}
@@ -186,12 +181,33 @@ export const ProjectForm = ({
           <Form.Item<Project> name={"endAt"} label='End'>
             <DatePicker />
           </Form.Item>
-          <Form.Item wrapperCol={{ offset: 4 }}>
-            <Button type='primary' htmlType='submit'>
-              {project ? "Save Changes" : "Create project"}
-            </Button>
-          </Form.Item>
+          {editableForm && (
+            <>
+              <Form.Item wrapperCol={{ offset: 4, span: 20 }}>
+                <Button type='primary' htmlType='submit'>
+                  {project ? "Save Changes" : "Create Project"}
+                </Button>
+                {project && (
+                  <Button
+                    className='project-form-cancel-btn'
+                    onClick={() => setEditableForm(false)}
+                  >
+                    Cancel
+                  </Button>
+                )}
+              </Form.Item>
+            </>
+          )}
         </Form>
+        {!editableForm && (
+          <Row className='update-project-btn'>
+            <Col offset={4}>
+              <Button type='primary' onClick={() => setEditableForm(true)}>
+                Update Information
+              </Button>
+            </Col>
+          </Row>
+        )}
       </Spin>
     </>
   );

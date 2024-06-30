@@ -1,7 +1,12 @@
 import "./activity-items.css";
 import { List, Input, Popover, message, Space, Button, Avatar } from "antd";
 import { useState } from "react";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import {
+  EditOutlined,
+  DeleteOutlined,
+  SaveOutlined,
+  CloseCircleOutlined,
+} from "@ant-design/icons";
 import { useRoleChecker } from "src/share/hooks";
 import { Activity, OUserRole } from "src/share/models";
 import {
@@ -53,9 +58,11 @@ export const ActivityItem = ({ activity, uid }: ActiItemProp) => {
               setEditActi(false);
             }}
           >
-            Update
+            <SaveOutlined />
           </Button>
-          <Button onClick={() => setEditActi(false)}>Cancel</Button>
+          <Button onClick={() => setEditActi(false)}>
+            <CloseCircleOutlined />
+          </Button>
         </Space.Compact>
       ) : (
         <List.Item

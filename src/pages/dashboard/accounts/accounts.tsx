@@ -45,9 +45,12 @@ export const Accounts = () => {
     setQueries({ ...queries, page });
   };
 
-  const { data, isLoading } = useGetUsersQuery(queries, {
-    skip: !checkRole("ADMIN"),
-  });
+  const { data, isLoading } = useGetUsersQuery(
+    { ...queries, items_per_page: 9 },
+    {
+      skip: !checkRole("ADMIN"),
+    }
+  );
 
   const subRefetch = () => {
     if (selectedAcc) {
@@ -90,13 +93,13 @@ export const Accounts = () => {
               sm: 1,
               md: 1,
               lg: 2,
-              xl: 2,
+              xl: 3,
               xxl: 3,
             }}
             pagination={{
               position: "bottom",
               align: "center",
-              pageSize: 10,
+              pageSize: 9,
               total: data?.total,
               onChange: onChangePage,
               showSizeChanger: false,

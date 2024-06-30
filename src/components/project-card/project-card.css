@@ -1,7 +1,6 @@
 @import url(src/index.css);
 
 .project-card {
-  width: 500px;
   cursor: pointer;
   .project-card-content {
     display: flex;

@@ -19,8 +19,14 @@ const accessToken = () => localStorageUtil.get("accessToken");
 
 const projectServices = hrManagementApi.injectEndpoints({
   endpoints: (build) => ({
-    getAllProject: build.query<ProjectResp, { page: number }>({
-      query: ({ page }) => {
+    getAllProject: build.query<
+      ProjectResp,
+      {
+        page: number;
+        items_per_page: number | undefined;
+      }
+    >({
+      query: ({ page, items_per_page }) => {
         return {
           url: `projects/admin/get-all`,
           method: "GET",
@@ -29,6 +35,7 @@ const projectServices = hrManagementApi.injectEndpoints({
           },
           params: {
             page,
+            items_per_page,
           },
         };
       },
@@ -132,7 +139,7 @@ const projectServices = hrManagementApi.injectEndpoints({
         };
       },
       transformErrorResponse: (response: Response<Assignment>) => response.data,
-      invalidatesTags: ["assignment", "project"],
+      invalidatesTags: ["assignment", "project", "task"],
     }),
     createTask: build.mutation<
       Task,
@@ -151,7 +158,6 @@ const projectServices = hrManagementApi.injectEndpoints({
         };
       },
       transformResponse: (response: Response<Task>) => response.data,
-      invalidatesTags: ["task", "assignment"],
     }),
     getTaskActivity: build.query<
       Activity[],

@@ -27,7 +27,7 @@ export const Projects = () => {
   const checkRole = useRoleChecker();
 
   const { data: allProject, isFetching } = useGetAllProjectQuery(
-    { ...queries },
+    { ...queries, items_per_page: 9 },
     { skip: !checkRole(OUserRole.Admin) }
   );
   const { data: userDetail } = useGetUserDetailQuery();
@@ -138,7 +138,7 @@ export const Projects = () => {
             pagination={{
               position: "bottom",
               align: "center",
-              pageSize: 10,
+              pageSize: 9,
               total: checkRole(OUserRole.Admin)
                 ? allProject?.total
                 : departmentProject?.total,

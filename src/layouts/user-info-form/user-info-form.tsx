@@ -212,7 +212,7 @@ export const UserInfoForm = ({
             )}
           </Form>
           {!editableForm && (
-            <Row>
+            <Row className='update-user-info-btn'>
               <Col offset={4}>
                 <Button type='primary' onClick={() => setEditableForm(true)}>
                   Update Information
