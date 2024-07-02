@@ -126,7 +126,12 @@ export const UserInfoForm = ({
           }
         : { ...newUserObj }
     );
-  });
+    if (action === "create") {
+      setEditableForm(true);
+    } else {
+      setEditableForm(false);
+    }
+  }, [initValues, setOpenAcountTab, action]);
 
   return (
     <>
@@ -211,7 +216,7 @@ export const UserInfoForm = ({
               </>
             )}
           </Form>
-          {!editableForm && (
+          {!editableForm && !(action === "create") && (
             <Row className='update-user-info-btn'>
               <Col offset={4}>
                 <Button type='primary' onClick={() => setEditableForm(true)}>

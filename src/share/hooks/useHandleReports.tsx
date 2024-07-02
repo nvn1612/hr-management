@@ -5,6 +5,7 @@ import { Typography, Tag } from "antd";
 
 import type { TimelineItemProps } from "antd";
 import { User } from "src/share/models";
+import React from "react";
 
 interface PrepareReports {
   taskDesc?: string;
@@ -29,7 +30,7 @@ export const useHandleReports = (
   type: "department" | "project",
   reports: ProjectReportResp | ProjectReportResp[] | undefined
 ) => {
-  const [timelineItem, setTimelineItem] = useState<TimelineItemProps[]>();
+  const [timelineItem, setTimelineItem] = useState<TimelineItemProps[]>([]);
   const { Text } = Typography;
 
   const handleReport = useCallback(() => {
@@ -55,6 +56,7 @@ export const useHandleReports = (
       sortedList?.forEach((report, index) => {
         if (index === 0) {
           timeItem.label = report.date;
+          timeItem.key = index;
         }
         if (index !== 0 && sortedList[index - 1].date !== report.date) {
           timeItem.children = tempTimeChildren.map((timeChild) => timeChild);
@@ -62,21 +64,22 @@ export const useHandleReports = (
           finalTimeline.push(timeItem);
           timeItem = {};
           timeItem.label = report.date;
+          timeItem.key = index;
         }
         tempTimeChildren.push(
-          <div className='project-report-detail'>
+          <div className='project-report-detail' key={index}>
             <Text style={{ fontWeight: 700 }}>{report.taskDesc}</Text>
             {report.activities &&
-              report.activities.map((activity) => {
+              report.activities.map((activity, index) => {
                 return (
-                  <>
+                  <React.Fragment key={index}>
                     <br />
                     <span style={{ color: "#8c8c8c", fontWeight: 500 }}>
                       {`${activity.description}  `}{" "}
                       {activity.user_information &&
                         `- by ${activity.user_information.username}`}
                     </span>
-                  </>
+                  </React.Fragment>
                 );
               })}
           </div>
@@ -109,22 +112,24 @@ export const useHandleReports = (
 
         let timeItem: TimelineItemProps = {};
         const tempTimeChildren: ReactNode[] = [];
-        sortedList?.forEach((report, index) => {
+        sortedList.forEach((report, index) => {
           if (index === 0) {
             timeItem.label = report.date;
-          }
-          if (index !== 0 && sortedList[index - 1].date !== report.date) {
+            timeItem.key = index;
+          } else if (index > 0 && sortedList[index - 1].date !== report.date) {
             timeItem.children = tempTimeChildren.map((timeChild) => timeChild);
             tempTimeChildren.length = 0;
             finalTimeline.push(timeItem);
             timeItem = {};
             timeItem.label = report.date;
+            timeItem.key = index;
           }
           tempTimeChildren.push(
-            <div className='project-report-detail'>
+            <div className='project-report-detail' key={index}>
               {(index !== 0 &&
                 sortedList[index - 1].projectCode !== report.projectCode) ||
-              index === 0 ? (
+              index === 0 ||
+              (index !== 0 && sortedList[index - 1].date !== report.date) ? (
                 <Tag>{report.projectCode}</Tag>
               ) : (
                 ""
@@ -132,29 +137,35 @@ export const useHandleReports = (
               <br />
               <Text style={{ fontWeight: 700 }}>{report.taskDesc}</Text>
               {report.activities &&
-                report.activities.map((activity) => {
+                report.activities.map((activity, index) => {
                   return (
-                    <>
+                    <React.Fragment key={index}>
                       <br />
                       <span style={{ color: "#8c8c8c", fontWeight: 500 }}>
                         {`${activity.description}  `}{" "}
                         {activity.user_information &&
                           `- by ${activity.user_information.username}`}
                       </span>
-                    </>
+                    </React.Fragment>
                   );
                 })}
             </div>
           );
+          if (index === 0) {
+            // for some reason index 0 always re-run, so add index by 1 to force it go to next item
+            index++;
+          }
+
           if (index === sortedList.length - 1) {
             timeItem.children = tempTimeChildren.map((timeChild) => timeChild);
             finalTimeline.push(timeItem);
           }
         });
       });
+
       setTimelineItem(finalTimeline);
     }
-  }, [Text, reports, type]);
+  }, [reports, type]);
 
   useEffect(() => {
     handleReport();

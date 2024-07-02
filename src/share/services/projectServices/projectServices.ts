@@ -232,7 +232,9 @@ const projectServices = hrManagementApi.injectEndpoints({
           headers: {
             authorization: accessToken(),
           },
-          body: value,
+          body: {
+            name: value.description
+          }
         };
       },
       invalidatesTags: ["task"],

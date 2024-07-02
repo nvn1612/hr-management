@@ -114,7 +114,12 @@ export const ProjectForm = ({
           }
         : { ...newProject }
     );
-  });
+    if (project) {
+      setEditableForm(false);
+    } else {
+      setEditableForm(true);
+    }
+  }, [project, departFetch, allFetch]);
 
   return (
     <>
@@ -199,7 +204,7 @@ export const ProjectForm = ({
             </>
           )}
         </Form>
-        {!editableForm && (
+        {!editableForm && project && (
           <Row className='update-project-btn'>
             <Col offset={4}>
               <Button type='primary' onClick={() => setEditableForm(true)}>

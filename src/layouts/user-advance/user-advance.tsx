@@ -65,30 +65,6 @@ export const UserAdvance = ({ userRole, userId, userEmail }: propsType) => {
     <>
       {contextHolder}
       <div className='user-advance-tab'>
-        <Row>
-          <Col span={4}>
-            <Text>User Role</Text>
-          </Col>
-          <Col span={14}>
-            <Select
-              className='role-selector'
-              value={selectedRole || userRole}
-              options={userRoleOptions}
-              onChange={(value: UserRole) => setSelectedRole(value)}
-            />
-          </Col>
-          <Col span={6}>
-            <Popconfirm
-              title='Changing Role'
-              description="Are you sure to change this account's role ?"
-              okText='Yes'
-              cancelText='No'
-              onConfirm={changeRole}
-            >
-              <Button type='primary'>Save</Button>
-            </Popconfirm>
-          </Col>
-        </Row>
         <Row className='reset-password'>
           <Col span={4}>
             <Text>Reset Password</Text>
