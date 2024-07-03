@@ -8,7 +8,7 @@ import type { TabsProps } from "antd";
 interface AccountModalProps {
   selectedAcc?: User | null;
   openAccountTab: boolean;
-  setOpenAccountTab: (isOpen: false) => void;
+  setOpenAccountTab: (isOpen: boolean) => void;
   action: "detail" | "update" | "create";
 }
 
@@ -43,6 +43,7 @@ export const AccountModal = ({
             }
             userId={selectedAcc?.user_id}
             userEmail={selectedAcc?.email}
+            setOpenAccountTab={setOpenAccountTab}
           />
         ),
       },
