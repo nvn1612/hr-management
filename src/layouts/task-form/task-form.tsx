@@ -63,6 +63,7 @@ interface TaskFormProps {
   task?: Task;
   action: "create" | "update";
   project: Project;
+  setShowTaskForm: (isOpen: boolean) => void;
 }
 
 const { Title } = Typography;
@@ -71,6 +72,7 @@ export const TaskForm = ({
   action,
   project,
   task,
+  setShowTaskForm,
 }: TaskFormProps) => {
   const checkRole = useRoleChecker();
   const [editDesc, setEditDesc] = useState<boolean>(() => {
@@ -327,9 +329,17 @@ export const TaskForm = ({
           {action === "update" && (
             <Popconfirm
               title='Delete task'
-              onConfirm={() => {
-                deleteAssignment({ assigmentId: assignment?.assignment_id });
-                deleteTask({ taskId: task?.task_id });
+              onConfirm={async () => {
+                try {
+                  await deleteAssignment({
+                    assigmentId: assignment?.assignment_id,
+                  });
+                  await deleteTask({ taskId: task?.task_id });
+                  message.success("Task is deleted");
+                  setShowTaskForm(false);
+                } catch {
+                  message.error("failed to delete task");
+                }
               }}
             >
               <Button type='primary' danger>

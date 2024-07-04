@@ -76,7 +76,7 @@ const projectServices = hrManagementApi.injectEndpoints({
     deleteProject: build.mutation<boolean, Partial<string>>({
       query: (body) => {
         return {
-          url: `projects/admin/delete/${body}`,
+          url: `projects/delete/${body}`,
           method: "DELETE",
           headers: {
             authorization: accessToken(),

@@ -70,9 +70,9 @@ export const useHandleReports = (
           <div className='project-report-detail' key={index}>
             <Text style={{ fontWeight: 700 }}>{report.taskDesc}</Text>
             {report.activities &&
-              report.activities.map((activity, index) => {
+              report.activities.map((activity, actiIndex) => {
                 return (
-                  <React.Fragment key={index}>
+                  <React.Fragment key={actiIndex}>
                     <br />
                     <span style={{ color: "#8c8c8c", fontWeight: 500 }}>
                       {`${activity.description}  `}{" "}
@@ -89,79 +89,80 @@ export const useHandleReports = (
           finalTimeline.push(timeItem);
         }
       });
+
       setTimelineItem(finalTimeline);
     }
 
     if (type === "department" && reports) {
       const finalTimeline: TimelineItemProps[] = [];
+
       (reports as ProjectReportResp[]).forEach((projectReport) => {
-        projectReport.tasks.forEach((task) => {
-          for (const date in task.activities) {
+        projectReport.tasks.forEach((task, rpIndex) => {
+          Object.entries(task.activities).forEach(([dateKey, value]) => {
             const newReport: PrepareReports = {};
             newReport.projectCode = projectReport.projectCode;
             newReport.taskDesc = task.description;
-            newReport.date = date;
-            (newReport.activities as unknown) = task.activities[date];
+            newReport.date = dateKey;
+            (newReport.activities as unknown) = value;
             newReportList.push(newReport);
-          }
-        });
-
-        const sortedList = newReportList.sort(
-          (a, b) => dayjs(b.date).valueOf() - dayjs(a.date).valueOf()
-        );
-
-        let timeItem: TimelineItemProps = {};
-        const tempTimeChildren: ReactNode[] = [];
-        sortedList.forEach((report, index) => {
-          if (index === 0) {
-            timeItem.label = report.date;
-            timeItem.key = index;
-          } else if (index > 0 && sortedList[index - 1].date !== report.date) {
-            timeItem.children = tempTimeChildren.map((timeChild) => timeChild);
-            tempTimeChildren.length = 0;
-            finalTimeline.push(timeItem);
-            timeItem = {};
-            timeItem.label = report.date;
-            timeItem.key = index;
-          }
-          tempTimeChildren.push(
-            <div className='project-report-detail' key={index}>
-              {(index !== 0 &&
-                sortedList[index - 1].projectCode !== report.projectCode) ||
-              index === 0 ||
-              (index !== 0 && sortedList[index - 1].date !== report.date) ? (
-                <Tag>{report.projectCode}</Tag>
-              ) : (
-                ""
-              )}
-              <br />
-              <Text style={{ fontWeight: 700 }}>{report.taskDesc}</Text>
-              {report.activities &&
-                report.activities.map((activity, index) => {
-                  return (
-                    <React.Fragment key={index}>
-                      <br />
-                      <span style={{ color: "#8c8c8c", fontWeight: 500 }}>
-                        {`${activity.description}  `}{" "}
-                        {activity.user_information &&
-                          `- by ${activity.user_information.username}`}
-                      </span>
-                    </React.Fragment>
-                  );
-                })}
-            </div>
-          );
-          if (index === 0) {
-            // for some reason index 0 always re-run, so add index by 1 to force it go to next item
-            index++;
-          }
-
-          if (index === sortedList.length - 1) {
-            timeItem.children = tempTimeChildren.map((timeChild) => timeChild);
-            finalTimeline.push(timeItem);
-          }
+          });
         });
       });
+      const sortedList = newReportList.sort(
+        (a, b) => dayjs(b.date).valueOf() - dayjs(a.date).valueOf()
+      );
+
+      let timeItem: TimelineItemProps = {};
+      const tempTimeChildren: ReactNode[] = [];
+      sortedList.forEach((report, index) => {
+        if (index === 0) {
+          timeItem.label = report.date;
+          timeItem.key = index;
+        } else if (
+          index > 0 &&
+          sortedList[index - 1].date !== report.date &&
+          index !== sortedList.length - 1
+        ) {
+          timeItem.children = tempTimeChildren.map((timeChild) => timeChild);
+          tempTimeChildren.length = 0;
+          finalTimeline.push(timeItem);
+          timeItem = {};
+          timeItem.label = report.date;
+          timeItem.key = index;
+        }
+        tempTimeChildren.push(
+          <div className='project-report-detail' key={index}>
+            {(index !== 0 &&
+              sortedList[index - 1].projectCode !== report.projectCode) ||
+            index === 0 ? (
+              <Tag>{report.projectCode}</Tag>
+            ) : (
+              ""
+            )}
+            <br />
+            <Text style={{ fontWeight: 700 }}>{report.taskDesc}</Text>
+            {report.activities &&
+              report.activities.map((activity, actiIndex) => {
+                return (
+                  <React.Fragment key={actiIndex}>
+                    <br />
+                    <span style={{ color: "#8c8c8c", fontWeight: 500 }}>
+                      {`${activity.description}  `}{" "}
+                      {activity.user_information &&
+                        `- by ${activity.user_information.username}`}
+                    </span>
+                  </React.Fragment>
+                );
+              })}
+          </div>
+        );
+
+        if (index === sortedList.length - 1) {
+          timeItem.children = tempTimeChildren.map((timeChild) => timeChild);
+          finalTimeline.push(timeItem);
+        }
+      });
+      console.log(finalTimeline);
 
       setTimelineItem(finalTimeline);
     }

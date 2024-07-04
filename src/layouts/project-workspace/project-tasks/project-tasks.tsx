@@ -183,6 +183,7 @@ export const ProjectTasks = ({ project }: ProjectTasksProp) => {
           action={formAction}
           assignment={selectedAssignment}
           task={selectedTask}
+          setShowTaskForm={setShowTaskForm}
         />
       </Modal>
     </div>
