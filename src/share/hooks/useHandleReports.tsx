@@ -97,7 +97,7 @@ export const useHandleReports = (
       const finalTimeline: TimelineItemProps[] = [];
 
       (reports as ProjectReportResp[]).forEach((projectReport) => {
-        projectReport.tasks.forEach((task, rpIndex) => {
+        projectReport.tasks.forEach((task) => {
           Object.entries(task.activities).forEach(([dateKey, value]) => {
             const newReport: PrepareReports = {};
             newReport.projectCode = projectReport.projectCode;
@@ -118,11 +118,7 @@ export const useHandleReports = (
         if (index === 0) {
           timeItem.label = report.date;
           timeItem.key = index;
-        } else if (
-          index > 0 &&
-          sortedList[index - 1].date !== report.date &&
-          index !== sortedList.length - 1
-        ) {
+        } else if (index > 0 && sortedList[index - 1].date !== report.date) {
           timeItem.children = tempTimeChildren.map((timeChild) => timeChild);
           tempTimeChildren.length = 0;
           finalTimeline.push(timeItem);
@@ -134,6 +130,9 @@ export const useHandleReports = (
           <div className='project-report-detail' key={index}>
             {(index !== 0 &&
               sortedList[index - 1].projectCode !== report.projectCode) ||
+            (index !== 0 &&
+              sortedList[index - 1].projectCode === report.projectCode &&
+              sortedList[index - 1].date !== report.date) ||
             index === 0 ? (
               <Tag>{report.projectCode}</Tag>
             ) : (
@@ -162,8 +161,6 @@ export const useHandleReports = (
           finalTimeline.push(timeItem);
         }
       });
-      console.log(finalTimeline);
-
       setTimelineItem(finalTimeline);
     }
   }, [reports, type]);
