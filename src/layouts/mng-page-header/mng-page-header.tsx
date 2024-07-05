@@ -38,7 +38,7 @@ export const MngPageHeader = ({
           <Title>{title}</Title>
           <Badge count={itemCount ? itemCount : 0} showZero color='#1677ff' />
         </div>
-        {isAdmin || title === "Projects" ? (
+        {isAdmin || addBtnContent ? (
           <Button type='primary' onClick={addBtnOnClick}>
             <PlusOutlined />
             {addBtnContent}

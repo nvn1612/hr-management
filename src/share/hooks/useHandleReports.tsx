@@ -67,7 +67,11 @@ export const useHandleReports = (
           timeItem.key = index;
         }
         tempTimeChildren.push(
-          <div className='project-report-detail' key={index}>
+          <div
+            className='project-report-detail'
+            style={{ wordBreak: "break-all", width: "600px" }}
+            key={index}
+          >
             <Text style={{ fontWeight: 700 }}>{report.taskDesc}</Text>
             {report.activities &&
               report.activities.map((activity, actiIndex) => {

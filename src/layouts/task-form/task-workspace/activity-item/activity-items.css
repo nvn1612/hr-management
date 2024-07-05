@@ -6,3 +6,7 @@
 .delete-acti-btn {
   color: var(--warning-color);
 }
+
+.acti-des {
+  font-weight: normal;
+}

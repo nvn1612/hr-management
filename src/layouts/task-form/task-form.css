@@ -41,13 +41,13 @@
       flex-direction: column;
       justify-content: start;
       align-items: flex-start;
-      background-color: var(--gray-color);
+      background-color: #ededed;
       .task-picker {
         width: 250px;
         height: 70px;
         cursor: pointer;
         transition-duration: 300ms;
-        border: solid 1px var(--gray-color);
+        border: solid 1px #ededed;
         border-bottom: solid 1px var(--white-color);
         &:hover {
           border: solid 1px var(--primary-color);

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { List, Spin, Typography, message } from "antd";
+import { List, Spin, Empty } from "antd";
 import { ModalDepartments } from "src/layouts/modal-departments";
 import { CardDepartmentss } from "src/components/card-departments";
 import { ModalAddDepartment } from "../modal-departments/modal-add-department";
@@ -55,9 +55,6 @@ export const CardDepartments = () => {
   const onChangePage: PaginationProps["onChange"] = (page) => {
     setQueries({ ...queries, page });
   };
-  const info = () => {
-    message.info("You do not have permission to perform this action");
-  };
 
   const subRefetch = () => {
     if (checkRole(OUserRole.Admin)) {
@@ -85,21 +82,17 @@ export const CardDepartments = () => {
       >
         <MngPageHeader
           title='Departments'
-          addBtnContent='Create Department'
-          addBtnOnClick={
-            checkRole(OUserRole.Manager) ? info : showAddDepartment
-          }
+          {...(checkRole(OUserRole.Admin) && {
+            addBtnContent: "Create Department",
+            addBtnOnClick: showAddDepartment,
+          })}
           itemCount={checkRole(OUserRole.Manager) ? 1 : data?.total}
           filters={[]}
         />
         <div className='department-card-container'>
           {checkRole(OUserRole.Manager) ? (
             userDetail?.department_id ? (
-              <div className='no-depart-message'>
-                <Typography.Title level={4}>
-                  You have no department yet
-                </Typography.Title>
-              </div>
+              <Empty description="You aren't in any department" />
             ) : (
               <>
                 <div className='manager-department-ui'>

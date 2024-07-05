@@ -113,16 +113,18 @@ export const Projects = () => {
       >
         <MngPageHeader
           title='Projects'
-          addBtnContent='Create Project'
+          {...(!checkRole(OUserRole.Staff) && {
+            addBtnContent: "Create Project",
+            addBtnOnClick: () => {
+              setIsCreate(true);
+              setOpenProjectTab(true);
+            },
+          })}
           itemCount={
             checkRole(OUserRole.Admin)
               ? allProject?.total
               : departmentProject?.total
           }
-          addBtnOnClick={() => {
-            setIsCreate(true);
-            setOpenProjectTab(true);
-          }}
         />
         <div className='project-card-container'>
           <List

@@ -5,24 +5,25 @@
   justify-content: center;
   align-items: flex-start;
   width: 100%;
-  padding: var(--padding-l);
   height: 50dvh;
+  padding-top: var(--padding-m);
+  padding-right: var(--padding-m);
   overflow-y: auto;
-  overflow-x: hidden;
+  overflow-x: auto;
   .report-timeline {
     width: 100%;
     .ant-timeline-item-label {
       width: 80px;
     }
     .ant-timeline-item-tail {
-      inset-inline-start: 15%;
+      inset-inline-start: 90px;
     }
     .ant-timeline-item-content {
-      inset-inline-start: calc(15% - 12px) !important;
-      width: 90% !important;
+      inset-inline-start: 90px !important;
+      width: 85% !important;
     }
     .ant-timeline-item-head {
-      inset-inline-start: 15%;
+      inset-inline-start: 90px;
     }
   }
 }

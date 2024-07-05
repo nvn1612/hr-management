@@ -118,7 +118,7 @@ export const ActivityItem = ({ activity, uid }: ActiItemProp) => {
                   activity.user?.username?.substring(0, 1).toLocaleUpperCase()}
               </Avatar>
             }
-            title={activity.description}
+            title={<div className='acti-des'>{activity.description}</div>}
             description={`${activity.createdAt?.substring(0, 10)} by ${activity.user?.username}`}
           />
         </List.Item>
