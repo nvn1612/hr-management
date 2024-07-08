@@ -192,6 +192,9 @@ export const TaskForm = ({
               <Form.Item<TaskFormFields>
                 name='description'
                 className='task-desc-input'
+                rules={[
+                  { required: true, message: "Task description is required" },
+                ]}
               >
                 <Input.TextArea
                   style={{
@@ -203,7 +206,9 @@ export const TaskForm = ({
                   }}
                   onPressEnter={(e) => {
                     e.preventDefault();
-                    setEditDesc(false);
+                    if (task) {
+                      setEditDesc(false);
+                    }
                   }}
                 />
               </Form.Item>

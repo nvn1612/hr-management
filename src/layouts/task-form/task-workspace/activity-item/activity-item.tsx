@@ -47,15 +47,17 @@ export const ActivityItem = ({ activity, uid }: ActiItemProp) => {
             type='primary'
             onClick={async (e) => {
               e.preventDefault();
-              await updateActivity({
-                value: { description: actiDesc },
-                activityId: activity.activity_id,
-              })
-                .then(() => {
-                  message.success("Activity's updated");
+              if (actiDesc) {
+                await updateActivity({
+                  value: { description: actiDesc },
+                  activityId: activity.activity_id,
                 })
-                .catch(() => message.error("Failed to update activity"));
-              setEditActi(false);
+                  .then(() => {
+                    message.success("Activity's updated");
+                  })
+                  .catch(() => message.error("Failed to update activity"));
+                setEditActi(false);
+              }
             }}
           >
             <SaveOutlined />

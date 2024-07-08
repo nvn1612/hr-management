@@ -137,16 +137,30 @@ export const ProjectForm = ({
           labelCol={{ span: 4 }}
           wrapperCol={{ span: 16 }}
         >
-          <Form.Item<Project> name={"name"} label='Project name'>
+          <Form.Item<Project>
+            name={"name"}
+            label='Project name'
+            rules={[{ required: true, message: "Project name is required" }]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item<Project> name={"projectCode"} label='Project Code'>
+          <Form.Item<Project>
+            name={"projectCode"}
+            label='Project Code'
+            rules={[{ required: true, message: "Project code is required" }]}
+          >
             <Input />
           </Form.Item>
           <Form.Item<Project> name={"investor"} label='Investor'>
             <Input />
           </Form.Item>
-          <Form.Item<Project> name={"description"} label='Description'>
+          <Form.Item<Project>
+            name={"description"}
+            label='Description'
+            rules={[
+              { required: true, message: "Project description is required" },
+            ]}
+          >
             <Input.TextArea />
           </Form.Item>
           {checkRole(OUserRole.Admin) && (
