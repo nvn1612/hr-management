@@ -25,6 +25,7 @@ export const ModalAddManager = ({
     { role: "MANAGER" },
     { skip: !checkRole(OUserRole.Admin) }
   );
+
   const [selectedManager, setSelectedManager] = useState<number | null>(null);
   const [updateManager] = useUpdateManagerDepartmentMutation();
 

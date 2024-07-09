@@ -22,7 +22,7 @@ export const UserInfo = () => {
 
   const avaFileProps: UploadProps = {
     name: "file",
-    action: `${baseApi}users/upload-avatar-from-local`,
+    action: `${baseApi}upload/upload-avatar-from-local`,
     headers: {
       authorization: localStorageUtil.get("accessToken")!,
     },

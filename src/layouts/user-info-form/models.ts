@@ -8,7 +8,7 @@ export interface UserInfoType {
   name: string;
   email: string;
   phone: string;
-  birthday: string | Dayjs;
+  birthday?: string | Dayjs;
   role?: UserRole;
 }
 

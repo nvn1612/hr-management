@@ -104,7 +104,7 @@ export const UserInfoForm = ({
   };
 
   const newUserObj: UserInfoType = {
-    birthday: "",
+    birthday: undefined,
     email: "",
     name: "",
     phone: "",

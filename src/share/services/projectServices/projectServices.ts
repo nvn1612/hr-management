@@ -102,19 +102,6 @@ const projectServices = hrManagementApi.injectEndpoints({
       transformResponse: (response: Response<ProjectResp>) => response.data,
       providesTags: ["project"],
     }),
-    getFile: build.mutation<string, Partial<{ filename: string }>>({
-      query: (body) => {
-        return {
-          url: `projects/get-file`,
-          method: "POST",
-          headers: {
-            authorization: accessToken(),
-          },
-          body,
-        };
-      },
-      transformResponse: (response: Response<string>) => response.data,
-    }),
     createAssigment: build.mutation<
       Assignment,
       Partial<{
@@ -205,10 +192,10 @@ const projectServices = hrManagementApi.injectEndpoints({
       },
       invalidatesTags: ["activity"],
     }),
-    getTaskFile: build.mutation<string, Partial<{ filename: string }>>({
+    getDocFile: build.mutation<string, Partial<{ file: string }>>({
       query(body) {
         return {
-          url: "tasks/get-file",
+          url: "upload/get-file",
           method: "POST",
           headers: {
             authorization: accessToken(),
@@ -455,12 +442,11 @@ export const {
   useGetAllProjectQuery,
   useCreateProjectMutation,
   useDeleteProjectMutation,
-  useGetFileMutation,
   useUpdateProjectMutation,
   useCreateAssigmentMutation,
   useCreateTaskMutation,
   useGetTaskActivityQuery,
-  useGetTaskFileMutation,
+  useGetDocFileMutation,
   useGetProjectReportsQuery,
   useCreateActivityMutation,
   useUpdateTaskMutation,

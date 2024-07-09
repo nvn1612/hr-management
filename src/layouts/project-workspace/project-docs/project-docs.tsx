@@ -2,25 +2,29 @@ import "./project-docs.css";
 import { List, Upload, Button, message } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { localStorageUtil } from "src/share/utils";
-import { useGetFileMutation } from "src/share/services";
+import { useGetDocFileMutation } from "src/share/services";
 import { useEffect, useState } from "react";
 
 import type { UploadProps } from "antd";
-import { Project } from "src/share/models";
+import type { Project } from "src/share/models";
 
 const baseApi = import.meta.env.VITE_REQUEST_API_URL;
 
 export const ProjectDocs = ({ project }: { project?: Project }) => {
-  const [getFile] = useGetFileMutation();
+  const [getFile] = useGetDocFileMutation();
   const [fileLinks, setFileLinks] = useState<string[]>([]);
 
   const getLinks = () => {
     setFileLinks([]);
-    return project?.document?.map((filename) =>
-      getFile({ filename })
+    let tempFileLinks: string[] = [];
+    return project?.document?.map((file) =>
+      getFile({ file })
         .unwrap()
         .then((link) => {
-          setFileLinks([...fileLinks, link]);
+          tempFileLinks.push(link);
+        })
+        .then(() => {
+          setFileLinks(tempFileLinks);
         })
     );
   };
@@ -32,7 +36,7 @@ export const ProjectDocs = ({ project }: { project?: Project }) => {
   }, [project]);
 
   const uploadProps: UploadProps = {
-    action: `${baseApi}projects/upload-file-from-local/${project?.project_id}`,
+    action: `${baseApi}upload/upload-file-for-project/${project?.project_id}`,
     headers: {
       authorization: localStorageUtil.get("accessToken")!,
     },
@@ -55,6 +59,9 @@ export const ProjectDocs = ({ project }: { project?: Project }) => {
             : []
         }
         renderItem={(link) => {
+          {
+            console.log(link);
+          }
           return (
             <List.Item>
               <a href={link}>{link}</a>

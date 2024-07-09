@@ -4,9 +4,11 @@ import { PlusSquareOutlined } from "@ant-design/icons";
 import { ModalAddStaffsDepartment } from "src/layouts/modal-departments/modal-add-staffs-department";
 import "./modal-list-staff-department.css";
 import { Department } from "src/share/models/departmentModels";
-import { useGetDepartmentStaffsQuery } from "src/share/services";
-import { useDeleteStaffDepartmentMutation } from "src/share/services";
-import { useManagerGetAllStaffDepartmentQuery } from "src/share/services";
+import {
+  useGetDepartmentStaffsQuery,
+  useDeleteStaffDepartmentMutation,
+  useManagerGetAllStaffDepartmentQuery,
+} from "src/share/services";
 
 import { useRoleChecker } from "src/share/hooks";
 import { OUserRole } from "src/share/models";
@@ -40,17 +42,22 @@ export const ModalListStaffDepartment = ({
 
   const { data, isFetching, refetch } = useGetDepartmentStaffsQuery(
     {
-      departmentId:
-        role === "MANAGER"
-          ? detailDepartment?.department_id
-          : department?.department_id,
+      departmentId: department?.department_id,
     },
-    { skip: checkrole(OUserRole.Staff) || !detailDepartment?.department_id }
+    {
+      skip:
+        checkrole(OUserRole.Staff) ||
+        checkrole(OUserRole.Manager) ||
+        !department,
+    }
   );
 
-  const { data: dataStaff } = useManagerGetAllStaffDepartmentQuery({
-    departmentId: detailDepartment?.department_id,
-  });
+  const { data: dataStaff } = useManagerGetAllStaffDepartmentQuery(
+    {
+      departmentId: detailDepartment?.department_id,
+    },
+    { skip: checkrole(OUserRole.Admin) }
+  );
 
   const [deleteStaff] = useDeleteStaffDepartmentMutation();
 
@@ -135,7 +142,7 @@ export const ModalListStaffDepartment = ({
           <Table
             columns={columns}
             dataSource={
-              role === "MANAGER"
+              role === OUserRole.Manager
                 ? dataStaff?.users.map((user) => ({
                     key: user.user_id ?? "",
                     name: user.name,

@@ -4,7 +4,7 @@ import { UploadOutlined, ArrowRightOutlined } from "@ant-design/icons";
 import {
   useCreateActivityMutation,
   useGetTaskActivityQuery,
-  useGetTaskFileMutation,
+  useGetDocFileMutation,
   useGetUserDetailQuery,
 } from "src/share/services";
 
@@ -25,7 +25,7 @@ export const TaskWorkspace = ({ task }: WorkspaceProps) => {
   const [actiDesc, setActiDesc] = useState<string>("");
 
   const uploadProps: UploadProps = {
-    action: `${baseApi}tasks/upload-file-from-local/${task?.task_id}`,
+    action: `${baseApi}upload/upload-file-for-task/${task?.task_id}`,
     headers: {
       authorization: localStorageUtil.get("accessToken")!,
     },
@@ -39,7 +39,7 @@ export const TaskWorkspace = ({ task }: WorkspaceProps) => {
   };
 
   const { data: userDetail } = useGetUserDetailQuery();
-  const [getFile] = useGetTaskFileMutation();
+  const [getFile] = useGetDocFileMutation();
   const [createActivity] = useCreateActivityMutation();
   const { data: activityData } = useGetTaskActivityQuery({
     taskId: task?.task_id,
@@ -48,11 +48,15 @@ export const TaskWorkspace = ({ task }: WorkspaceProps) => {
 
   const getLinks = () => {
     setFileLinks([]);
-    return task?.document?.map((filename) =>
-      getFile({ filename })
+    const tempFileLinks: string[] = [];
+    return task?.document?.map((file) =>
+      getFile({ file })
         .unwrap()
         .then((link) => {
-          setFileLinks([...fileLinks, link]);
+          tempFileLinks.push(link);
+        })
+        .then(() => {
+          setFileLinks(tempFileLinks);
         })
     );
   };
