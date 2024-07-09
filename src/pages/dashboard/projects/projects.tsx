@@ -37,8 +37,7 @@ export const Projects = () => {
         departmentId: userDetail?.department_id,
       },
       {
-        skip:
-          !checkRole(OUserRole.Admin) || !checkRole(OUserRole.ProjectManager),
+        skip: checkRole(OUserRole.Admin) || checkRole(OUserRole.ProjectManager),
       }
     );
   const [deleteProject] = useDeleteProjectMutation();
@@ -100,6 +99,7 @@ export const Projects = () => {
 
   useEffect(() => {
     subRefetch();
+    console.log(allProject, departmentProject);
   }, [departmentProject, allProject]);
 
   return (

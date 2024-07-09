@@ -75,10 +75,7 @@ export const TaskForm = ({
   setShowTaskForm,
 }: TaskFormProps) => {
   const checkRole = useRoleChecker();
-  const [editDesc, setEditDesc] = useState<boolean>(() => {
-    if (task) return true;
-    return false;
-  });
+  const [editDesc, setEditDesc] = useState<boolean>(false);
 
   const [form] = Form.useForm();
   const taskDesc = Form.useWatch("description", form);
@@ -171,6 +168,11 @@ export const TaskForm = ({
         description: "",
         assignedStaff: "",
       });
+    }
+    if (action === "create") {
+      setEditDesc(true);
+    } else {
+      setEditDesc(false);
     }
   }, [assignment, project, task, action]);
 

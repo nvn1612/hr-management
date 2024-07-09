@@ -59,9 +59,6 @@ export const ProjectDocs = ({ project }: { project?: Project }) => {
             : []
         }
         renderItem={(link) => {
-          {
-            console.log(link);
-          }
           return (
             <List.Item>
               <a href={link}>{link}</a>

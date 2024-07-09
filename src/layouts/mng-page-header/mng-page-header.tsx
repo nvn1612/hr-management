@@ -2,8 +2,7 @@ import "./mng-page-header.css";
 import { Typography, Button, Badge, Select } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 
-import { OUserRole, type MngFilterItem } from "src/share/models";
-import { localStorageUtil } from "src/share/utils";
+import type { MngFilterItem } from "src/share/models";
 
 const { Title, Text } = Typography;
 
@@ -21,9 +20,6 @@ export interface PageFilter {
   items: MngFilterItem;
 }
 
-const role = localStorageUtil.get("role");
-const isAdmin = role === OUserRole.Admin;
-
 export const MngPageHeader = ({
   title,
   itemCount,
@@ -38,7 +34,7 @@ export const MngPageHeader = ({
           <Title>{title}</Title>
           <Badge count={itemCount ? itemCount : 0} showZero color='#1677ff' />
         </div>
-        {isAdmin || addBtnContent ? (
+        {addBtnContent ? (
           <Button type='primary' onClick={addBtnOnClick}>
             <PlusOutlined />
             {addBtnContent}

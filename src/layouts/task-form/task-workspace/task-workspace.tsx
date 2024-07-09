@@ -99,13 +99,16 @@ export const TaskWorkspace = ({ task }: WorkspaceProps) => {
           <Button
             type='primary'
             onClick={() => {
-              createActivity({
-                description: actiDesc,
-                task_id: task?.task_id,
-              })
-                .unwrap()
-                .then(() => message.success("New activity is created"))
-                .catch(() => message.error("Failed to create activity"));
+              if (actiDesc) {
+                createActivity({
+                  description: actiDesc,
+                  task_id: task?.task_id,
+                })
+                  .unwrap()
+                  .then(() => message.success("New activity is created"))
+                  .catch(() => message.error("Failed to create activity"));
+                
+              }
             }}
           >
             <ArrowRightOutlined />
