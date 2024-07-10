@@ -27,7 +27,7 @@ export const Accounts = () => {
     {
       onChange: (value: UserRole) => {
         setQueries({
-          ...queries,
+          page: 1,
           role: value,
         });
       },
@@ -103,6 +103,7 @@ export const Accounts = () => {
               total: data?.total,
               onChange: onChangePage,
               showSizeChanger: false,
+              current: queries.page,
             }}
             dataSource={data?.users}
             renderItem={

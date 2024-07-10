@@ -99,7 +99,6 @@ export const Projects = () => {
 
   useEffect(() => {
     subRefetch();
-    console.log(allProject, departmentProject);
   }, [departmentProject, allProject]);
 
   return (

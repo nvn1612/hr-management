@@ -243,7 +243,7 @@ export const ModalAddDepartment = ({
     <>
       <Modal
         title='Create Department'
-        visible={visible}
+        open={visible}
         onOk={handleAddDepartment}
         onCancel={() => {
           setVisible(false);

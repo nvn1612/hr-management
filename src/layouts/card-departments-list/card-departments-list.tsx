@@ -72,6 +72,10 @@ export const CardDepartments = () => {
     subRefetch();
   }, [data, departmentDetail]);
 
+  if (checkRole(OUserRole.Staff)) {
+    return <>Department for staff</>;
+  }
+
   return (
     <>
       <Spin
