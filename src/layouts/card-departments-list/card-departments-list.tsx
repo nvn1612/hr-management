@@ -1,15 +1,15 @@
+import "./card-departments-list.css";
 import { useEffect, useState } from "react";
 import { List, Spin, Empty } from "antd";
 import { ModalDepartments } from "src/layouts/modal-departments";
 import { CardDepartmentss } from "src/components/card-departments";
 import { ModalAddDepartment } from "../modal-departments/modal-add-department";
-import { MngPageHeader } from "../mng-page-header";
+import { MngPageHeader, UserDepartmentUi } from "src/layouts/";
 import {
   useGetDepartmentsQuery,
   useGetDetailDepartmentQuery,
   useGetUserDetailQuery,
 } from "src/share/services";
-import "./card-departments-list.css";
 import { Department, OUserRole, RoleResponse } from "src/share/models";
 import { useRoleChecker } from "src/share/hooks";
 
@@ -73,7 +73,20 @@ export const CardDepartments = () => {
   }, [data, departmentDetail]);
 
   if (checkRole(OUserRole.Staff)) {
-    return <>Department for staff</>;
+    if (departmentDetail) {
+      return (
+        <UserDepartmentUi
+          department={departmentDetail}
+          manager={{
+            username: "manager",
+            avatar: "",
+            email: "manager@gmail.com",
+          }}
+        />
+      );
+    } else {
+      return <Empty />;
+    }
   }
 
   return (
@@ -96,8 +109,6 @@ export const CardDepartments = () => {
         <div className='department-card-container'>
           {checkRole(OUserRole.Manager) ? (
             userDetail?.department_id ? (
-              <Empty description="You aren't in any department" />
-            ) : (
               <>
                 <div className='manager-department-ui'>
                   <ModalDepartments
@@ -114,6 +125,8 @@ export const CardDepartments = () => {
                   />
                 </div>
               </>
+            ) : (
+              <Empty description="You aren't in any department" />
             )
           ) : checkRole(OUserRole.Admin) ? (
             <List

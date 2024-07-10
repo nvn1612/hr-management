@@ -11,3 +11,4 @@ export * from "src/layouts/card-departments-list";
 export * from "src/layouts/project-reports";
 export * from "src/layouts/project-info";
 export * from "src/layouts/mng-page-header";
+export * from "src/layouts/user-department-ui";
