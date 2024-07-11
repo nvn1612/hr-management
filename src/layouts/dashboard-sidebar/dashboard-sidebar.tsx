@@ -17,7 +17,7 @@ import { Layout, Menu } from "antd";
 import { OUserRole } from "src/share/models";
 const { Sider } = Layout;
 
-const menuItems = [
+const adminMenuItems = [
   {
     key: "0",
     icon: <UserOutlined />,
@@ -49,7 +49,7 @@ const menuItems = [
   },
 ];
 
-const menuItems2 = [
+const defaultMenuItems2 = [
   {
     key: "0",
     icon: <UserOutlined />,
@@ -74,25 +74,6 @@ const menuItems2 = [
     label: "Log Out",
   },
 ];
-const menuItems3 = [
-  {
-    key: "0",
-    icon: <UserOutlined />,
-    label: "Account Detail",
-    url: "user-info",
-  },
-  {
-    key: "1",
-    icon: <ProjectOutlined />,
-    label: " Projects",
-    url: "projects",
-  },
-  {
-    key: "2",
-    icon: <LogoutOutlined />,
-    label: "Log Out",
-  },
-];
 
 const Dashboardsidebar: React.FC = () => {
   const [collapsed, setCollapsed] = useState<boolean>(false);
@@ -103,14 +84,9 @@ const Dashboardsidebar: React.FC = () => {
 
   const authorizedMenuItem = () => {
     if (checkRole(OUserRole.Admin)) {
-      return menuItems;
-    } else if (
-      checkRole(OUserRole.Manager) ||
-      checkRole(OUserRole.ProjectManager)
-    ) {
-      return menuItems2;
+      return adminMenuItems;
     }
-    return menuItems3;
+    return defaultMenuItems2;
   };
 
   const logout = (): void => {
@@ -136,24 +112,13 @@ const Dashboardsidebar: React.FC = () => {
         default:
           setSelectItem("0");
       }
-    } else if (
-      checkRole(OUserRole.Manager) ||
-      checkRole(OUserRole.ProjectManager)
-    ) {
+    } else {
       switch (currPath) {
         case "departments":
           setSelectItem("1");
           break;
         case "projects":
           setSelectItem("2");
-          break;
-        default:
-          setSelectItem("0");
-      }
-    } else if (checkRole(OUserRole.Staff)) {
-      switch (currPath) {
-        case "projects":
-          setSelectItem("1");
           break;
         default:
           setSelectItem("0");

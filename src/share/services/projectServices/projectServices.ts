@@ -270,6 +270,38 @@ const projectServices = hrManagementApi.injectEndpoints({
         response.data,
       providesTags: ["activity", "task"],
     }),
+    getDepartmentProjectInfo: build.query<
+      Project[],
+      {
+        departmentId?: string;
+      }
+    >({
+      query({ departmentId }) {
+        return {
+          url: `/projects/get-all-info-project-in-department/${departmentId}`,
+          method: "GET",
+          headers: {
+            authorization: accessToken(),
+          },
+        };
+      },
+      transformResponse: (response: Response<Project[]>) => response.data,
+      providesTags: ["activity", "task"],
+    }),
+    getUserProjectInDepartment: build.query<ProjectReportResp, void>({
+      query() {
+        return {
+          url: `/projects/get-all-user-project-in-department`,
+          method: "GET",
+          headers: {
+            authorization: accessToken(),
+          },
+        };
+      },
+      transformResponse: (response: Response<ProjectReportResp>) =>
+        response.data,
+      providesTags: ["activity", "task"],
+    }),
     getProjectStaffs: build.query<
       GetUserResp,
       {
@@ -394,23 +426,6 @@ const projectServices = hrManagementApi.injectEndpoints({
       },
       invalidatesTags: ["activity"],
     }),
-    getUse: build.mutation<
-      Response<boolean>,
-      Partial<{
-        taskId?: string;
-      }>
-    >({
-      query({ taskId }) {
-        return {
-          url: `tasks/admin/delete/${taskId}`,
-          method: "DELETE",
-          headers: {
-            authorization: accessToken(),
-          },
-        };
-      },
-      invalidatesTags: ["task"],
-    }),
     getProjectTasks: build.query<
       TaskResp,
       {
@@ -458,4 +473,6 @@ export const {
   useGetProjectTasksQuery,
   useUpdateActivityMutation,
   useDeleteActivityMutation,
+  useGetUserProjectInDepartmentQuery,
+  useGetDepartmentProjectInfoQuery,
 } = projectServices;

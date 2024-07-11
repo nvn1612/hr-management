@@ -1,5 +1,6 @@
 import "./user-department-ui.css";
 import { Typography, List, Card, Tag, Avatar } from "antd";
+import { useGetDepartmentProjectInfoQuery } from "src/share/services";
 
 import type { Department, User } from "src/share/models";
 import { randAvaBg } from "src/share/utils";
@@ -13,6 +14,9 @@ export const UserDepartmentUi = ({
   department,
   manager,
 }: UserDepartmentUiProp) => {
+  const { data: projects } = useGetDepartmentProjectInfoQuery({
+    departmentId: department.department_id,
+  });
   return (
     <div className='user-department-ui'>
       <div className='user-depart-header'>
@@ -71,24 +75,13 @@ export const UserDepartmentUi = ({
         <div className='user-depart-main-part'>
           <Typography.Title level={5}>Projects</Typography.Title>
           <List
-            dataSource={[
-              {
-                projectName: "project 1",
-                description: "do something",
-                projectCode: "PRJ-01",
-              },
-              {
-                projectName: "Project 2",
-                description: "do something",
-                projectCode: "PRJ-02",
-              },
-            ]}
+            dataSource={projects}
             renderItem={(project) => [
               <List.Item>
                 <List.Item.Meta
                   title={
                     <>
-                      {project.projectName} - <Tag>{project.projectCode}</Tag>
+                      {project.name} - <Tag>{project.projectCode}</Tag>
                     </>
                   }
                   description={project.description}
