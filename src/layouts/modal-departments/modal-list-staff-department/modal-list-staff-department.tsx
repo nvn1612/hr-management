@@ -113,7 +113,7 @@ export const ModalListStaffDepartment = ({
     {
       title: "Delete",
       key: "delete",
-      render: (text: string, record: { key: string }) => (
+      render: (record: { key: string }) => (
         <Checkbox
           checked={!!checkedStaff[record.key]}
           onChange={(e) => handleCheckboxChange(record.key, e.target.checked)}
