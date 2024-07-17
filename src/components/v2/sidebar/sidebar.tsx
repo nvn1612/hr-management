@@ -1,10 +1,10 @@
-import React from "react";
 import {
   TeamOutlined,
   ApartmentOutlined,
   ProjectOutlined,
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
+import { Link } from "react-router-dom";
 import { Menu } from "antd";
 
 type MenuItem = Required<MenuProps>["items"][number];
@@ -12,7 +12,7 @@ type MenuItem = Required<MenuProps>["items"][number];
 const navigateItem: MenuItem[] = [
   {
     key: "accounts",
-    label: "Account",
+    label: <Link to={"/dashboard"}>Account</Link>,
     icon: <TeamOutlined />,
   },
   {

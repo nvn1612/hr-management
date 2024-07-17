@@ -1,7 +1,7 @@
 :root {
   --selected-background-color: #bae0ff;
   --hover-color: #4096ff;
-  --primary-color: #1677ff;
+  --primary-color: #5030e5;
   --accent-color: #0958d9;
   --warning-color: #f5222d;
   --warning-hover-color: #ff4d4f;
@@ -24,6 +24,8 @@
   --primary-border-m: solid 2px --primary-color;
   --primary-border-l: solid 3px --primary-color;
   --rounded-border: 5px;
+  --rounded-border-l: 10px;
+  --rounded-border-xl: 20px;
   --circle-border: 50%;
 
   /* margin */
