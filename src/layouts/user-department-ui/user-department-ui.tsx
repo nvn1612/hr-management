@@ -1,6 +1,9 @@
 import "./user-department-ui.css";
 import { Typography, List, Card, Tag, Avatar } from "antd";
-import { useGetDepartmentProjectInfoQuery } from "src/share/services";
+import {
+  useGetDepartmentProjectInfoQuery,
+  useGetUserDepartmentStaffsQuery,
+} from "src/share/services";
 
 import type { Department, User } from "src/share/models";
 import { randAvaBg } from "src/share/utils";
@@ -16,6 +19,9 @@ export const UserDepartmentUi = ({
 }: UserDepartmentUiProp) => {
   const { data: projects } = useGetDepartmentProjectInfoQuery({
     departmentId: department.department_id,
+  });
+  const { data: departmentStaffs } = useGetUserDepartmentStaffsQuery({
+    itemsPerPage: "ALL",
   });
   return (
     <div className='user-department-ui'>
@@ -47,12 +53,9 @@ export const UserDepartmentUi = ({
         <div className='user-depart-main-part'>
           <Typography.Title level={5}>Staffs</Typography.Title>
           <List
-            dataSource={[
-              { username: "abcd", email: "abcd@gmail.com", avatar: null },
-              { username: "abcd", email: "abcd@gmail.com", avatar: null },
-            ]}
-            renderItem={(user) => [
-              <List.Item>
+            dataSource={departmentStaffs?.users}
+            renderItem={(user, index) => [
+              <List.Item key={index}>
                 <List.Item.Meta
                   avatar={
                     <Avatar
@@ -75,9 +78,9 @@ export const UserDepartmentUi = ({
         <div className='user-depart-main-part'>
           <Typography.Title level={5}>Projects</Typography.Title>
           <List
-            dataSource={projects}
-            renderItem={(project) => [
-              <List.Item>
+            dataSource={projects?.data}
+            renderItem={(project, index) => [
+              <List.Item key={index}>
                 <List.Item.Meta
                   title={
                     <>

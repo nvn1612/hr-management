@@ -271,7 +271,7 @@ const projectServices = hrManagementApi.injectEndpoints({
       providesTags: ["activity", "task"],
     }),
     getDepartmentProjectInfo: build.query<
-      Project[],
+      { data: Project[] },
       {
         departmentId?: string;
       }
@@ -285,8 +285,9 @@ const projectServices = hrManagementApi.injectEndpoints({
           },
         };
       },
-      transformResponse: (response: Response<Project[]>) => response.data,
-      providesTags: ["activity", "task"],
+      transformResponse: (response: Response<{ data: Project[] }>) =>
+        response.data,
+      providesTags: ["project"],
     }),
     getUserProjectInDepartment: build.query<ProjectReportResp, void>({
       query() {
@@ -450,6 +451,29 @@ const projectServices = hrManagementApi.injectEndpoints({
       transformResponse: (response: Response<TaskResp>) => response.data,
       providesTags: ["task"],
     }),
+    getUserProject: build.query<
+      ProjectResp,
+      {
+        page: number;
+        items_per_page: number | "ALL";
+      }
+    >({
+      query({ page, items_per_page }) {
+        return {
+          url: `projects/get-all-user-project`,
+          method: "GET",
+          headers: {
+            authorization: accessToken(),
+          },
+          params: {
+            page,
+            items_per_page,
+          },
+        };
+      },
+      transformResponse: (response: Response<ProjectResp>) => response.data,
+      providesTags: ["project"],
+    }),
   }),
 });
 
@@ -475,4 +499,5 @@ export const {
   useDeleteActivityMutation,
   useGetUserProjectInDepartmentQuery,
   useGetDepartmentProjectInfoQuery,
+  useGetUserProjectQuery
 } = projectServices;

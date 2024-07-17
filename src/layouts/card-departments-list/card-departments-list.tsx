@@ -4,15 +4,16 @@ import { List, Spin, Empty } from "antd";
 import { ModalDepartments } from "src/layouts/modal-departments";
 import { CardDepartmentss } from "src/components/card-departments";
 import { ModalAddDepartment } from "../modal-departments/modal-add-department";
-import { MngPageHeader, UserDepartmentUi } from "src/layouts/";
+import { MngPageHeader } from "src/layouts";
 import {
   useGetDepartmentsQuery,
   useGetDetailDepartmentQuery,
   useGetUserDetailQuery,
 } from "src/share/services";
 import { Department, OUserRole, RoleResponse } from "src/share/models";
-import { useRoleChecker } from "src/share/hooks";
 
+import { useRoleChecker } from "src/share/hooks";
+import { UserDepartmentUi } from "src/layouts/user-department-ui/user-department-ui";
 import type { PaginationProps } from "antd";
 
 export const CardDepartments = () => {

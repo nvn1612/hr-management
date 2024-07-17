@@ -11,6 +11,7 @@ import {
   useDeleteProjectMutation,
   useGetUserDetailQuery,
   useGetAllProjectDepartmentQuery,
+  useGetUserProjectQuery,
 } from "src/share/services";
 import { useRoleChecker } from "src/share/hooks";
 
@@ -34,12 +35,23 @@ export const Projects = () => {
   const { data: departmentProject, isFetching: departProjectFetch } =
     useGetAllProjectDepartmentQuery(
       {
+        ...queries,
         departmentId: userDetail?.department_id,
       },
       {
-        skip: checkRole(OUserRole.Admin) || checkRole(OUserRole.ProjectManager),
+        skip:
+          checkRole(OUserRole.Admin) ||
+          checkRole(OUserRole.ProjectManager) ||
+          checkRole(OUserRole.Staff),
       }
     );
+  const { data: userProjects } = useGetUserProjectQuery(
+    {
+      ...queries,
+      items_per_page: 9,
+    },
+    { skip: !checkRole(OUserRole.Staff) }
+  );
   const [deleteProject] = useDeleteProjectMutation();
 
   const subRefetch = () => {
@@ -48,8 +60,12 @@ export const Projects = () => {
         return allProject?.data.find(
           (newState) => newState.project_id === oldState?.project_id
         );
+      } else if (checkRole(OUserRole.Manager)) {
+        return departmentProject?.data.find(
+          (newState) => newState.project_id === oldState?.project_id
+        );
       }
-      return departmentProject?.data.find(
+      return userProjects?.data.find(
         (newState) => newState.project_id === oldState?.project_id
       );
     });
@@ -142,14 +158,18 @@ export const Projects = () => {
               pageSize: 9,
               total: checkRole(OUserRole.Admin)
                 ? allProject?.total
-                : departmentProject?.total,
+                : checkRole(OUserRole.Manager)
+                  ? departmentProject?.total
+                  : userProjects?.total,
               onChange: onChangePage,
               showSizeChanger: false,
             }}
             dataSource={
               checkRole(OUserRole.Admin)
                 ? allProject?.data
-                : departmentProject?.data
+                : checkRole(OUserRole.Manager)
+                  ? departmentProject?.data
+                  : userProjects?.data
             }
             renderItem={
               allProject?.data || departmentProject?.data
