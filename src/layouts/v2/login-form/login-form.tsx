@@ -67,7 +67,7 @@ export const LoginForm = () => {
             <Input.Password placeholder='Password' />
           </Form.Item>
           <Form.Item>
-            <Link to={"/forgot-password"}>Forgot Password ?</Link>
+            <Link to={"/v2/forgot-password"}>Forgot Password ?</Link>
           </Form.Item>
           <Form.Item>
             <Button className='login-button' type='primary' htmlType='submit'>

@@ -1,5 +1,7 @@
+@import url(src/index.css);
+
 .login-form {
-  width: 270px;
+  width: 300px;
   .forgot-password {
     float: right;
   }

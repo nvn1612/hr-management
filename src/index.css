@@ -1,3 +1,8 @@
+@font-face {
+  font-family: Poppins;
+  src: url(assets/fonts/Poppins/Poppins-Regular.ttf);
+}
+
 :root {
   --selected-background-color: #bae0ff;
   --hover-color: #4096ff;
@@ -51,6 +56,6 @@
 * {
   margin: 0;
   padding: 0;
-  font-family: "Helvetica Neue", "Roboto", "Oxygen", "Ubuntu", "Cantarell",
-    "Fira Sans", "Droid Sans", sans-serif;
+  font-family: "Poppins", "Helvetica Neue", "Roboto", "Oxygen", "Ubuntu",
+    "Cantarell", "Fira Sans", "Droid Sans", sans-serif;
 }

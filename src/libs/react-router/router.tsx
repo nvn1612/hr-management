@@ -5,7 +5,7 @@ import { Accounts } from "src/pages/dashboard/accounts";
 import { Departments } from "src/pages/dashboard/departments";
 import { Projects } from "src/pages/dashboard/projects";
 import { CardDepartmentss } from "src/components/card-departments";
-import { V2, Login as LoginV2 } from "src/pages/v2";
+import { V2, Login as LoginV2, ForgotPass } from "src/pages/v2";
 import App from "src/App";
 
 export const router = createBrowserRouter([
@@ -45,6 +45,10 @@ export const router = createBrowserRouter([
       {
         path: "login",
         element: <LoginV2 />,
+      },
+      {
+        path: "forgot-password",
+        element: <ForgotPass />,
       },
     ],
   },
