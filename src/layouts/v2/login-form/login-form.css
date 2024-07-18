@@ -1,0 +1,12 @@
+.login-form {
+  width: 270px;
+  .forgot-password {
+    float: right;
+  }
+  .remember {
+    float: left;
+  }
+  .login-button {
+    width: 100%;
+  }
+}
