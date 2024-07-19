@@ -1,0 +1,18 @@
+@import url("src/index.css");
+
+.file-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-l);
+  .file-row {
+    display: flex;
+    width: 300px;
+    justify-content: space-between;
+    .file-name-icon {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--gap-m);
+      width: 180px;
+    }
+  }
+}
