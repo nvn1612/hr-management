@@ -7,7 +7,7 @@ interface HandledFile {
 }
 
 export const handleFile = (fileString: string): HandledFile => {
-  let result: HandledFile = {};
+  const result: HandledFile = {};
   // handle icons
   const extension = fileString.slice(fileString.lastIndexOf("."));
   if (extension === ".doc" || extension === ".docx") {
@@ -22,7 +22,7 @@ export const handleFile = (fileString: string): HandledFile => {
 
   // handle file length
   if (fileString.length > 20) {
-    result.displayedFileName = `${fileString.substring(0, 17)}...`;
+    result.displayedFileName = `${fileString.substring(0, 15)}...`;
   } else {
     result.displayedFileName = fileString;
   }
