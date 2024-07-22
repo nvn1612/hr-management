@@ -1,18 +1,26 @@
 @import url("src/index.css");
 
-.file-list {
+.doc-sec {
   display: flex;
   flex-direction: column;
-  gap: var(--gap-l);
-  .file-row {
+  height: 500px;
+  justify-content: space-between;
+  gap: var(--gap-m);
+  .file-list {
     display: flex;
-    width: 300px;
+    flex-direction: column;
+    gap: var(--gap-l);
     justify-content: space-between;
-    .file-name-icon {
+    .file-row {
       display: flex;
-      align-items: flex-start;
-      gap: var(--gap-m);
-      width: 180px;
+      width: 300px;
+      justify-content: space-between;
+      .file-name-icon {
+        display: flex;
+        align-items: flex-start;
+        gap: var(--gap-m);
+        width: 180px;
+      }
     }
   }
 }

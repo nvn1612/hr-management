@@ -16,7 +16,7 @@ export const ProjectDocs = ({ project }: { project?: Project }) => {
 
   const getLinks = () => {
     setFileLinks([]);
-    let tempFileLinks: string[] = [];
+    const tempFileLinks: string[] = [];
     return project?.document?.map((file) =>
       getFile({ file })
         .unwrap()
