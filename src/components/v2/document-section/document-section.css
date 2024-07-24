@@ -6,6 +6,14 @@
   height: 500px;
   justify-content: space-between;
   gap: var(--gap-m);
+  .doc-sec-head {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    svg {
+      width: 20px;
+    }
+  }
   .file-list {
     display: flex;
     flex-direction: column;

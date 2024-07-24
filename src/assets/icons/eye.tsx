@@ -7,7 +7,7 @@ export const Eye = ({ className, style }: IconProp) => {
       fill='none'
       xmlns='http://www.w3.org/2000/svg'
       id='Eye--Streamline-Iconoir'
-      className={`bi bi-filetype-docx ${className}`}
+      className={className}
       {...(style && { style: style })}
     >
       <desc>{"Eye Streamline Icon: https://streamlinehq.com"}</desc>

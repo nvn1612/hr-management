@@ -7,8 +7,6 @@ export const DoubleCheck = ({ className, style }: IconProp) => {
       fill='none'
       className={`${className}`}
       {...(style && { style: style })}
-      height={16}
-      width={16}
     >
       <desc>{"Check Read Streamline Icon: https://streamlinehq.com"}</desc>
       <path

@@ -10,3 +10,5 @@ export * from "./eye";
 export * from "./pen";
 export * from "./trash";
 export * from "./double-check";
+export * from "./down";
+export * from "./folder";
