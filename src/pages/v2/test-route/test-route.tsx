@@ -1,9 +1,13 @@
-import { DocumentSection } from "src/components/v2/";
-import { TaskDetail } from "src/layouts/v2";
+import { ProjectCard } from "src/components/v2";
 export const TestRoute = () => {
   return (
     <>
-      <TaskDetail />
+      <ProjectCard
+        project={{
+          name: "Message App",
+          description: "A messsage app that better than Zalo",
+        }}
+      />
     </>
   );
 };

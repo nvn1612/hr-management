@@ -4,14 +4,12 @@
 }
 
 :root {
-  --selected-background-color: #bae0ff;
-  --hover-color: #4096ff;
   --primary-color: #5030e5;
   --accent-color: #0958d9;
   --warning-color: #f5222d;
-  --warning-hover-color: #ff4d4f;
-  --success-color: #52c41a;
-  --info-color: #faad14;
+  --warning-hover-color: #eb5757;
+  --success-color: #28a745;
+  --info-color: #ffc008;
   --black-color: #141414;
   --white-color: #ffffff;
   --gray-color: #d9d9d9;
