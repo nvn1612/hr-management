@@ -1,18 +1,31 @@
 .v2-login-page {
   width: 100vw;
   height: 100dvh;
-  display: flex;
-  justify-content: center;
   align-items: center;
-  background-color: var(--gray-color);
   gap: var(--gap-l);
-  .login-form-container {
+  background-image: url(../../../assets/imgs/loginbg.jpg);
+  background-size: cover;
+  .content-container {
     display: flex;
-    flex-direction: column;
+    justify-content: flex-end;
     align-items: center;
-    padding: var(--padding-l);
-    background: var(--white-color);
-    border-radius: var(--rounded-border-xl);
-    width: 400px;
+    width: 95%;
+    height: 100%;
+    margin-right: 5%;
+    .login-form-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: start;
+      align-items: flex-start;
+      padding: var(--padding-l);
+      gap: var(--gap-l);
+      background: var(--white-color);
+      border-radius: var(--rounded-border-xl);
+      width: 400px;
+      .project-manager-title {
+        color: var(--primary-color);
+        font-weight: 900;
+      }
+    }
   }
 }
