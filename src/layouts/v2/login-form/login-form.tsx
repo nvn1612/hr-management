@@ -1,5 +1,5 @@
 import "./login-form.css";
-import { Form, Input, Button, message, Spin } from "antd";
+import { Form, Input, Button, message, Spin, Checkbox } from "antd";
 import { useLoginMutation } from "src/share/services/accountServices";
 import { useNavigate } from "react-router-dom";
 import { localStorageUtil, sessionStorageUtil } from "src/share/utils";
@@ -42,12 +42,7 @@ export const LoginForm = () => {
   return (
     <>
       {contextHolder}
-      <Spin
-        className='login-form-spin'
-        spinning={loginStatus.isLoading}
-        size='large'
-        tip='Login...'
-      >
+      <Spin spinning={loginStatus.isLoading} size='large' tip='Login...'>
         <Form
           name='login'
           onFinish={onFinish}
@@ -58,19 +53,30 @@ export const LoginForm = () => {
             name='username'
             rules={[{ required: true, message: "Username is required" }]}
           >
-            <Input placeholder='Email' />
+            <Input placeholder='Email' size='large' />
           </Form.Item>
           <Form.Item<LoginFieldType>
             name='password'
             rules={[{ required: true, message: "Password is required" }]}
           >
-            <Input.Password placeholder='Password' />
+            <Input.Password placeholder='Password' size='large' />
           </Form.Item>
           <Form.Item>
-            <Link to={"/v2/forgot-password"}>Forgot Password ?</Link>
+            <Form.Item name='remember' valuePropName='checked' noStyle>
+              <Checkbox>Remember me</Checkbox>
+            </Form.Item>
+
+            <Link className='forgot-password' to={"/v2/forgot-password"}>
+              Forgot Password ?
+            </Link>
           </Form.Item>
           <Form.Item>
-            <Button className='login-button' type='primary' htmlType='submit'>
+            <Button
+              className='login-button'
+              type='primary'
+              htmlType='submit'
+              size='large'
+            >
               Login
             </Button>
           </Form.Item>

@@ -2,6 +2,14 @@
   font-family: Poppins;
   src: url(assets/fonts/Poppins/Poppins-Regular.ttf);
 }
+@font-face {
+  font-family: "Poppins black";
+  src: url(assets/fonts/Poppins/Poppins-Black.ttf);
+}
+@font-face {
+  font-family: "Poppins semi bold";
+  src: url(assets/fonts/Poppins/Poppins-SemiBold.ttf);
+}
 
 :root {
   --primary-color: #5030e5;
@@ -14,6 +22,7 @@
   --white-color: #ffffff;
   --gray-color: #d9d9d9;
   --gray-color-2: #4f4f4f;
+  --semi-black-color: #2f2f2f;
   /* gap  */
   --gap-xs: 5px;
   --gap-s: 10px;
