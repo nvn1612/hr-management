@@ -1,13 +1,4 @@
-import { ProjectCard } from "src/components/v2";
+import { AdminDepartment } from "../dashboard/admin/department";
 export const TestRoute = () => {
-  return (
-    <>
-      <ProjectCard
-        project={{
-          name: "Message App",
-          description: "A messsage app that better than Zalo",
-        }}
-      />
-    </>
-  );
+  return <AdminDepartment></AdminDepartment>;
 };

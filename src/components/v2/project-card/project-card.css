@@ -5,6 +5,7 @@
   flex-direction: column;
   padding: var(--padding-m);
   border: solid 1px var(--gray-color);
+  border-radius: var(--rounded-border-l);
   .project-card-head {
     display: flex;
     justify-content: space-between;
