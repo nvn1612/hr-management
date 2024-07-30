@@ -1,32 +1,51 @@
+import "./sidebar.css";
 import {
   TeamOutlined,
   ApartmentOutlined,
   ProjectOutlined,
+  PlusSquareOutlined,
 } from "@ant-design/icons";
-import type { MenuProps } from "antd";
+import { Menu, Typography, Layout } from "antd";
 import { Link } from "react-router-dom";
-import { Menu } from "antd";
+import type { MenuProps } from "antd";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
 const navigateItem: MenuItem[] = [
   {
     key: "accounts",
-    label: <Link to={"/dashboard"}>Account</Link>,
+    label: (
+      <Link className='sidebar-link' to={"/dashboard"}>
+        <Typography.Text className='Menu'>Account </Typography.Text>
+        <PlusSquareOutlined onClick={() => {}} />
+      </Link>
+    ),
     icon: <TeamOutlined />,
   },
   {
     key: "department",
-    label: "Department",
+    label: (
+      <Link className='sidebar-link' to={"/dashboard"}>
+        Department <PlusSquareOutlined onClick={() => {}} />
+      </Link>
+    ),
     icon: <ApartmentOutlined />,
   },
   {
     key: "project",
-    label: "Project",
+    label: (
+      <Link className='sidebar-link' to={"/dashboard"}>
+        Project <PlusSquareOutlined onClick={() => {}} />
+      </Link>
+    ),
     icon: <ProjectOutlined />,
   },
 ];
 
 export const Sidebar = () => {
-  return <Menu items={navigateItem} />;
+  return (
+    <Layout.Sider className='sidebar'>
+      <Menu items={navigateItem} />
+    </Layout.Sider>
+  );
 };
