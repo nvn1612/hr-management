@@ -1,17 +1,46 @@
 import "./department.css";
-import { Typography, Card } from "antd";
+import { Typography, Card, Button, List, Popconfirm, Popover } from "antd";
 import { ResponsivePie } from "@nivo/pie";
 import { CustomAvatar } from "src/components/v2";
 import { DepartmentProjects } from "src/layouts/v2";
+import { MenuDots, PieChart, Pen, Trash } from "src/assets/icons";
 
 export const AdminDepartment = () => {
+  const DepartmentOption = () => {
+    return (
+      <div className='department-option'>
+        <Button type='text' className='department-option-btn'>
+          <Pen />
+          <Typography.Text>Edit</Typography.Text>
+        </Button>
+        <Popconfirm title='Delete department ?'>
+          <Button className='department-option-btn' type='text'>
+            <Trash />
+            <Typography.Text>Delete</Typography.Text>
+          </Button>
+        </Popconfirm>
+      </div>
+    );
+  };
+
   return (
     <div className='department-page'>
       <section className='main'>
         <header className='main-header'>
           <section className='first-sec'>
             <div className='title-des'>
-              <Typography.Title level={2}>Deparment Detail</Typography.Title>
+              <div className='title-row'>
+                <h2>Deparment Detail</h2>
+                <Popover content={<DepartmentOption />}>
+                  <Button type='text' className='title-row-btn' size='small'>
+                    <MenuDots />
+                  </Button>
+                </Popover>
+                <Button type='default' className='title-row-btn' shape='round'>
+                  <PieChart />
+                  Reports
+                </Button>
+              </div>
               <Typography.Text>
                 Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nobis
                 ipsam, aperiam ipsum delectus dolores iste.
@@ -20,8 +49,16 @@ export const AdminDepartment = () => {
             <Card className='manager-card'>
               <Card.Meta
                 title={"Nguyen Van A"}
-                description={"nguyenvana@gmail.com"}
-                avatar={<CustomAvatar size={32} userName='Nguyen Van A' />}
+                description={
+                  <>
+                    <Typography.Text>nguyenvana@gmail.com</Typography.Text>
+                    <br />
+                    <Typography.Text type='secondary'>
+                      Department manager
+                    </Typography.Text>
+                  </>
+                }
+                avatar={<CustomAvatar size={64} userName='Nguyen Van A' />}
               />
             </Card>
           </section>
@@ -43,7 +80,7 @@ export const AdminDepartment = () => {
                   value: 100,
                 },
               ]}
-              margin={{ top: 40, right: 80, bottom: 80, left: 80 }}
+              margin={{ top: 40, right: 0, bottom: 80, left: 0 }}
               padAngle={0.7}
               cornerRadius={3}
               activeOuterRadiusOffset={8}
@@ -52,15 +89,7 @@ export const AdminDepartment = () => {
                 from: "color",
                 modifiers: [["darker", 0.2]],
               }}
-              arcLinkLabelsSkipAngle={10}
-              arcLinkLabelsTextColor='#333333'
-              arcLinkLabelsThickness={2}
-              arcLinkLabelsColor={{ from: "color" }}
-              arcLabelsSkipAngle={10}
-              arcLabelsTextColor={{
-                from: "color",
-                modifiers: [["darker", 2]],
-              }}
+              enableArcLinkLabels={false}
               defs={[
                 {
                   id: "dots",
@@ -117,13 +146,36 @@ export const AdminDepartment = () => {
       </section>
       <section className='team-member-sec'>
         <div className='member-list-container'>
-          <Card className='manager-card'>
-            <Card.Meta
-              title={"Nguyen Van A"}
-              description={"nguyenvana@gmail.com"}
-              avatar={<CustomAvatar size={32} userName='Nguyen Van A' />}
-            />
-          </Card>
+          <List>
+            <List.Item>
+              <List.Item.Meta
+                title={"Nguyen Van A"}
+                description={
+                  <>
+                    <Typography.Text>nguyenvana@gmail.com</Typography.Text>
+                    <br />
+                    <Typography.Text type='secondary'>
+                      Department manager
+                    </Typography.Text>
+                  </>
+                }
+                avatar={<CustomAvatar size={64} userName='Nguyen Van A' />}
+              />
+            </List.Item>
+            <List.Item>
+              <List.Item.Meta
+                title={"Tran Van C"}
+                description={
+                  <>
+                    <Typography.Text>tranvanc@gmail.com</Typography.Text>
+                    <br />
+                    <Typography.Text type='secondary'>Staff</Typography.Text>
+                  </>
+                }
+                avatar={<CustomAvatar size={64} userName='Nguyen Van A' />}
+              />
+            </List.Item>
+          </List>
         </div>
       </section>
     </div>

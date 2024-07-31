@@ -9,8 +9,6 @@ export const PlusSquare = ({ className, style }: IconProp) => {
       {...(style && { style: style })}
       viewBox='0 0 16 16'
       id='Plus-Square--Streamline-Bootstrap'
-      height={16}
-      width={16}
     >
       <desc>{"Plus Square Streamline Icon: https://streamlinehq.com"}</desc>
       <path
