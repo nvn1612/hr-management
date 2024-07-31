@@ -10,10 +10,10 @@ export type VerifyOtpFormType = {
 
 export const ConfirmOtpForm = ({
   email,
-  nextStep,
+  setStep,
 }: {
   email: string;
-  nextStep: () => void;
+  setStep: (step: number) => void;
 }) => {
   const [messageApi, contextHolder] = message.useMessage();
   const [verifyOtp, verifyOtpStatus] = useVerifyOtpMutation();
@@ -26,7 +26,7 @@ export const ConfirmOtpForm = ({
       .unwrap()
       .then(() => {
         messageApi.success("OTP verified, continue to change password ");
-        nextStep();
+        setStep(2);
       })
       .catch(() => {
         messageApi.error("There was an error");
@@ -51,12 +51,28 @@ export const ConfirmOtpForm = ({
             name='Otp'
             rules={[{ required: true, message: "OTP code is required" }]}
           >
-            <Input placeholder='OTP' />
+            <Input placeholder='OTP' size='large' />
           </Form.Item>
           <Form.Item>
-            <Button style={{ width: "100%" }} type='primary' htmlType='submit'>
-              Verify
-            </Button>
+            <div className='otp-form-btns'>
+              <Button
+                style={{ width: "47%" }}
+                type='primary'
+                htmlType='submit'
+                size='large'
+                ghost
+              >
+                Verify
+              </Button>
+              <Button
+                style={{ width: "47%" }}
+                type='primary'
+                size='large'
+                onClick={() => setStep(0)}
+              >
+                Cancel
+              </Button>
+            </div>
           </Form.Item>
         </Form>
       </Spin>

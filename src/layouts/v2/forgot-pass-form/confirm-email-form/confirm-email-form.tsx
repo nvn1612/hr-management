@@ -49,10 +49,15 @@ export const ConfirmEmailForm = ({
             name='email'
             rules={[{ required: true, message: "Email is required" }]}
           >
-            <Input placeholder='Email' />
+            <Input placeholder='Email' size='large' />
           </Form.Item>
           <Form.Item>
-            <Button className='submit-button' type='primary' htmlType='submit'>
+            <Button
+              className='submit-button'
+              type='primary'
+              htmlType='submit'
+              size='large'
+            >
               Send OTP to email
             </Button>
           </Form.Item>

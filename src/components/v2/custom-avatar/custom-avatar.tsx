@@ -18,6 +18,7 @@ export const CustomAvatar = ({ size, avatarSrc, userName }: AvatarProp) => {
         width: `${size}px`,
         height: `${size}px`,
         background: !avatarSrc ? bgColor : "none",
+        fontSize: `${size / 2}px`,
       }}
       src={avatarSrc || ""}
     >

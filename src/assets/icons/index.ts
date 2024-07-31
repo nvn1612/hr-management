@@ -12,3 +12,7 @@ export * from "./trash";
 export * from "./double-check";
 export * from "./down";
 export * from "./folder";
+export * from "./logout";
+export * from "./lock";
+export * from "./person";
+export * from "./plus-square";

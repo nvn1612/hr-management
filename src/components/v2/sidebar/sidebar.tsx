@@ -1,32 +1,17 @@
-import {
-  TeamOutlined,
-  ApartmentOutlined,
-  ProjectOutlined,
-} from "@ant-design/icons";
-import type { MenuProps } from "antd";
-import { Link } from "react-router-dom";
-import { Menu } from "antd";
+import "./sidebar.css";
+import { Layout } from "antd";
+import { MultiUser } from "src/assets/icons";
+import { CustomMenu, CustomMenuItem } from "src/components/v2/custom-menu";
 
-type MenuItem = Required<MenuProps>["items"][number];
-
-const navigateItem: MenuItem[] = [
-  {
-    key: "accounts",
-    label: <Link to={"/dashboard"}>Account</Link>,
-    icon: <TeamOutlined />,
-  },
-  {
-    key: "department",
-    label: "Department",
-    icon: <ApartmentOutlined />,
-  },
-  {
-    key: "project",
-    label: "Project",
-    icon: <ProjectOutlined />,
-  },
+const items: CustomMenuItem[] = [
+  { title: "Accounts", onClick() {}, icon: <MultiUser />, addCallBack() {} },
+  { title: "Department", onClick() {}, icon: <MultiUser />, addCallBack() {} },
 ];
 
 export const Sidebar = () => {
-  return <Menu items={navigateItem} />;
+  return (
+    <Layout.Sider className='sidebar'>
+      <CustomMenu items={items} />
+    </Layout.Sider>
+  );
 };
