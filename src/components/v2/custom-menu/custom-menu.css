@@ -15,9 +15,9 @@
     height: 40px;
     transition-duration: 300ms;
     .menu-option-content {
-      .item-title {
-        margin-left: var(--gap-s);
-      }
+      display: flex;
+      align-items: center;
+      gap: var(--gap-s);
     }
     &:hover {
       background-color: var(--gray-transparent-color);

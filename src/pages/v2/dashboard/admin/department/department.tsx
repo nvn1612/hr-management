@@ -1,20 +1,31 @@
 import "./department.css";
-import { Typography } from "antd";
+import { Typography, Card } from "antd";
 import { ResponsivePie } from "@nivo/pie";
+import { CustomAvatar } from "src/components/v2";
+import { DepartmentProjects } from "src/layouts/v2";
 
 export const AdminDepartment = () => {
   return (
     <div className='department-page'>
       <section className='main'>
         <header className='main-header'>
-          <div className='title-des'>
-            <Typography.Title level={1}>Deparment Detail</Typography.Title>
-            <Typography.Text>
-              Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nobis
-              ipsam, aperiam ipsum delectus dolores iste. Assumenda hic dolor
-              error totam perferendis, ipsam nesciunt veritatis eius!
-            </Typography.Text>
-          </div>
+          <section className='first-sec'>
+            <div className='title-des'>
+              <Typography.Title level={2}>Deparment Detail</Typography.Title>
+              <Typography.Text>
+                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nobis
+                ipsam, aperiam ipsum delectus dolores iste.
+              </Typography.Text>
+            </div>
+            <Card className='manager-card'>
+              <Card.Meta
+                title={"Nguyen Van A"}
+                description={"nguyenvana@gmail.com"}
+                avatar={<CustomAvatar size={32} userName='Nguyen Van A' />}
+              />
+            </Card>
+          </section>
+
           <div className='pie-chart'>
             <ResponsivePie
               data={[
@@ -70,20 +81,6 @@ export const AdminDepartment = () => {
                   spacing: 10,
                 },
               ]}
-              fill={[
-                {
-                  match: {
-                    id: "todo",
-                  },
-                  id: "dots",
-                },
-                {
-                  match: {
-                    id: "on progress",
-                  },
-                  id: "dots",
-                },
-              ]}
               legends={[
                 {
                   anchor: "bottom",
@@ -112,6 +109,22 @@ export const AdminDepartment = () => {
             />
           </div>
         </header>
+        <section className='project-section'>
+          <DepartmentProjects title='On Progress' />
+          <DepartmentProjects title='Done' />
+          <DepartmentProjects title='Todo' />
+        </section>
+      </section>
+      <section className='team-member-sec'>
+        <div className='member-list-container'>
+          <Card className='manager-card'>
+            <Card.Meta
+              title={"Nguyen Van A"}
+              description={"nguyenvana@gmail.com"}
+              avatar={<CustomAvatar size={32} userName='Nguyen Van A' />}
+            />
+          </Card>
+        </div>
       </section>
     </div>
   );

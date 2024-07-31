@@ -1,4 +1,4 @@
-import "./dashboard.css";
+import "./Dashboard.css";
 import { Headbar } from "src/components/v2/headbar";
 import { Outlet } from "react-router-dom";
 

@@ -23,7 +23,7 @@ export const Headbar = () => {
       <div className='user-headbar-options'>
         <Card className='user-headbar-options-card'>
           <Card.Meta
-            avatar={<CustomAvatar size={50} userName='N' />}
+            avatar={<CustomAvatar size={45} userName='N' />}
             title={"Nguyen Van A"}
             description={"nguyenvana@gmail.com"}
           />
@@ -57,7 +57,7 @@ export const Headbar = () => {
       <Typography.Title level={4}>Project Management</Typography.Title>
       <Popover content={<UserHeadbarOption />} trigger='click'>
         <div className='headbar-avatar-wraper'>
-          <CustomAvatar size={50} userName='N' />
+          <CustomAvatar size={45} userName='N' />
         </div>
       </Popover>
     </header>
