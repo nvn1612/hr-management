@@ -12,7 +12,7 @@ import {
   TestRoute,
   Dashboard as DashboardV2,
   Admin,
-  AdminDepartment,
+  DepartmentDetail,
 } from "src/pages/v2";
 import App from "src/App";
 
@@ -65,7 +65,7 @@ export const router = createBrowserRouter([
           {
             path: "admin",
             element: <Admin />,
-            children: [{ path: "department", element: <AdminDepartment /> }],
+            children: [{ path: "department", element: <DepartmentDetail /> }],
           },
         ],
       },

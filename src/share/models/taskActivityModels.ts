@@ -2,6 +2,7 @@ import type { User } from "./accountModels";
 
 export interface Task {
   task_id: string;
+  name: string;
   description: string;
   document: string[];
   createdBy: string;
