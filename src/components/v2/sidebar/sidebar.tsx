@@ -24,14 +24,17 @@ export const Sidebar = () => {
   ]);
 
   return (
-    <Layout.Sider className='sidebar'>
-      <CustomMenu items={items} />
-      {subList.length > 0 && (
-        <>
-          <Divider />
-          <CustomMenu items={subList} />
-        </>
-      )}
-    </Layout.Sider>
+    <>
+      <Layout.Sider className='sidebar'>
+        <CustomMenu items={items} />
+        {subList.length > 0 && (
+          <>
+            <Divider />
+            <CustomMenu items={subList} />
+          </>
+        )}
+      </Layout.Sider>
+      <div className='sidebar-placeholder' style={{ width: 0 }} />
+    </>
   );
 };
