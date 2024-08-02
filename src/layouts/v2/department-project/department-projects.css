@@ -1,7 +1,7 @@
 .department-projects {
   .projects {
-    .project-card-wrapper {
-      width: 300px;
-    }
+    display: flex;
+    justify-content: start;
+    gap: var(--gap-s);
   }
 }
