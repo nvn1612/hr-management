@@ -12,9 +12,9 @@ export const Login = () => {
       {accessToken && Date.now() - accessDate < 0 ? (
         <Navigate to={"/dashboard"} replace />
       ) : (
-        <div className='login-page'>
-          <img src='src/assets/demo-logo/random.png' alt='Company Logo' />
-          <div className='login-form-container'>
+        <div className="login-page">
+          <img src="src/assets/demo-logo/random.png" alt="Company Logo" />
+          <div className="login-form-container">
             <LoginForm />
           </div>
         </div>
