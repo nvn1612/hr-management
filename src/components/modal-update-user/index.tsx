@@ -55,13 +55,21 @@ const ModalUpdateUser: React.FC<ModalUpdateUser> = ({
   return (
     <Modal
       className="wrapper"
-      title="Update User"
       open={isModalOpen}
       centered
       onOk={handleOk}
       onCancel={handleCancel}
       width={1000}
     >
+      <h2
+        style={{
+          alignItems: "center",
+          justifyContent: "center",
+          textAlign: "center",
+        }}
+      >
+        Update User
+      </h2>
       <Space direction="vertical" size="middle" style={{ display: "flex" }}>
         <div>
           <span>Name</span>

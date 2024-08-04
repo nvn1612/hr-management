@@ -55,13 +55,21 @@ const ModalCreateUser: React.FC<ModalCreateUser> = ({
   return (
     <Modal
       className="wrapper"
-      title="Create User"
       open={isModalOpen}
       centered
       onOk={handleOk}
       onCancel={handleCancel}
       width={1000}
     >
+      <h2
+        style={{
+          alignItems: "center",
+          justifyContent: "center",
+          textAlign: "center",
+        }}
+      >
+        Create User
+      </h2>
       <Space direction="vertical" size="middle" style={{ display: "flex" }}>
         <div>
           <span>Name</span>
