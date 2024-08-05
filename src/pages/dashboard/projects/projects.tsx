@@ -122,12 +122,12 @@ export const Projects = () => {
       {contextHolder}
       <Spin
         spinning={isFetching || departProjectFetch}
-        tip='Loading Projects'
-        className='project-card-loading'
-        size='large'
+        tip="Loading Projects"
+        className="project-card-loading"
+        size="large"
       >
         <MngPageHeader
-          title='Projects'
+          title="Projects"
           {...(!checkRole(OUserRole.Staff) && {
             addBtnContent: "Create Project",
             addBtnOnClick: () => {
@@ -141,7 +141,7 @@ export const Projects = () => {
               : departmentProject?.total
           }
         />
-        <div className='project-card-container'>
+        <div className="project-card-container">
           <List
             grid={{
               gutter: 16,
@@ -206,7 +206,7 @@ export const Projects = () => {
       </Spin>
       <Modal
         title={isCreate ? "Create Project" : "Project Details"}
-        className='project-detail-modal'
+        className="project-detail-modal"
         open={openProjectTab}
         onCancel={() => {
           setOpenProjectTab(false);
@@ -216,9 +216,9 @@ export const Projects = () => {
             ? [
                 <Popconfirm
                   key={1}
-                  title='Delete Project'
-                  description='Are you sure to delete this Project?'
-                  okText='Yes'
+                  title="Delete Project"
+                  description="Are you sure to delete this Project?"
+                  okText="Yes"
                   onConfirm={async () => {
                     await deleteProject(selectedProject!.project_id!)
                       .unwrap()
@@ -230,9 +230,9 @@ export const Projects = () => {
                         messageApi.error("Failed to delete project");
                       });
                   }}
-                  cancelText='No'
+                  cancelText="No"
                 >
-                  <Button type='primary' danger>
+                  <Button type="primary" danger>
                     Delete Project
                   </Button>
                 </Popconfirm>,
@@ -242,7 +242,7 @@ export const Projects = () => {
       >
         <Tabs
           items={isCreate ? createProjectTab : tabsProps}
-          className='project-tabs'
+          className="project-tabs"
         />
       </Modal>
     </>
