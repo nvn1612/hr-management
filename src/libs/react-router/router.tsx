@@ -12,6 +12,7 @@ import {
   Admin,
   AdminDepartment,
   Account,
+
 } from "src/pages/v2";
 import App from "src/App";
 import { Projects } from "src/pages/v2/projects";
@@ -67,7 +68,10 @@ export const router = createBrowserRouter([
           {
             path: "admin",
             element: <Admin />,
-            children: [{ path: "department", element: <AdminDepartment /> }],
+            children: [
+              { path: "department", element: <DepartmentDetail /> },
+              { path: "project", element: <AdminProject /> },
+            ],
           },
           {
             path: "admin",

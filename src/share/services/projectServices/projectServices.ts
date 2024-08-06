@@ -131,6 +131,7 @@ const projectServices = hrManagementApi.injectEndpoints({
     createTask: build.mutation<
       Task,
       Partial<{
+        name: string;
         description: string;
       }>
     >({

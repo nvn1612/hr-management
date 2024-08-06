@@ -1,6 +1,6 @@
 import "./department-projects.css";
 
-import { Typography } from "antd";
+import { Typography, List } from "antd";
 import { ProjectCard } from "src/components/v2/project-card";
 
 interface DepartmentProjectsProp {
@@ -21,6 +21,7 @@ export const DepartmentProjects = ({ title }: DepartmentProjectsProp) => {
           />
         </div>
       </div>
+
     </div>
   );
 };

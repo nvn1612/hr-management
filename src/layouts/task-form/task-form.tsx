@@ -113,6 +113,7 @@ export const TaskForm = ({
     switch (action) {
       case "create": {
         const newTask = await createTask({
+          name: "Task 1",
           description: values.description,
         }).unwrap();
         await createAssignment({
@@ -121,6 +122,7 @@ export const TaskForm = ({
             task_id: newTask.task_id,
             user_id: values.assignedStaff,
             endAt: values?.deadline,
+            status: 0,
           },
         })
           .unwrap()

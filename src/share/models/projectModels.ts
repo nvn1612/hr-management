@@ -1,6 +1,15 @@
 import type { Dayjs } from "dayjs";
 import { Task, User } from "src/share/models";
 
+export const OAssignmentStatus = {
+  Todo: 0,
+  OnProgress: 1,
+  Done: 2,
+} as const;
+
+export type AssignmentStatus =
+  (typeof OAssignmentStatus)[keyof typeof OAssignmentStatus];
+
 export interface Project {
   project_id?: string;
   name?: string;
@@ -72,7 +81,7 @@ export interface Assignment {
   task_id?: string;
   startAt?: string | Dayjs;
   endAt?: string | Dayjs;
-  status?: boolean;
+  status?: AssignmentStatus;
   createdBy?: string;
   createdAt?: string | Dayjs;
   task?: Task;
@@ -113,11 +122,11 @@ export interface ProjectReportResp {
   tasks: {
     task_id: string;
     description?: string;
-    document: [];
-    createdBy: string;
-    modifiedBy: null;
-    createdAt: string;
-    TaskProperty: {
+    document?: [];
+    createdBy?: string;
+    modifiedBy?: null;
+    createdAt?: string;
+    TaskProperty?: {
       task_property_id: string;
       task_id: string;
     };
