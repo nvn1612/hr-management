@@ -9,10 +9,10 @@ interface DepartmentProjectsProp {
 
 export const DepartmentProjects = ({ title }: DepartmentProjectsProp) => {
   return (
-    <div className='department-projects'>
+    <div className="department-projects">
       <Typography.Title level={3}>{title}</Typography.Title>
-      <div className='projects'>
-        <div className='project-card-wrapper'>
+      <div className="projects">
+        <div className="project-card-wrapper">
           <ProjectCard
             project={{
               name: "chat app",

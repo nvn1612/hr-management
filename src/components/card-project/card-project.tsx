@@ -23,7 +23,6 @@ import {
   UserOutlined,
   PlusOutlined,
 } from "@ant-design/icons";
-import UpdateUserModal from "../modal-update-user";
 import ModalAddUserToProject from "../modal-add-user-to-project";
 import ModalUpdatePost from "../modal-update-post";
 type CardProject = {

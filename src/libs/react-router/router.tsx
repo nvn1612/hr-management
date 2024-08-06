@@ -2,7 +2,6 @@ import { createBrowserRouter } from "react-router-dom";
 import { Dashboard, Login, ForgotPassword } from "src/pages";
 import { UserInfo } from "src/pages/dashboard/user-info";
 import { Accounts } from "src/pages/dashboard/accounts";
-import { Departments } from "src/pages/dashboard/departments";
 import { CardDepartmentss } from "src/components/card-departments";
 import {
   V2,
@@ -16,6 +15,8 @@ import {
 } from "src/pages/v2";
 import App from "src/App";
 import { Projects } from "src/pages/v2/projects";
+import { DepartmentProjects } from "src/layouts/v2";
+import { Departments } from "src/pages/v2/departments";
 
 export const router = createBrowserRouter([
   { path: "/", element: <App /> },
@@ -77,6 +78,11 @@ export const router = createBrowserRouter([
             path: "admin",
             element: <Admin />,
             children: [{ path: "projects", element: <Projects /> }],
+          },
+          {
+            path: "admin",
+            element: <Admin />,
+            children: [{ path: "departments", element: <Departments /> }],
           },
         ],
       },
