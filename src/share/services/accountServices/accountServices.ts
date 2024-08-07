@@ -91,9 +91,6 @@ const accountServices = hrManagementApi.injectEndpoints({
         return {
           url: `users/admin/get-all`,
           method: "GET",
-          headers: {
-            authorization: accessToken(),
-          },
           params: {
             role: role === OUserRole.All ? "" : role,
             page: page ? page : 1,

@@ -1,7 +1,8 @@
 import "./project.css";
 import { MenuDots, Pen, Trash, Page, Plus } from "src/assets/icons";
-import { Typography, Button, Avatar, Popconfirm, Popover } from "antd";
+import { Typography, Button, Avatar, Popconfirm, Popover, List } from "antd";
 import { CustomAvatar } from "src/components/v2";
+import { TaskList } from "src/layouts/v2";
 
 export const AdminProject = () => {
   const ProjectOptions = () => {
@@ -51,6 +52,26 @@ export const AdminProject = () => {
           </Avatar.Group>
         </div>
       </header>
+      <List
+        grid={{
+          gutter: 16,
+          xs: 1,
+          sm: 1,
+          md: 2,
+          lg: 2,
+          xl: 3,
+          xxl: 3,
+        }}
+        className='task-sec'
+        dataSource={[1, 2, 3]}
+        renderItem={() => {
+          return (
+            <List.Item>
+              <TaskList />
+            </List.Item>
+          );
+        }}
+      />
     </div>
   );
 };

@@ -1,4 +1,5 @@
 .task-card {
+  width: 100%;
   .task-card-title {
     display: flex;
     justify-content: space-between;
